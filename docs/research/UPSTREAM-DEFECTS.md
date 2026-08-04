@@ -74,18 +74,62 @@ any source examined.
 in **only these three lines**. The defect is fully isolated — nothing else in the corpus repeats
 it, and no code depends on it.
 
-### Where to report
+### Upstream location — confirmed
 
-The package's `package.json` carries **no `repository` field**, which makes issue-filing harder
-than it should be — worth mentioning alongside the fix. Candidate venues:
+```
+repo   : github.com/Nebulit-GmbH/Eventmodelers-Build-Kits   (branch: main)
+path   : eventmodelers-cli/stacks/modeling-kit/templates/.claude/skills/
+         eventmodeling-brainstorming-events/references/
+         facilitating-event-modeling-workshops.md
+lines  : 89, 93
+```
 
-- `github.com/Nebulit-GmbH/Eventmodelers-Build-Kits`
-- `github.com/Nebulit-GmbH/EventModeling-Toolkit`
-- Martin Dilger directly — `newsletter.nebulit.de`, `app.eventmodelers.ai`
+The upstream file is **byte-identical** to the published npm copy, and these are the only three
+colour claims in the entire repository.
 
-Suggested framing: *three transposed lines in the workshop facilitation reference, contradicting
-your own cheat sheet and book figures; adding a `repository` field to package.json would let
-people report this kind of thing directly.*
+The npm `package.json` carries **no `repository` field**, which is likely why this has gone
+unreported — there is no discoverable link from the package to its source. Worth raising
+alongside the fix. There is also no `CONTRIBUTING.md` or root `LICENSE` in the repo.
+
+### Ready-to-apply patch
+
+[`kit-colour-fix.patch`](kit-colour-fix.patch) — generated against `main` and verified to apply.
+Two lines changed.
+
+```bash
+gh repo fork Nebulit-GmbH/Eventmodelers-Build-Kits --clone
+cd Eventmodelers-Build-Kits
+git checkout -b fix/workshop-sticky-colours
+git apply /path/to/kit-colour-fix.patch
+git commit -am "Fix transposed sticky-note colours in workshop facilitation reference"
+git push -u origin fix/workshop-sticky-colours
+gh pr create --title "Fix transposed Event/View sticky-note colours in workshop facilitation reference"
+```
+
+If you run this, consider `git config user.email` set to your GitHub noreply alias
+(`<username>@users.noreply.github.com`) — a public commit otherwise puts your real address in the
+history permanently.
+
+### Suggested PR body
+
+> The workshop facilitation reference has the Event and View sticky-note colours transposed.
+>
+> `eventmodelers-cli/stacks/modeling-kit/.../facilitating-event-modeling-workshops.md`, lines 89
+> and 93, currently read `[Green] Event` and `[Orange] View`. This contradicts the Event Modeling
+> Cheat Sheet and the figures in *Understanding Eventsourcing* (e.g. the cart diagrams), which
+> both show **orange events** against **green read models**. `[Blue] Command` is correct.
+>
+> It matters a little more than a typo because it sits in the *facilitation* guide — it's what a
+> room of first-timers copies onto real stickies while learning the convention.
+>
+> These are the only three colour claims in the repository, so the fix is fully isolated.
+>
+> Unrelated but possibly useful: the published `@eventmodelers/*` packages have no `repository`
+> field in `package.json`, so there's no link from npm back here. Adding one would make issues
+> like this easier to report.
+>
+> *Found while building an Event Modeling reference from primary sources. Research and patch
+> prepared with Claude; reviewed and submitted by me.*
 
 ---
 
