@@ -1,0 +1,397 @@
+openapi: 3.0.3
+info:
+  title: PP Server API
+  version: 1.0.0
+  description: Local development server for managing slices, config, progress, and git operations.
+
+servers:
+  - url: http://localhost:3001
+
+paths:
+  /api/ping:
+    get:
+      summary: Health check
+      operationId: ping
+      responses:
+        '200':
+          description: Server is alive
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: pong
+
+  /api/generate:
+    post:
+      summary: Write config and slice files to disk
+      operationId: generate
+      description: >
+        Accepts a config payload. Writes it to `config.json` (or a slugified filename),
+        persists individual slice JSON files under `.slices/`, updates `.slices/index.json`,
+        and saves any base64-encoded screen images. Shuts the server down after success.
+      parameters:
+        - in: query
+          name: exportAsConfig
+          schema:
+            type: boolean
+          description: Force output filename to `config.json` regardless of context name.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateRequest'
+      responses:
+        '200':
+          description: Files written successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  path:
+                    type: string
+                    description: Absolute path of the written config file
+        '400':
+          description: Invalid JSON body or write error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/slice-info:
+    get:
+      summary: Get all slices with optional specification metadata
+      operationId: getSliceInfo
+      responses:
+        '200':
+          description: List of slices with status and specifications
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  slices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SliceInfo'
+        '404':
+          description: index.json not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/slicepath:
+    get:
+      summary: List all `.slice.json` file paths under `.slices/`
+      operationId: getSlicePaths
+      responses:
+        '200':
+          description: Array of slice file paths
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  slices:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                          description: Relative path from repo root
+                        name:
+                          type: string
+                          description: Filename
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/slices:
+    get:
+      summary: Load slice data (and optionally images) at a given git revision
+      operationId: getSlices
+      parameters:
+        - in: query
+          name: includeImages
+          schema:
+            type: boolean
+            default: false
+          description: Include base64-encoded screen PNG images in the response
+        - in: query
+          name: revision
+          schema:
+            type: string
+            default: HEAD
+          description: Git revision to read slices from (e.g. `HEAD`, a commit SHA, or a tag)
+      responses:
+        '200':
+          description: Slices and optional images
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlicesResponse'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/config:
+    get:
+      summary: Get server/repo configuration metadata
+      operationId: getConfig
+      responses:
+        '200':
+          description: Config metadata
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: number
+                    example: 1.0
+                  gitRepo:
+                    type: boolean
+                    description: Whether the workspace is a git repository
+    post:
+      summary: Store config data (no-op beyond JSON validation)
+      operationId: postConfig
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Data stored successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+                    example: Data stored successfully!
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/progress:
+    get:
+      summary: Read and return progress.txt split into iteration paragraphs
+      operationId: getProgress
+      responses:
+        '200':
+          description: Progress data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  available:
+                    type: boolean
+                  progress:
+                    type: array
+                    items:
+                      type: string
+                    description: Paragraphs split at `>>> Iteration N` markers
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/delete-slice:
+    post:
+      summary: Delete a `code-slice.json` file by slice ID
+      operationId: deleteSlice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  type: string
+                  description: The slice ID to search for and delete
+      responses:
+        '200':
+          description: Slice deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  deletedPath:
+                    type: string
+        '400':
+          description: Missing required `id` parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Slice or `.slices` directory not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/git:
+    get:
+      summary: Check git repository status
+      operationId: getGit
+      responses:
+        '200':
+          description: Git repo info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: number
+                    example: 1.0
+                  gitRepo:
+                    type: boolean
+    post:
+      summary: Stage and commit all changes in `.slices/`
+      operationId: postGit
+      description: >
+        Initialises a git repo if one does not exist, stages `.slices/`,
+        and commits with message `(chore) slices` if there are staged changes.
+      responses:
+        '200':
+          description: Commit result (fields are absent when nothing was committed)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  branch:
+                    type: string
+                    nullable: true
+                  revision:
+                    type: string
+                    nullable: true
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+
+    SliceInfo:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          type: string
+        id:
+          type: string
+        specifications:
+          description: Specifications from `code-slice.json`, if present
+          nullable: true
+
+    SlicesResponse:
+      type: object
+      properties:
+        slices:
+          type: array
+          items:
+            type: object
+            description: Parsed contents of each `slice.json` file
+        sliceImages:
+          type: array
+          items:
+            $ref: '#/components/schemas/SliceImage'
+        meta:
+          type: object
+          properties:
+            revision:
+              type: string
+            sliceCount:
+              type: integer
+            screenCount:
+              type: integer
+
+    SliceImage:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Numeric ID extracted from the filename (`screen-{id}.png`)
+        slice:
+          type: string
+        title:
+          type: string
+        base64Image:
+          type: string
+          description: Data URI — `data:image/png;base64,...`
+
+    GenerateRequest:
+      type: object
+      properties:
+        context:
+          type: string
+          description: Used to derive the output filename when `exportAsConfig` is false
+        slices:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              title:
+                type: string
+              index:
+                type: integer
+              context:
+                type: string
+              status:
+                type: string
+        sliceImages:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              slice:
+                type: string
+              context:
+                type: string
+              base64Image:
+                type: string
+                description: Data URI or raw base64 PNG
+
+  responses:
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
