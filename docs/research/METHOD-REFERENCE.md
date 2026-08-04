@@ -26,6 +26,37 @@ maintained as Markdown in a **public GitHub repository**, which is reachable. Se
 
 ---
 
+## Source precedence
+
+Event Modeling has evolved. Where sources conflict, resolve in this order:
+
+1. **Recent material by Adam Dymitruk or Martin Dilger** — the method's author and its most
+   active practitioner. Later beats earlier.
+2. **Earlier material by them** — still authoritative for anything unrevised.
+3. **Third-party material on canonical sites** — useful, sometimes the clearest statement of an
+   idea, but it does not override (1) or (2). This includes the eventmodeling.org cheat sheet,
+   which is authored by `sbortz`, not by Dymitruk.
+4. **Everything else.**
+
+Dates for ranking:
+
+| Source | Date | Author |
+|---|---|---|
+| Dilger, Event Modeling Cheat Sheet | **2026-07** | Dilger |
+| `@eventmodelers/agent-modeling-kit` | **2026** (v0.1.74, actively published) | Dilger |
+| Dilger, *Understanding Eventsourcing* | 2025-06 print; Leanpub continuously updated | Dilger |
+| Dymitruk, *"Event Modeling: What is it?"* | 2019, **content updated through 2025-10** | Dymitruk |
+| eventmodeling.org cheat sheet | 2020, updated 2022 | ⚠️ `sbortz` |
+
+Note that Dymitruk's foundational article is still maintained — it is not a 2019 artefact — so it
+ranks high on both authorship and recency.
+
+Caveat: recency does not make a source infallible. The 2026 kit contains a confirmed colour error
+(see [`UPSTREAM-DEFECTS.md`](UPSTREAM-DEFECTS.md)) that older material gets right. Prefer recent,
+but check against the rest.
+
+---
+
 ## Reconciliation: the sources disagree
 
 Three framings exist. None is wrong; they are different vintages and audiences. Read any
@@ -53,22 +84,27 @@ finer granularity.
 
 Both are canonical. "Command pattern" is not an error.
 
-### Colours — genuinely contradictory
+### Colours — settled
 
-| Source | Trigger/Screen | Command | Event | View / Read Model |
-|---|---|---|---|---|
-| Dymitruk 2019 | wireframe | blue | — | **green** |
-| eventmodeling.org 2022 | white | blue | **yellow** | **green** |
-| Dilger 2026 (cheat sheet + book figures) | white | blue | **orange** | **green** |
-| kit workshop reference | — | blue | **green** | **orange** |
+| Element | Colour |
+|---|---|
+| **Command** | **blue** — invariant across every source |
+| **View / Read Model** | **green** — invariant across every source except one defective file |
+| **Event** | **orange** (current) or **yellow** (older material). Both legitimate. |
+| Screen / Trigger | white |
+| Processor | gear |
+| External event | yellow |
+| Error / hotspot | red-pink |
 
-**Blue = Command is the only invariant.** Three sources put Read Model at green; the kit's
-`facilitating-event-modeling-workshops.md` swaps Event and View against Dilger's own cheat
-sheet and his own book diagrams. Treat that file as an outlier.
+**This project uses orange for Event.**
 
-**Use for this project (Dilger 2026, the live convention):**
-Event **orange** · Command **blue** · Read Model **green** · Screen **white** ·
-Processor **gear** · external event **yellow** · error / hotspot **red-pink**
+Event's colour is the only one that genuinely moved: yellow in the 2022 material, orange in
+Dilger's 2026 cheat sheet and book figures. Command and View never moved.
+
+> ⚠️ **One source is wrong.** The kit's `facilitating-event-modeling-workshops.md` transposes
+> Event and View (green/orange). It contradicts its own author's cheat sheet and book figures,
+> and it is the only place in the entire corpus making that claim. Documented with exact line
+> numbers in [`UPSTREAM-DEFECTS.md`](UPSTREAM-DEFECTS.md) — **do not follow it.**
 
 ---
 
@@ -93,19 +129,32 @@ That is the whole method. Every column either **writes** (a command producing ev
 | **Screen** | "How users make things happen in the system" | Human roles only |
 | **Processor** | "Side effect of what happened in the System" | System actors; drawn as gears |
 
-**Trigger** (eventmodeling.org, 2022) is the general case of Screen — and this is the
-resolution for systems with no UI:
+### Systems with no UI
 
-> *"It can be a user via a UI or it can be some external piece of software calling our public
-> API. Or it can even be a robot aka an automated process. Describe it via a simple wireframe
-> **or the route of an http endpoint**."*
+The governing rule is Dilger's, 2026, and it is stated in element terms:
 
-An API route, or a protocol verb, is a sanctioned trigger. No wireframe required.
-
-The kit states the same rule in element terms:
-
-> *"Human roles get SCREEN nodes. System actors and processors get AUTOMATION nodes."*
+> *"Human roles get SCREEN nodes. System actors and processors get AUTOMATION nodes. Place both
+> types during storyboarding — do not defer automations to a later step."*
 > — `eventmodeling-storyboarding-events/SKILL.md`
+
+> *"When a processor or system actor reacts to events automatically (no human interaction), place
+> an **AUTOMATION** node in the actor row instead of a SCREEN."* — *ibid.*
+
+So a machine actor occupies the actor row as an **automation node**, and no screen is drawn. That
+alone settles the no-UI case.
+
+The **Trigger** framing corroborates it, and is the clearest prose statement of the idea:
+
+> *"It can be a user via a UI or it can be some external piece of software calling our public API.
+> Or it can even be a robot aka an automated process. Describe it via a simple wireframe **or the
+> route of an http endpoint**."*
+
+⚠️ But note the attribution: that passage is the **eventmodeling.org cheat sheet, authored by
+`sbortz`** — hosted on the canonical site, not written by Dymitruk. Under *Source precedence* it
+is tier 3. Cite it as illustration, not as authority; the load is carried by the kit.
+
+Screens are in any case optional — `analyze-existing-model` warns against flagging *"a slice named
+'Internal' with no SCREEN"* as a gap.
 
 ### Field metadata
 

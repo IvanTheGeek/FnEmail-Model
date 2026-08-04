@@ -11,6 +11,7 @@ Primary-source research behind FnEmail's event model.
 | [`CORRECTIONS-v0.1.md`](CORRECTIONS-v0.1.md) | 20 corrections from the first draft. Useful as a catalogue of ways to misapply the method. |
 | [`BIBLIOGRAPHY.md`](BIBLIOGRAPHY.md) | 152 sources across both authors — articles, talks, podcasts, repos, tools. |
 | [`METHOD-REFERENCE-DETAIL.md`](METHOD-REFERENCE-DETAIL.md) | Long-form companion. Two known defects, flagged in its header. |
+| [`UPSTREAM-DEFECTS.md`](UPSTREAM-DEFECTS.md) | Confirmed defects in third-party material, with exact line numbers, for reporting upstream. |
 | [`ACCESS-NOTES.md`](ACCESS-NOTES.md) | Why this is partly an index rather than a mirror, and how to lift the limit. |
 | [`archive/`](archive/) | Mirrored primary sources. **Read [`archive/NOTICE.md`](archive/NOTICE.md) before redistributing anything.** |
 
@@ -44,7 +45,12 @@ The two commercial books are cited throughout and reproduced nowhere.
 
 5. **Read models sit at their consumer**, not next to the events they project.
 
-6. **The sources contradict each other on colour.** Blue = Command is the only invariant.
+6. **Colour is settled**: Command always blue, View always green, Event orange (current) or
+   yellow (older). One upstream file transposes Event and View — a confirmed defect, logged in
+   `UPSTREAM-DEFECTS.md` with line numbers.
+
+7. **Source precedence**: recent Dymitruk/Dilger beats older; both beat third-party material on
+   canonical sites — including the eventmodeling.org cheat sheet, which is authored by `sbortz`.
 
 ## Method
 

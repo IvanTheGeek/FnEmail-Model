@@ -30,9 +30,13 @@ v0.1 was written from recall. Reading the primary sources overturned much of it.
 
 ## Conventions
 
-Colours (Dilger 2026 — sources conflict; see `research/METHOD-REFERENCE.md`):
-Event **orange** · Command **blue** · Read Model **green** · Screen **white** ·
+Colours: Event **orange** · Command **blue** · Read Model **green** · Screen **white** ·
 external event **yellow** · hotspot **red**
+
+Command is always blue and Read Model is always green across every source. Event is legitimately
+orange (current) or yellow (older material); **this project uses orange**. One file in the
+upstream kit transposes Event and View — it is wrong, and is documented in
+`research/UPSTREAM-DEFECTS.md`.
 
 **Arrows are not used.** Meaning is carried by lane position, left-to-right time, and which
 pattern a column matches. Legal adjacency still binds (Dymitruk): `command → event → view →
@@ -46,12 +50,17 @@ Two actors, top of the board (step 3.1).
 
 | Lane | Kind | Element | Role |
 |---|---|---|---|
-| **Remote MTA** | system actor | trigger — the protocol verb | Drives every write column |
-| **Operator** | human actor | view screen — session transcript | Reads; never issues a command |
+| **Remote MTA** | system actor | **automation node** — labelled with the protocol verb | Drives every write column |
+| **Operator** | human actor | **view screen** — session transcript | Reads; never issues a command |
 
-The remote MTA is not a screen. Per the kit: *"Human roles get SCREEN nodes. System actors and
-processors get AUTOMATION nodes."* Its trigger is the wire command line itself — `MAIL FROM:<…>`
-sits exactly where an HTTP route would.
+The remote MTA gets an automation node, not a screen. Dilger, 2026: *"Human roles get SCREEN
+nodes. System actors and processors get AUTOMATION nodes."* The node is labelled with the wire
+command line — `MAIL FROM:<…>` — which sits exactly where an endpoint route would.
+
+One nuance worth recording: the kit's phrasing describes a processor that *"reacts to events
+automatically."* The remote MTA does not react to our events, it initiates. The element is still
+right — a machine actor with no human interaction — but this is slightly outside the case the
+kit describes.
 
 Constraint observed: *"There are no screens that appear above one another"* — the Operator lane's
 transcript gets its own column; it is not stacked onto a command column.
