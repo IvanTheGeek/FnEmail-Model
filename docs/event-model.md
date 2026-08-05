@@ -4,6 +4,7 @@ Status: **draft v0.3 — scoped down to the HELO path**
 Scope: **inbound SMTP, `HELO` only.** No ESMTP, no relay, no outbound.
 
 Method reference: `research/METHOD-REFERENCE.md`. Corrections from v0.1: `research/CORRECTIONS-v0.1.md`.
+Altitude rules — what belongs in this model at all: `model-altitude.md`.
 Extensions are parked in `event-model-extensions.md` and **not** applied here — this document is
 orthodox Dymitruk/Dilger by intent, so extensions can be measured against it.
 
@@ -417,7 +418,8 @@ events nothing consumes. `DataPhaseEntered` lives or dies by it.
 ## Hotspots
 
 **H1 — Does `DataPhaseEntered` earn its place?** Its only candidate consumer is the transcript
-rendering `354`. A question about what the operator needs to see.
+rendering `354`. A question about what the operator needs to see. See `model-altitude.md` §3, which
+resolves this through the destination gate rather than by argument about protocol purity.
 
 **H2 — Are protocol errors events?** `RecipientRejected` is; a `503` is not. The line drawn is
 "policy decisions are facts, protocol slips are not" — defensible, unverified.
