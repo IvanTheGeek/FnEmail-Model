@@ -24,6 +24,22 @@ orthodox Dymitruk/Dilger by intent, so extensions can be measured against it.
 Twelve slices remain. Every reply is 3-digit only — no enhanced status codes (RFC 3463 is also an
 extension).
 
+## Normative base
+
+The hard-lined rules for this model are **RFC 5321 + RFC 7504**, and nothing else.
+
+RFC 7504 (*SMTP 521 and 556 Reply Codes*, June 2015) is the **sole** update to RFC 5321 — the RFC
+Editor's entry for 5321 lists exactly one. Both are archived under `research/archive/rfc/`.
+
+The normative set is therefore a small, versioned graph rather than one document, and conformance
+claims must name the set. It can grow: a future update would change what "RFC-conformant" means
+without any change to our model.
+
+| RFC | Role |
+|---|---|
+| 5321 | base specification (obsoletes 2821; updates 1123) |
+| 7504 | adds reply codes 521 and 556 |
+
 ## Changes from v0.2
 
 - Dropped the `StartTls` slice; `Ehlo` → `Helo`, `protocol` fixed at `SMTP`.
@@ -100,6 +116,12 @@ Post   ConnectionAccepted{peer_address, local_address}
        OR  reply 554, no event
 ```
 Exists to carry `peer_address`, which the `Received:` header requires and nothing else supplies.
+
+**`554` here is correct, and must not be "upgraded" to `521`.** RFC 7504 §3 reserves `521` for a
+host that *"does not accept mail under any circumstances"* — a dummy server whose only job is to
+say so. It *"SHOULD NOT be used for situations in which the server rejects mail from particular
+hosts or addresses"*, which is exactly our blocklist case. `554` remains right. See H7 for the
+case where `521` would apply.
 
 ### 2 · `Helo` — W
 
@@ -372,6 +394,15 @@ outlives the transaction, which argues they are not one stream.
 **H6 — Is `BY` config or `local_address`?** Decides whether `local_address` is an orphan field or
 load-bearing. Turns on whether FnEmail will ever be multi-homed with per-address hostnames.
 
+**H7 — Does FnEmail ever refuse mail entirely?** RFC 7504 `521` applies only to a host that never
+accepts mail — a null-MX sentinel or a domain configured to accept none. If FnEmail supports that
+mode, `AcceptConnection` gains a `521` branch and the model needs a configuration input saying so.
+If not, `521` never appears and this can be closed. A product question.
+
+Note the shape of the rule: RFC 7504 hard-lines *when* `521` is used, then leaves the aftermath to
+the operator — after `521` the server **MAY** keep replying `521` or **MAY** just close the
+connection. A normative frame with an operator choice inside it.
+
 **H5 — `AcceptConnection` altitude.** Domain fact or infrastructure noise? It carries
 `peer_address`, which `Received:` needs — that is the argument, not an assumption.
 
@@ -382,6 +413,11 @@ load-bearing. Turns on whether FnEmail will ever be multi-homed with per-address
 `EHLO`/ESMTP and extension negotiation · `STARTTLS` · `SIZE` · `8BITMIME` · enhanced status codes ·
 pipelining · `VRFY`/`EXPN`/`HELP`/`NOOP` · outbound delivery, relay, retry, bounce · DNS/MX
 translation · submission on :587 · authentication.
+
+**RFC 7504 `556`** is deferred with relay. It is returned by an intermediate system that can tell —
+typically from a null MX record (RFC 7505) — that a forward-path's domain accepts no mail, without
+opening a connection to it. That only arises when relaying, so it belongs to the deferred outbound
+work rather than here.
 
 ---
 

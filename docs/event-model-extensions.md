@@ -178,6 +178,17 @@ Implications to work out:
 - Does an operator rule ever *loosen* a normative one? If never, that is a checkable invariant:
   the operator's accepted set must be a subset of the RFC's.
 
+**The normative set is a versioned graph, not a document.** RFC 5321 is updated by RFC 7504, which
+adds two reply codes. So "RFC-conformant" is a claim about a *set* of documents at a point in time,
+and the set can grow without our model changing. A conformance claim has to name its set and its
+date, or it silently rots.
+
+**Normative rules can contain operator choices.** RFC 7504 §3 is a clean specimen: it hard-lines
+*when* `521` must be used, then says that afterwards the server **MAY** continue replying `521` or
+**MAY** close the connection. So the two classes are not cleanly separable per-rule — a single
+normative rule can delegate part of itself. Any scheme that tags rules as hard or soft needs to
+handle rules that are both.
+
 ## 5. Business errors vs. technical errors as separate models
 
 Dymitruk is firm that the model shows **business/domain** errors, not technical ones.
