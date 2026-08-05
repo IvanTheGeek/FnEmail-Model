@@ -34,6 +34,9 @@ extension).
 - **H3 reframed.** An unsourced read model is the method working, not a defect: the hole becomes
   known and names a slice that must exist upstream. It is now marked as a *typed* hole so that a
   path crossing it fails loudly.
+- **Metadata section added**, and two payload defects fixed — both found by walking the path with
+  real data rather than by reading the model. `MessageAccepted` gained `received_at`;
+  `ConnectionAccepted` lost `occurred_at`; `local_address` is flagged as an orphan (H6).
 
 ---
 
@@ -93,7 +96,7 @@ A domain observation about SMTP, **not** Event Modeling vocabulary.
 
 ```
 Pre    none
-Post   ConnectionAccepted{peer_address, local_address, occurred_at}
+Post   ConnectionAccepted{peer_address, local_address}
        OR  reply 554, no event
 ```
 Exists to carry `peer_address`, which the `Received:` header requires and nothing else supplies.
@@ -167,7 +170,8 @@ consumer is the transcript rendering `354`.
 
 ```
 Pre    DataPhaseEntered for the current transaction
-Post   MessageAccepted{queue_id, reverse_path, recipients[], content_ref, actual_octets}
+Post   MessageAccepted{queue_id, reverse_path, recipients[], content_ref,
+                      actual_octets, received_at}
        OR  MessageRejected{reply_code, reason}
 ```
 **One command, one event.** v0.1 emitted three event types plus a per-recipient fan-out — the
@@ -204,7 +208,7 @@ Structurally the **"right chair"** — one read model, many events. Expected; wo
 
 | Event | Fields |
 |---|---|
-| `ConnectionAccepted` | `peer_address`, `local_address`, `occurred_at` |
+| `ConnectionAccepted` | `peer_address`, `local_address` ⚠️ |
 | `ClientIdentified` | `claimed_domain`, `protocol` (always `SMTP`) |
 | `SessionReset` | — |
 | `SessionClosed` | `cause` (quit \| timeout \| abort \| shutdown) |
@@ -212,11 +216,57 @@ Structurally the **"right chair"** — one read model, many events. Expected; wo
 | `RecipientAccepted` | `forward_path`, `is_local` |
 | `RecipientRejected` | `forward_path`, `reply_code`, `reason` |
 | `DataPhaseEntered` 🔴 | — |
-| `MessageAccepted` | `queue_id`, `reverse_path`, `recipients[]`, `content_ref`, `actual_octets` |
+| `MessageAccepted` | `queue_id`, `reverse_path`, `recipients[]`, `content_ref`, `actual_octets`, `received_at` |
 | `MessageRejected` | `reply_code`, `reason` |
 | `TransactionAborted` | `cause` (rset \| quit \| disconnect) |
 
 Message bodies stay out of the log behind `content_ref` — the book's *forgettable payload*.
+
+### Metadata
+
+Every event carries ambient metadata, **never repeated in the payload**. Dilger: *"The event
+payload holds the business-relevant information, while the metadata contains context-specific
+details that support the event."*
+
+| Metadata | SMTP meaning |
+|---|---|
+| `event_id` | — |
+| `session_id` | the connection |
+| `correlation_id` | ties every event in one session |
+| `causation_id` | the verb that produced this event |
+
+SMTP already has this concept under another name: `Received:`'s **`ID` clause** is a trace
+identifier, and `queue_id` is what we put in it. These are one mechanism, not two — do not invent
+a second correlation scheme alongside the RFC's.
+
+⚠️ Naming caution: Dilger's prose has correlation propagating across steps and causation
+identifying the current step, but Axon's Message Origin Provider uses "Correlation ID" for the
+origin message and "Trace ID" for the propagated one. Pick names deliberately.
+
+### Why `received_at` is payload, not metadata
+
+Timestamp is absent from Dilger's metadata list, implying the event store supplies it. That is
+wrong for this field, for one reason:
+
+> **The `Received:` timestamp must survive replay unchanged.**
+
+RFC 5321 §4.4 requires the date-time as emitted output, and the header is a permanent trace record
+on the message. If the timestamp came from store-append time, rebuilding the store would produce
+a different `Received:` header. It is business-relevant output, which by Dilger's own test makes
+it payload.
+
+`ConnectionAccepted.occurred_at` is removed by the same reasoning inverted — nothing consumes it,
+and ambient store time covers the diagnostic need.
+
+### ⚠️ `local_address` is an orphan
+
+Found by walking the path with data. It has an origin and **no destination**: `Received:`'s `BY`
+clause is `derived:` from configuration, so nothing reads it.
+
+Either give it a consumer or delete it. The defensible consumer: on a multi-homed server listening
+on several addresses with different hostnames, `BY` depends on *which* address was connected to —
+in which case `BY` sources from `local_address`, not config, and the field earns its place. That
+case is not yet decided, so the field stays flagged rather than removed.
 
 ### No `ServiceGreetingSent`
 
@@ -293,7 +343,7 @@ Bidirectional: every field needs an origin **and** a destination.
 | `WITH SMTP` | `ClientIdentified.protocol` — always `SMTP` in this scope |
 | `ID` | `MessageAccepted.queue_id` |
 | `FOR` | `RecipientAccepted.forward_path` *(only when exactly one)* |
-| timestamp | `MessageAccepted.occurred_at` |
+| timestamp | `MessageAccepted.received_at` — **payload, not metadata** (see below) |
 
 **Forward — the transcript**
 
@@ -318,6 +368,9 @@ it names a slice that must exist in an upstream model.
 
 **H4 — Stream design.** One stream per session, per transaction, or per message? The session
 outlives the transaction, which argues they are not one stream.
+
+**H6 — Is `BY` config or `local_address`?** Decides whether `local_address` is an orphan field or
+load-bearing. Turns on whether FnEmail will ever be multi-homed with per-address hostnames.
 
 **H5 — `AcceptConnection` altitude.** Domain fact or infrastructure noise? It carries
 `peer_address`, which `Received:` needs — that is the argument, not an assumption.

@@ -224,6 +224,19 @@ This is a strong argument for **data living in the step** (§3, question 1). If 
 path, an incoming log has no atoms to match against. If steps are identified nodes, the log maps
 onto a known sequence and the point of divergence is detectable mechanically.
 
+**The mechanism is already canonical.** Dilger, *Handling Metadata* (p547):
+
+> *"If a problem arises with a command, correlation and causation IDs enable us to see exactly
+> what the user did before the problem and, if necessary, replay all actions to restore the system
+> to the exact state at the time the command was issued."*
+
+So correlation/causation already give you the trail and the replay. What this extension adds is
+the **known path to diff against** — replay tells you what happened, the path catalog tells you
+what was *supposed* to happen and where the two diverge. That is the part that does not exist yet.
+
+Practical consequence: metadata design is a prerequisite alongside step contracts. A path catalog
+is only matchable against real logs if those logs carry correlation and causation IDs from day one.
+
 ## 9. (open)
 
 Space for what emerges next.
