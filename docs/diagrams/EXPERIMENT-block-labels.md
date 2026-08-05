@@ -376,15 +376,15 @@ Fill in as observed. This table is the deliverable — `README.md` gets rebuilt 
 | A1 | `<br/>` | ✅ | |
 | A2 | `<br>` unclosed | | |
 | A3 | markdown string newline | ❌ | `Parse error … Expecting 'STR', got 'MD_STR'` — markdown strings are not in the `block` grammar |
-| A4 | literal `\n` | | |
-| B1 | `**` plain string | | |
-| B2 | `**` markdown string | | predicted ❌ — same `MD_STR` cause as A3 |
-| B3 | `<b>` | | |
-| B4 | `<strong>` | | |
-| C1 | partial bold, markdown | | predicted ❌ — same `MD_STR` cause as A3 |
-| C2 | **partial bold, HTML** | | the decisive one |
-| C3 | italic + bold mixed | | predicted ❌ — same `MD_STR` cause as A3 |
-| D1 | bold + newline, markdown | | predicted ❌ — same `MD_STR` cause as A3 |
+| A4 | literal `\n` | ✅ | |
+| B1 | `**` plain string | ❌| |
+| B2 | `**` markdown string |❌| ❌ predicted ❌ — same `MD_STR` cause as A3 |
+| B3 | `<b>` |✅ | |
+| B4 | `<strong>` |✅ | |
+| C1 | partial bold, markdown | x| predicted ❌ — same `MD_STR` cause as A3 |
+| C2 | **partial bold, HTML** | y| the decisive one |
+| C3 | italic + bold mixed | x| predicted ❌ — same `MD_STR` cause as A3 |
+| D1 | bold + newline, markdown | x| predicted ❌ — same `MD_STR` cause as A3 |
 | D2 | bold + newline, HTML | | |
 | D3 | three lines | | |
 | E1 | real slice, HTML | | |
