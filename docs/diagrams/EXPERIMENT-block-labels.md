@@ -255,8 +255,8 @@ Fill in as observed. This table is the deliverable — `README.md` gets rebuilt 
 
 | Test | What it checks | Renders? | Notes |
 |---|---|---|---|
-| A0 | `block-beta` still parses | | |
-| A1 | `<br/>` | | |
+| A0 | `block-beta` still parses | y | |
+| A1 | `<br/>` | y | |
 | A2 | `<br>` | | |
 | A3 | markdown string newline | | |
 | A4 | literal `\n` | | |
