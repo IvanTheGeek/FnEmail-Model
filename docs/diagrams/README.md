@@ -119,9 +119,11 @@ Every slice in the model is one of these two. Automation and Translation are **c
 View Slice feeding a Command Slice — which is why Dymitruk specifies an automation as *two*
 Given-When-Thens rather than one.
 
-> ⚠️ **Rendering note.** Sections 1–3 use `block-beta`, which is newer than mermaid's flowchart
-> syntax. If any of them shows as raw source while section 4 renders, GitHub's mermaid build
-> predates block diagrams and these should fall back to `flowchart TD` with invisible edges.
+> ⚠️ **Syntax note.** Sections 1–3 were written using `block-beta`. As of Mermaid **11.16.1** the
+> keyword is plain **`block`** — the beta suffix is gone. These render today, so the old form is
+> still being accepted, but they should be migrated. Label formatting is being settled first in
+> [`EXPERIMENT-block-labels.md`](EXPERIMENT-block-labels.md), then this page gets rebuilt from
+> whatever wins.
 
 ---
 
