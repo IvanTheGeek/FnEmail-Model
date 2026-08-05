@@ -14,6 +14,29 @@ So these are the questions, and the only way to answer them is to render and loo
 **How to use this page:** open it on GitHub, then note which tests render as intended. Anything
 that fails will usually show as literal characters in the box, or break the whole diagram.
 
+### Findings so far
+
+**❌ Markdown strings are not supported in `block` — at all.** A3 fails with:
+
+```
+Parse error on line 3:
+... columns 1 a3["`line oneline two`"]
+---------------------^
+Expecting 'STR', got 'MD_STR'
+```
+
+That error is more useful than a plain failure. `MD_STR` is a real token, so the **lexer**
+recognises backtick markdown strings — but the `block` **grammar** only accepts `STR`. The feature
+exists in Mermaid and was never wired into block diagrams.
+
+**Consequence: every backtick test will fail the same way** — B2, C1, C3, D1 and E2 are all
+predicted ❌ without needing separate diagnosis. Worth confirming one of them, then skipping the
+rest. It also means **HTML is the only formatting route available**, which decides groups B–E in
+advance and makes group H below the open question.
+
+**✅ `block-beta` still parses** (A0), so `README.md` is not broken — it wants renaming, not
+migrating.
+
 ---
 
 ## A0 · Does the old keyword still work?
@@ -48,6 +71,9 @@ block
 ```
 
 ### A3 · Markdown string — backtick-quoted, real newlines
+
+❌ **Confirmed failure.** `Expecting 'STR', got 'MD_STR'` — see *Findings so far*. Left in place
+deliberately as the evidence; the broken render below is the point.
 
 ```mermaid
 block
@@ -249,29 +275,120 @@ block
 
 ---
 
+## H · Text justification
+
+**The open question**, now that markdown strings are ruled out and HTML is the only route.
+
+Mermaid centres label text by default. A slice label with a bold title over a field list reads far
+better left-aligned, so: can it be forced?
+
+### H1 · `text-align` via `style`
+
+Does the node style reach the text, or only the shape?
+
+```mermaid
+block
+  columns 1
+  h1["<b>MailTransactionStarted</b><br/>reverse_path<br/>received_at"]
+  style h1 fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000,text-align:left
+```
+
+### H2 · `<div align="left">`
+
+```mermaid
+block
+  columns 1
+  h2["<div align='left'><b>MailTransactionStarted</b><br/>reverse_path<br/>received_at</div>"]
+  style h2 fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
+```
+
+### H3 · `<div style="text-align:left">`
+
+```mermaid
+block
+  columns 1
+  h3["<div style='text-align:left'><b>MailTransactionStarted</b><br/>reverse_path<br/>received_at</div>"]
+  style h3 fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
+```
+
+### H4 · `text-align` via `classDef`
+
+If `style` fails, `classDef` may inject differently.
+
+```mermaid
+block
+  columns 1
+  h4["<b>MailTransactionStarted</b><br/>reverse_path<br/>received_at"]
+  classDef leftish fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000,text-align:left
+  class h4 leftish
+```
+
+### H5 · `<span>` with inline style
+
+Tests whether *any* nested HTML element survives, not just `<b>` and `<br/>`.
+
+```mermaid
+block
+  columns 1
+  h5["<span style='text-align:left;display:block'><b>MailTransactionStarted</b><br/>reverse_path</span>"]
+  style h5 fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
+```
+
+### H6 · Padding hack — `&nbsp;`
+
+Works regardless of alignment support: pad the short lines so centring lands them flush left.
+Ugly, but it always works if the entities render.
+
+```mermaid
+block
+  columns 1
+  h6["<b>MailTransactionStarted</b><br/>reverse_path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>received_at&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+  style h6 fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
+```
+
+### H7 · Leading spaces
+
+Cheapest possible attempt — does the label preserve leading whitespace?
+
+```mermaid
+block
+  columns 1
+  h7["<b>MailTransactionStarted</b><br/>    reverse_path<br/>    received_at"]
+  style h7 fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
+```
+
+---
+
 ## Results
 
 Fill in as observed. This table is the deliverable — `README.md` gets rebuilt from whatever wins.
 
 | Test | What it checks | Renders? | Notes |
-|---|---|---|---|
-| A0 | `block-beta` still parses | y | |
-| A1 | `<br/>` | y | |
-| A2 | `<br>` | | |
-| A3 | markdown string newline | | |
+|:---:|---|:---:|---|
+| A0 | `block-beta` still parses | ✅ | Old keyword still accepted — `README.md` wants renaming, not migrating |
+| A1 | `<br/>` | ✅ | |
+| A2 | `<br>` unclosed | | |
+| A3 | markdown string newline | ❌ | `Parse error … Expecting 'STR', got 'MD_STR'` — markdown strings are not in the `block` grammar |
 | A4 | literal `\n` | | |
 | B1 | `**` plain string | | |
-| B2 | `**` markdown string | | |
+| B2 | `**` markdown string | | predicted ❌ — same `MD_STR` cause as A3 |
 | B3 | `<b>` | | |
 | B4 | `<strong>` | | |
-| C1 | partial bold, markdown | | |
-| C2 | partial bold, HTML | | |
-| C3 | italic + bold mixed | | |
-| D1 | bold + newline, markdown | | |
+| C1 | partial bold, markdown | | predicted ❌ — same `MD_STR` cause as A3 |
+| C2 | **partial bold, HTML** | | the decisive one |
+| C3 | italic + bold mixed | | predicted ❌ — same `MD_STR` cause as A3 |
+| D1 | bold + newline, markdown | | predicted ❌ — same `MD_STR` cause as A3 |
 | D2 | bold + newline, HTML | | |
 | D3 | three lines | | |
 | E1 | real slice, HTML | | |
-| E2 | real slice, markdown | | |
+| E2 | real slice, markdown | | predicted ❌ — same `MD_STR` cause as A3 |
 | F1 | natural wrap | | |
 | F2 | forced width via span | | |
 | G | shapes | | |
+| H1 | `text-align` via `style` | | |
+| H2 | `<div align='left'>` | | |
+| H3 | `<div style='text-align:left'>` | | |
+| H4 | `text-align` via `classDef` | | |
+| H5 | `<span>` inline style | | tests whether nested HTML survives at all |
+| H6 | `&nbsp;` padding hack | | always works if entities render |
+| H7 | leading spaces | | |
