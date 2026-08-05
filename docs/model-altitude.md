@@ -253,7 +253,7 @@ which are independent, offered to be argued with rather than adopted:
 
 If that holds, there are **three** genuinely independent things — context, layer, concern — and
 altitude is not a dial anyone sets. It falls out of the charter. This mirrors the reduction of four
-patterns to two column types: several named things collapsing into fewer real ones.
+patterns to two slice types: several named things collapsing into fewer real ones.
 
 Re-sorting the parked extensions along those axes:
 

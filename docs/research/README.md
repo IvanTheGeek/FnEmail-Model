@@ -8,7 +8,7 @@ Primary-source research behind FnEmail's event model.
 |---|---|
 | [`METHOD-REFERENCE.md`](METHOD-REFERENCE.md) | **Start here.** The method as its authors define it, with the places the sources contradict each other named rather than smoothed over. |
 | [`../event-model.md`](../event-model.md) | The model itself — RFC 5321 inbound, HELO only, v0.3. |
-| [`../paths/`](../paths/) | Worked paths through the model, with example data. 2 walked, 11 of 12 columns covered. |
+| [`../paths/`](../paths/) | Worked paths through the model, with example data. 2 walked, 11 of 12 slices covered. |
 | [`../diagrams/`](../diagrams/) | Mermaid renderings — renders on GitHub and desktop, not in the Android app. |
 | [`../model-altitude.md`](../model-altitude.md) | Domain / product / protocol / infrastructure — the gate sequence for deciding what belongs in the model. Resolves H1. |
 | [`CORRECTIONS-v0.1.md`](CORRECTIONS-v0.1.md) | 20 corrections from the first draft. Useful as a catalogue of ways to misapply the method. |
@@ -33,9 +33,9 @@ The two commercial books are cited throughout and reproduced nowhere.
 
 ## Findings that mattered most
 
-1. **Two column types, not four patterns.** Every column either writes (command → events) or
-   reads (events → read model). Automation and Translation are compositions. This is Dymitruk's
-   own framing — *"3 moving pieces and 4 patterns based on **2 ideas**… empowering the user and
+1. **Two slice types, not four patterns.** Every slice is a **Command Slice** (one command,
+   producing events) or a **View Slice** (one read model, projecting them). Automation and
+   Translation are compositions of the two. This is Dymitruk's own framing — *"3 moving pieces and 4 patterns based on **2 ideas**… empowering the user and
    informing the user"* — and he specifies automation as two Given-When-Thens.
 
 2. **"Trigger" resolves systems with no UI.** eventmodeling.org admits *"the route of an http

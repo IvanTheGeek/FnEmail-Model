@@ -36,7 +36,7 @@ Ambient metadata on every event: `session_id`, `correlation_id` (the session),
 
 ## The walk
 
-### Step 1 · `AcceptConnection` — W
+### Step 1 · `AcceptConnection` — C
 
 ```
 Pre     none  ✓
@@ -46,7 +46,7 @@ Post    ConnectionAccepted{ peer_address: "198.51.100.25",
 ```
 The `220` is `derived:` from `ConnectionAccepted` plus config — not an event.
 
-### Step 2 · `Helo` — W
+### Step 2 · `Helo` — C
 
 ```
 Pre     ConnectionAccepted exists  ✓  (step 1)
@@ -55,15 +55,15 @@ Wire    C: HELO bar.com
 Post    ClientIdentified{ claimed_domain: "bar.com", protocol: "SMTP" }
 ```
 
-### Step 3 · `SessionState` — R
+### Step 3 · `SessionState` — V
 
 ```
 Sources ConnectionAccepted, ClientIdentified
-Wire    (none — read columns are invisible on the wire)
+Wire    (none — View Slices are invisible on the wire)
 Post    SessionState{ identified: true, transaction_open: false }
 ```
 
-### Step 4 · `MailFrom` — W
+### Step 4 · `MailFrom` — C
 
 ```
 Pre     SessionState.identified = true  ✓  (step 3)
@@ -72,7 +72,7 @@ Wire    C: MAIL FROM:<Smith@bar.com>
 Post    MailTransactionStarted{ reverse_path: "<Smith@bar.com>" }
 ```
 
-### Step 5 · `RecipientDirectory` — R  *(translation boundary)*
+### Step 5 · `RecipientDirectory` — V  *(translation boundary)*
 
 ```
 Sources translated events from the Directory context (deferred)
@@ -84,7 +84,7 @@ boundary rather than a hole. The translation slice is deferred with the Director
 boundary is typed and orthodox. `relay_permitted` removed: relay is out of scope, so it was
 constant-false.
 
-### Steps 6a–6c · `RcptTo` — W, walked three times
+### Steps 6a–6c · `RcptTo` — C, walked three times
 
 ```
 6a  Pre   MailTransactionStarted ✓ · RecipientDirectory ✓
@@ -98,12 +98,12 @@ constant-false.
 6c  Wire  C: RCPT TO:<Brown@foo.com>          S: 250 OK
     Post  RecipientAccepted{ <Brown@foo.com> }
 ```
-One column, three steps, three payloads. Dymitruk: *"a workflow step is considered to be repeated
+One slice, three steps, three payloads. Dymitruk: *"a workflow step is considered to be repeated
 on the event model if it uses the same command or view."*
 
 The rejection is **not** fatal — the session continues.
 
-### Step 7 · `TransactionState` — R
+### Step 7 · `TransactionState` — V
 
 ```
 Sources MailTransactionStarted, RecipientAccepted ×2
@@ -114,7 +114,7 @@ Post    TransactionState{ open: true,
 `RecipientRejected` is deliberately not a source — the count is of *accepted* recipients. The
 rejection reaches the operator through `SessionTranscript` instead.
 
-### Step 8 · `BeginData` — W 🔴
+### Step 8 · `BeginData` — C 🔴
 
 ```
 Pre     TransactionState.open ✓ · recipient_count >= 1 ✓ (= 2)
@@ -123,7 +123,7 @@ Wire    C: DATA
 Post    DataPhaseEntered
 ```
 
-### Step 9 · `SubmitContent` — W
+### Step 9 · `SubmitContent` — C
 
 ```
 Pre     DataPhaseEntered ✓  (step 8)
@@ -139,7 +139,7 @@ Post    MessageAccepted{ queue_id: "q7F3A21",
 ```
 The responsibility boundary. One command, one event.
 
-### Step 10 · `Quit` — W
+### Step 10 · `Quit` — C
 
 ```
 Pre     ConnectionAccepted exists  ✓
@@ -152,9 +152,9 @@ Post    SessionClosed{ cause: "quit" }
 
 ## Accounting
 
-**13 steps over 11 distinct columns.** `Reset` never fires — it needs its own path (D.2).
+**13 steps over 11 distinct slices.** `Reset` never fires — it needs its own path (D.2).
 
-| Column | Steps |
+| Slice | Steps |
 |---|---|
 | `RcptTo` | 3 |
 | all others walked | 1 each |
@@ -294,6 +294,6 @@ actor lane rather than as a single verdict is open — see `../event-model-exten
 | Path | Exercises | Source |
 |---|---|---|
 | ~~D.3 step 2 — single local recipient~~ | ✅ **walked** — [`helo-single-recipient.md`](helo-single-recipient.md) | RFC, derived |
-| **D.2 — aborted transaction** | `Reset`, the only uncovered column | RFC, derived |
+| **D.2 — aborted transaction** | `Reset`, the only uncovered slice | RFC, derived |
 | **No HELO** | `503` sequencing errors | ours |
 | **All recipients rejected** | `BeginData`'s `recipient_count >= 1` failing | ours |

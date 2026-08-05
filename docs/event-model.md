@@ -52,6 +52,7 @@ without any change to our model.
 - **H3 reframed.** An unsourced read model is the method working, not a defect: the hole becomes
   known and names a slice that must exist upstream. It is now marked as a *typed* hole so that a
   path crossing it fails loudly.
+- **Terminology.** Command Slice / View Slice replace write column / read column throughout.
 - **Metadata section added**, and two payload defects fixed — both found by walking the path with
   real data rather than by reading the model. `MessageAccepted` gained `received_at`;
   `ConnectionAccepted` lost `occurred_at`; `local_address` is flagged as an orphan (H6).
@@ -60,12 +61,15 @@ without any change to our model.
 
 ## Conventions
 
+**Slice types.** Every slice is a **Command Slice** (one command) or a **View Slice** (one read
+model). Never both — a feature needing each is two slices.
+
 Event **orange** · Command **blue** · Read Model **green** · Screen **white** · hotspot **red**.
 Command is blue and Read Model is green in every source; Event is orange here (see
 `research/UPSTREAM-DEFECTS.md` for the one file that disagrees).
 
 **Arrows are not used.** Meaning comes from lane position, left-to-right time, and which pattern a
-column matches. Legal adjacency still binds: `command → event → view → trigger/processor →
+slice matches. Legal adjacency still binds: `command → event → view → trigger/processor →
 command`; **an event may never connect directly to a command.**
 
 ---
@@ -74,7 +78,7 @@ command`; **an event may never connect directly to a command.**
 
 | Lane | Kind | Element | Role |
 |---|---|---|---|
-| **Remote client** | actor role | **command screens** — the terminal exchange | Drives every write column |
+| **Remote client** | actor role | **command screens** — the terminal exchange | Drives every Command Slice |
 | **Operator** | actor role | **view screen** — session transcript | Reads; never issues a command |
 
 **There is no automation node in this model.** An earlier draft put the remote MTA in the actor row
@@ -93,7 +97,7 @@ so human-versus-machine was never the distinguishing axis. Working a todo list i
 from Postfix or from someone typing into `telnet host 25`. SMTP is a human-typeable text protocol
 by design. An element type that flips on a property the system cannot observe is not well formed.
 
-So the remote client is an ordinary **actor role**, and roles get screens. Each write column carries
+So the remote client is an ordinary **actor role**, and roles get screens. Each Command Slice carries
 a command screen: the prior reply as displayed context, and the line the actor sends.
 
 ```
@@ -101,11 +105,11 @@ a command screen: the prior reply as displayed context, and the line the actor s
 │ 250 foo.com              │   │ 250 OK                   │
 │ > MAIL FROM:<Smith@bar…> │   │ > RCPT TO:<Jones@foo.com>│
 └──────────────────────────┘   └──────────────────────────┘
-        MailFrom column                RcptTo column
+        MailFrom slice                 RcptTo slice
 ```
 
 Cheap to draw, which matters — *"Drawing a screen must not take longer than 2 minutes."* One screen
-per column per lane, never stacked, per §3.1.
+per slice per lane, never stacked, per §3.1.
 
 ### Where the automation actually belongs
 
@@ -145,9 +149,13 @@ A domain observation about SMTP, **not** Event Modeling vocabulary.
 
 ## Slices and contracts
 
-`W` = write column (one command). `R` = read column (one read model).
+**C** = **Command Slice** (exactly one command). **V** = **View Slice** (exactly one read model).
 
-### 1 · `AcceptConnection` — W
+Slice, not column — Adam's own word. Corpus synonyms: a Command Slice is *state change* /
+*write column* / `state-change`; a View Slice is *state view* / *read model* / *query* /
+`state-view`. Quotations from the sources keep their own terms.
+
+### 1 · `AcceptConnection` — C
 
 ```
 Pre    none
@@ -162,7 +170,7 @@ say so. It *"SHOULD NOT be used for situations in which the server rejects mail 
 hosts or addresses"*, which is exactly our blocklist case. `554` remains right. See H7 for the
 case where `521` would apply.
 
-### 2 · `Helo` — W
+### 2 · `Helo` — C
 
 ```
 Pre    ConnectionAccepted exists
@@ -170,7 +178,7 @@ Post   ClientIdentified{claimed_domain, protocol:"SMTP"}
        OR  reply 501 (bad syntax) / 500 (unrecognised)
 ```
 
-### 3 · `SessionState` — R
+### 3 · `SessionState` — V
 
 ```
 Sources   ConnectionAccepted, ClientIdentified, SessionReset
@@ -179,7 +187,7 @@ Post      SessionState{identified: bool, transaction_open: bool}
 ```
 Placed here because slices 4, 6 and 8 consume it — not next to its sources.
 
-### 4 · `MailFrom` — W
+### 4 · `MailFrom` — C
 
 ```
 Pre    SessionState.identified = true
@@ -187,7 +195,7 @@ Post   MailTransactionStarted{reverse_path}
        OR  reply 503 (no HELO) / 550 (sender rejected)
 ```
 
-### 5 · `RecipientDirectory` — R  *(translation boundary — H3 resolved)*
+### 5 · `RecipientDirectory` — V  *(translation boundary — H3 resolved)*
 
 ```
 Sources   translated events from the Directory context (deferred)
@@ -205,7 +213,7 @@ the boundary is now typed and orthodox rather than unexplained.
 `relay_permitted` **removed.** Relay is out of scope, so it is constant-false — a rule, not a fact.
 Under G1 nothing varies and nothing consumes the variation.
 
-### 6 · `RcptTo` — W
+### 6 · `RcptTo` — C
 
 ```
 Pre    MailTransactionStarted exists for this session
@@ -213,12 +221,12 @@ Pre    MailTransactionStarted exists for this session
 Post   RecipientAccepted{forward_path}
        OR  RecipientRejected{forward_path, reply_code, reason}
 ```
-Walked once per recipient. The same column, not N columns.
+Walked once per recipient. The same slice, not N slices.
 
 `is_local` **removed** from `RecipientAccepted`. In this scope an accepted recipient is necessarily
 local — relay is deferred — so the field is constant-true. A constant is a rule, not a fact.
 
-### 7 · `TransactionState` — R
+### 7 · `TransactionState` — V
 
 ```
 Sources   MailTransactionStarted, RecipientAccepted, TransactionAborted
@@ -226,7 +234,7 @@ Answers   Open? Reverse path? How many recipients?
 Post      TransactionState{open: bool, reverse_path, recipient_count}
 ```
 
-### 8 · `BeginData` — W 🔴 **H1**
+### 8 · `BeginData` — C 🔴 **H1**
 
 ```
 Pre    TransactionState.open = true
@@ -237,7 +245,7 @@ Post   DataPhaseEntered
 The *command* is sound — it makes a real decision. The *event* is on trial: its only candidate
 consumer is the transcript rendering `354`.
 
-### 9 · `SubmitContent` — W
+### 9 · `SubmitContent` — C
 
 ```
 Pre    DataPhaseEntered for the current transaction
@@ -249,7 +257,7 @@ Post   MessageAccepted{queue_id, reverse_path, recipients[], content_ref,
 "left chair". Inbound scope removed the fan-out; the forward completeness pass removed
 `MessageContentReceived` as redundant.
 
-### 10 · `Reset` — W
+### 10 · `Reset` — C
 
 ```
 Pre    SessionState.identified = true
@@ -257,14 +265,14 @@ Post   TransactionAborted{cause:"rset"}
        Postcondition explicitly does NOT touch SessionState
 ```
 
-### 11 · `Quit` — W
+### 11 · `Quit` — C
 
 ```
 Pre    ConnectionAccepted exists
 Post   SessionClosed{cause}
 ```
 
-### 12 · `SessionTranscript` — R
+### 12 · `SessionTranscript` — V
 
 ```
 Sources   every event above

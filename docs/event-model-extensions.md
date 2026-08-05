@@ -66,9 +66,9 @@ The largest of the three, and the one with the clearest payoff.
 
 ### The idea
 
-- Every column/slice traversal is a **step**, and a step carries **specific sample data**.
+- Every slice traversal is a **step**, and a step carries **specific sample data**.
 - An ordered run of steps is a **path**.
-- Multiple paths exist over the same column inventory.
+- Multiple paths exist over the same slice inventory.
 - Paths compose into larger paths, and ultimately into a **trek** through the whole system.
 - Meaningful steps/paths/treks are **promoted** to become the actual tests that verify the
   system — at whatever test level each corresponds to.
@@ -84,7 +84,7 @@ alternate flows exist only as per-slice scenarios: they never compose into a nar
 nothing in the model describes *a whole session going wrong*.
 
 This keeps the single timeline and moves multiplicity into a **second dimension** — paths over
-the same columns — instead of branching the board. The property Dymitruk is protecting survives;
+the same slices — instead of branching the board. The property Dymitruk is protecting survives;
 what it costs is recovered.
 
 ### Canonical anchors
@@ -93,7 +93,7 @@ Not as far from orthodox as it looks. Three existing pieces, never joined up:
 
 - **"Step" is Dymitruk's own term.** *"Each workflow step is tied to either a command or a
   view/read-model"*, and *"a workflow step is considered to be repeated on the event model if it
-  uses the same command or view."* He already separates the column from the traversal of it.
+  uses the same command or view."* He already separates the slice from the traversal of it.
 - **Workflow Step Contracts already exist** in `eventmodeling-checking-completeness` — explicit
   pre/postconditions per step, defined so teams can work in parallel, and otherwise unused. They
   are exactly the path-joining rule: A+B composes iff A's postconditions satisfy B's
@@ -136,8 +136,8 @@ has found coupling the method says should not exist. No current artifact surface
 ### Open design questions
 
 1. **Does example data belong to the step or the path?** **Settled: the step.** A step is a
-   *(column, data)* pair — an identified atom that participates in many paths. An earlier draft
-   argued the opposite (column as slot, path supplies data) on the grounds that data-in-step
+   *(slice, data)* pair — an identified atom that participates in many paths. An earlier draft
+   argued the opposite (slice as slot, path supplies data) on the grounds that data-in-step
    "collapses back into scenarios." That was wrong: a scenario is per-slice GWT, whereas a step
    is a reusable node. Data-in-step is also the only version that supports §8, since a real event
    log needs identified atoms to match against.
@@ -162,11 +162,11 @@ has found coupling the method says should not exist. No current artifact surface
 6. **Relationship to Dilger's "chapters"** (blue arrow grouping slices) — coarse grouping that
    already exists. Is a chapter a degenerate path, or an orthogonal concept?
 7. **Naming — avoid "workflow" for the business-level grouping.** Dymitruk already uses *workflow
-   step* for one column, i.e. the technical unit. Three distinct things are in play and two are
+   step* for one slice, i.e. the technical unit. Three distinct things are in play and two are
    already named:
    | Thing | Name | Altitude |
    |---|---|---|
-   | One column | **workflow step** (Dymitruk) | technical unit |
+   | One slice | **workflow step** (Dymitruk) | technical unit |
    | A named business grouping | **chapter** (Dilger) | business narrative |
    | A concrete traversal with data | **path** (this extension) | execution instance |
    Caveat: a chapter groups *adjacent* slices. If business groupings must span non-contiguous
@@ -289,6 +289,6 @@ they belong in `research/METHOD-REFERENCE.md`, not on this list:
 - **Admin/operator actor swimlane** carrying verbose or technical output. Canonical: Dymitruk's
   step 3.1 permits swimlanes for *"different people (or sometimes systems)."*
 - **A view need not sit next to the events it projects.** Canonical: read models are placed in the
-  column of the screen or processor they serve; sources may be arbitrarily far back.
+  slice of the screen or processor they serve; sources may be arbitrarily far back.
 - **Protocol verbs as triggers without wireframes.** Canonical: eventmodeling.org's cheat sheet
   admits *"the route of an http endpoint"* as a trigger.

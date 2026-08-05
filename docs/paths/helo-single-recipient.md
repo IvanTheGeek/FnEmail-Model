@@ -35,7 +35,7 @@ walk tested* below.
 
 ## The walk
 
-### Step 1 · `AcceptConnection` — W
+### Step 1 · `AcceptConnection` — C
 
 ```
 Pre     none  ✓
@@ -44,7 +44,7 @@ Post    ConnectionAccepted{ peer_address: "198.51.100.40",
                             local_address: "192.0.2.30:25" }
 ```
 
-### Step 2 · `Helo` — W
+### Step 2 · `Helo` — C
 
 ```
 Pre     ConnectionAccepted exists  ✓
@@ -53,14 +53,14 @@ Wire    C: HELO foo.com
 Post    ClientIdentified{ claimed_domain: "foo.com", protocol: "SMTP" }
 ```
 
-### Step 3 · `SessionState` — R
+### Step 3 · `SessionState` — V
 
 ```
 Sources ConnectionAccepted, ClientIdentified
 Post    SessionState{ identified: true, transaction_open: false }
 ```
 
-### Step 4 · `MailFrom` — W
+### Step 4 · `MailFrom` — C
 
 ```
 Pre     SessionState.identified = true  ✓
@@ -69,14 +69,14 @@ Wire    C: MAIL FROM:<JQP@bar.com>
 Post    MailTransactionStarted{ reverse_path: "<JQP@bar.com>" }
 ```
 
-### Step 5 · `RecipientDirectory` — R  *(translation boundary)*
+### Step 5 · `RecipientDirectory` — V  *(translation boundary)*
 
 ```
 Sources translated events from the Directory context (deferred)
 Post    RecipientDirectory{ is_local: true }
 ```
 
-### Step 6 · `RcptTo` — W  *(once — the whole point of this path)*
+### Step 6 · `RcptTo` — C  *(once — the whole point of this path)*
 
 ```
 Pre     MailTransactionStarted ✓ · RecipientDirectory ✓
@@ -85,7 +85,7 @@ Wire    C: RCPT TO:<Jones@XYZ.COM>
 Post    RecipientAccepted{ forward_path: "<Jones@XYZ.COM>" }
 ```
 
-### Step 7 · `TransactionState` — R
+### Step 7 · `TransactionState` — V
 
 ```
 Sources MailTransactionStarted, RecipientAccepted
@@ -94,7 +94,7 @@ Post    TransactionState{ open: true,
                           recipient_count: 1 }
 ```
 
-### Step 8 · `BeginData` — W 🔴 H1
+### Step 8 · `BeginData` — C 🔴 H1
 
 ```
 Pre     TransactionState.open ✓ · recipient_count >= 1 ✓ (= 1)
@@ -103,7 +103,7 @@ Wire    C: DATA
 Post    DataPhaseEntered
 ```
 
-### Step 9 · `SubmitContent` — W
+### Step 9 · `SubmitContent` — C
 
 ```
 Pre     DataPhaseEntered ✓
@@ -127,7 +127,7 @@ Post    MessageAccepted{ queue_id: "x91B4C7",
 **The content already carries a `Received:` header** from the previous hop. Ours is prepended at
 delivery, not stored on the event — the stored content is what arrived.
 
-### Step 10 · `Quit` — W
+### Step 10 · `Quit` — C
 
 ```
 Pre     ConnectionAccepted exists  ✓
@@ -165,16 +165,16 @@ Every reply is 2xx or 3xx. No error branch is taken anywhere.
 
 ## Accounting
 
-**11 steps over 11 distinct columns** — one step per column, no repeats.
+**11 steps over 11 distinct slices** — one step per slice, no repeats.
 
 | | This path | Path 1 | Combined |
 |---|---|---|---|
 | Steps | 11 | 13 | — |
 | `RcptTo` traversals | 1 | 3 | — |
-| Columns touched | 11 of 12 | 11 of 12 | **11 of 12** |
+| Slices touched | 11 of 12 | 11 of 12 | **11 of 12** |
 | `Reset` | ✗ | ✗ | **still uncovered** |
 
-Two paths, and `Reset` remains the only untouched column. It needs D.2.
+Two paths, and `Reset` remains the only untouched slice. It needs D.2.
 
 ---
 
@@ -251,6 +251,6 @@ wave through.
 
 | Path | Exercises | Source |
 |---|---|---|
-| **D.2 — aborted transaction** | `Reset`, the last uncovered column | RFC, derived |
+| **D.2 — aborted transaction** | `Reset`, the last uncovered slice | RFC, derived |
 | **No HELO** | `503` sequencing errors | ours |
 | **All recipients rejected** | `BeginData`'s `recipient_count >= 1` failing | ours |

@@ -195,6 +195,11 @@ The strongest procedural rule in the kit:
 
 ## Column types
 
+> **Naming note.** This section uses the corpus's own vocabulary. FnEmail's documents call these
+> **Command Slice** and **View Slice** — see `../event-model.md`. The mapping is one-to-one:
+> write column = Command Slice, read column = View Slice. Corpus terms are kept here so quotations
+> and cross-references to the sources stay checkable.
+
 The four patterns reduce to **two** column shapes:
 
 ```
