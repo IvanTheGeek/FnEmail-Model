@@ -234,6 +234,83 @@ Re-sorting the parked extensions along those axes:
 
 Held loosely. The terms are still being worked out.
 
+### 2.0c Testing the vocabulary — two results
+
+#### Result 1: "domain" is Dilger's word, not Dymitruk's
+
+Term counts across the archived corpus:
+
+| Source | business | domain | behavior | "business behavior" |
+|---|---|---|---|---|
+| **Dymitruk, canonical article** | 3 | **0** | **0** | 0 |
+| Dilger, `agent-modeling-kit` skills | 93 | 148 | 7 | 1 |
+| Dilger, *Understanding Eventsourcing* | 209 | 65 | 34 | 2 |
+
+Zero occurrences of "domain" in Dymitruk's foundational article. His three "business" hits are
+incidental (*"a timeline of the year in that business"*); none is definitional. The single
+"behaviour" is a reference to **Behaviour Driven Development**, not his own usage. "Business
+behavior" appears three times in the entire corpus and is not a term of art anywhere.
+
+The domain/business vocabulary is **Dilger's**, brought from DDD.
+
+⚠️ **Scope of this claim.** Only Dymitruk's *written* work is available — the podcast repo carries
+no transcripts and video hosts are blocked by the egress policy. This is "absent from his canonical
+written work", **not** "absent from his vocabulary". He may use these terms freely in talks.
+
+**What he uses instead:** *information system*, *the story*, *workflow step*, *user*, and
+*"empowering the user and informing the user."* His frame is **information and users**, not
+business and domain.
+
+This may be why Event Modeling fits a protocol server at all. A method organised around a business
+domain would make SMTP an awkward guest. A method organised around how information changes over
+time from a user's perspective does not care that the user is an MTA.
+
+#### Result 2: layer and context do not separate as peer axes
+
+The proposed test was **directional dependency** — a layer relationship means one model's events
+feed another's, whereas two contexts merely coexist. It fails:
+
+| Pair | Directional? | Intuition |
+|---|---|---|
+| FnEmail protocol -> FnEmail domain | yes | layers |
+| FnEmail -> an e-commerce shop that sends mail | **also yes** | separate contexts |
+
+The shop depends on an MTA to send. Same directionality, opposite intuition. Directionality is not
+the distinguishing property.
+
+**What distinguishes them is charter and ownership.** The shop and FnEmail have different charters
+and different owners. The protocol/domain split has one charter and one owner.
+
+So **layer is not a peer of context — it is a subdivision within one**:
+
+> Subdivide within a context and you have **layers**. Subdivide until the pieces have separate
+> charters and owners and you have separate **contexts**.
+
+#### Revised axes
+
+Two, not three:
+
+| Axis | Definition |
+|---|---|
+| **Context** | What the model is a model of. One charter, one owner. Internally layerable. |
+| **Concern** | Cross-cutting aspect — security, GDPR, operations, metadata. Orthogonal, because the same concern applies across contexts. |
+
+Everything else is derived: *altitude / level / detail / granularity* fall out of naming the
+context (§1.1); *tier* is per-fact bookkeeping (§2.3); *layer* is context, subdivided.
+
+#### This unifies an existing mechanism
+
+Conway's Law swimlanes are the layering mechanism, and they **become** contexts when ownership
+separates far enough. Dilger's internal-vs-external distinction (Ch. 5) is the same boundary seen
+from the data side — external data is another context's data.
+
+> **swimlane -> layer -> context** is one continuum of separation, not three concepts.
+
+That also predicts where the boundary sits in practice: the point at which a swimlane acquires its
+own charter is the point at which it should become its own model.
+
+
+
 ### 2.1 Rule zero: write the charter first
 
 **Every model states, in one sentence, what it is a model of.** Altitude is not a property of a
