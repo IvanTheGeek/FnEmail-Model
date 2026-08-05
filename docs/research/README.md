@@ -12,6 +12,7 @@ Primary-source research behind FnEmail's event model.
 | [`BIBLIOGRAPHY.md`](BIBLIOGRAPHY.md) | 152 sources across both authors — articles, talks, podcasts, repos, tools. |
 | [`METHOD-REFERENCE-DETAIL.md`](METHOD-REFERENCE-DETAIL.md) | Long-form companion. Two known defects, flagged in its header. |
 | [`UPSTREAM-DEFECTS.md`](UPSTREAM-DEFECTS.md) | Confirmed defects in third-party material, with exact line numbers, for reporting upstream. |
+| [`PR-HANDOFF-eventmodelers-kit.md`](PR-HANDOFF-eventmodelers-kit.md) | ⏳ **Pending action.** Self-contained runbook for a two-line upstream fix — patch, commands, and PR text. Open this at a laptop. |
 | [`ACCESS-NOTES.md`](ACCESS-NOTES.md) | Why this is partly an index rather than a mirror, and how to lift the limit. |
 | [`archive/`](archive/) | Mirrored primary sources. **Read [`archive/NOTICE.md`](archive/NOTICE.md) before redistributing anything.** |
 
