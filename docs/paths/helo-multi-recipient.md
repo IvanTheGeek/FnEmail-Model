@@ -223,12 +223,16 @@ Corrected after checking the RFC:
 | **D.3 step 2** *Relayed Mail — relay to destination* | **1** | none | **yes** (local) |
 | D.4 *Verifying and Sending* | 1 | none | yes, but uses `VRFY` |
 
-So a clean single-recipient happy path does exist. **D.3 step 2 is the best inbound one** — the
-destination host receiving mail for a local mailbox, one `RCPT TO`, no errors. It should be the
-golden path; D.1 is better understood as the *multi-recipient with rejection* case.
+So a clean single-recipient happy path does exist. **D.3 step 2 is the cleanest inbound one** —
+the destination host receiving mail for a local mailbox, one `RCPT TO`, no errors. D.1 is better
+understood as the *multi-recipient with rejection* case.
 
-That weakens, but does not remove, the complication for the promotion rule: the scenario the RFC
-labels "typical" is not the clean one.
+⚠️ An earlier draft called D.3 step 2 "the true golden path." That was an overclaim — see
+*Happy is not golden* below. Being clean does not make a path golden; golden is assigned, not
+observed.
+
+What survives for the promotion rule: the scenario the RFC labels "typical" is not the clean one,
+so a designation scheme cannot simply take the source's word for which path is canonical.
 
 **`FOR` was omitted, correctly, and only by accident of this data.** Two recipients means the
 single-recipient branch is never exercised here. One golden path is not coverage.
@@ -256,11 +260,39 @@ Minimal — no address literal, no `with`, no `id`, no `for`. Our completeness t
 fuller header from §4.4's grammar. Both are legal; the extra clauses are optional. Worth deciding
 deliberately how much we emit rather than inheriting the maximal form by default.
 
+## Happy is not golden
+
+Two different things, and this document previously ran them together.
+
+| | Meaning | Kind |
+|---|---|---|
+| **Happy path** | reaches its intended successful outcome | **descriptive** — a property of the path; many can qualify |
+| **Golden path** | the *designated* canonical one: coverage baseline, viewer default, what documentation leads with | **a designation** — assigned, with consequences |
+
+Being clean does not make a path golden. **No golden path is designated yet**, deliberately: if
+golden is the coverage baseline, choosing it determines what counts as an "edge", and choosing
+early mislabels every edge that follows.
+
+### And "happy" needs an actor
+
+This walk is not unambiguously happy either:
+
+| Actor | Outcome |
+|---|---|
+| The server | **complete success** — it did exactly what it should |
+| `Smith@bar.com` (sender) | **partial** — two of three recipients |
+| `Jones`, `Brown` | success |
+| `Green` | failure |
+
+Outcome is relative to an actor, the same way screens are. The honest label for this path is
+**happy for the server, partial for the sender**. Whether a path's outcome should be recorded per
+actor lane rather than as a single verdict is open — see `../event-model-extensions.md` §3.
+
 ## Next paths
 
 | Path | Exercises | Source |
 |---|---|---|
-| **D.3 step 2 — single local recipient** | the `FOR` clause branch; the true golden path | RFC, derived |
+| **D.3 step 2 — single local recipient** | the `FOR` clause branch; a candidate for golden | RFC, derived |
 | **D.2 — aborted transaction** | `Reset`, the only uncovered column | RFC, derived |
 | **No HELO** | `503` sequencing errors | ours |
 | **All recipients rejected** | `BeginData`'s `recipient_count >= 1` failing | ours |

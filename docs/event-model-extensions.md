@@ -147,6 +147,14 @@ has found coupling the method says should not exist. No current artifact surface
    actually exist first. Nothing in `event-model.md` v0.2 has them yet.
 3. **What bounds the trek space?** Free composition explodes combinatorially. "Meaningful" needs
    a promotion criterion — coverage-driven, risk-driven, or explicit curation.
+   **Terminology, settled:** *happy* is descriptive (the path reaches its intended successful
+   outcome; many paths qualify); *golden* is a **designation** (the coverage baseline, the viewer
+   default, what documentation leads with). Being clean does not make a path golden. So the
+   question is not "find the golden path" but "**decide which path to designate golden, and by what
+   criterion**" — a product decision, not something discoverable in the model.
+   **Open:** outcome appears to be relative to an actor. In the first worked path the session is a
+   complete success for the server, partial for the sender, and a failure for one recipient. Should
+   a path carry an outcome per actor lane rather than a single verdict?
 4. **Test-level mapping.** Step → slice test, path → integration, trek → acceptance is the
    intuitive reading. Stating it determines whether promotion is mechanical or a judgement call.
 5. **On the board or beside it?** Drawing paths on the timeline risks re-creating the branching
