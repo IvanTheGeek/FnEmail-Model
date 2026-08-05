@@ -184,6 +184,38 @@ are a way to *simulate the separation that is missing*. A rule committed to whil
 binds the other hat later. That is precisely why writing them down beats holding them in mind, and
 why §2.2's gates are phrased as questions with answers rather than as judgement calls.
 
+#### Role collapse is a phase, not a property
+
+It ends with adoption. Once others use FnEmail, their requests, feedback and bug reports supply
+outside analysis, and the roles separate again without anyone being hired.
+
+That makes the written gates **scaffolding for a phase** rather than permanent infrastructure —
+but it does not make them temporary, because adopter feedback is a *different* oracle from a
+workshop expert in three ways:
+
+| | Workshop expert | Adopter feedback |
+|---|---|---|
+| **When** | before building | after building |
+| **Selection** | whoever is in the room | only those who adopted *and* hit a problem — the "why I didn't adopt" signal never arrives |
+| **What they see** | the model | the software |
+
+The third is the sharp one. A user can report that `550` fired when it should not have. A user
+cannot report that `DataPhaseEntered` is an event that should not exist, because they will never
+see the model.
+
+**Two things convert product feedback into model-level signal, and both are already planned:**
+
+1. **`event-model-extensions.md` §8 — paths as a diagnostic artifact.** If a support case arrives
+   as an event log and a catalog of known paths exists to diff it against, a bug report becomes
+   *"here is a walk through your model that you did not predict."* That is the bridge from
+   after-the-fact feedback to design-time critique.
+2. **Publishing the model.** Model-level feedback is only possible if the model is readable by
+   someone who is not its author. The hotspots are already phrased as questions to a future reader
+   — H1, H2, H6 and H7 are open invitations. An adopter *can* be puzzled by H1, but only if H1 is
+   somewhere they can find it.
+
+So the gates matter most now, and the hotspots matter most later.
+
 #### The RFC is a constraint oracle, not a product expert
 
 A second correction from the same conversation, and it resolves a pattern already visible in the
