@@ -5,6 +5,7 @@ Scope: **inbound SMTP, `HELO` only.** No ESMTP, no relay, no outbound.
 
 Method reference: `research/METHOD-REFERENCE.md`. Corrections from v0.1: `research/CORRECTIONS-v0.1.md`.
 Altitude rules — what belongs in this model at all: `model-altitude.md`.
+Diagrams (mermaid, renders on GitHub): `diagrams/`.
 Extensions are parked in `event-model-extensions.md` and **not** applied here — this document is
 orthodox Dymitruk/Dilger by intent, so extensions can be measured against it.
 
