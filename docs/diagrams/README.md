@@ -1,105 +1,133 @@
 # Diagrams — FnEmail inbound event model
 
-Mermaid renderings of `../event-model.md` v0.3. GitHub renders these inline; the Android app
-shows the source, so read this page on GitHub or desktop.
+Mermaid renderings of `../event-model.md` v0.3. GitHub renders these inline; the Android app shows
+the source, so read this page on GitHub or desktop.
 
 **Colours** — Event **orange** · Command **blue** · Read Model **green** · Screen **white** ·
-hotspot **red**. See `../research/UPSTREAM-DEFECTS.md` for the one upstream file that disagrees.
+external **yellow** · hotspot **red**.
 
-**On the arrows.** Mermaid needs edges to stack nodes; they are a rendering necessity, not Event
-Modeling semantics. Meaning is carried by lane position and left-to-right time.
+**Terminology.** *Slice*, not column — Adam's own word. The two slice types are named here as this
+project prefers them, with the corpus synonyms in parentheses:
+
+| This project | Corpus synonyms |
+|---|---|
+| **Command Slice** | state change · write column · `state-change` |
+| **View Slice** | state view · read model · query · `state-view` |
 
 ---
 
-## 1. A write column (state change)
+## 1. Command Slice
 
-One command, one event. This is slice 4, `MailFrom`.
+*(aka state change, write column)*
+
+Three rows, one slice: **actor → command → event**. This is slice 4, `MailFrom`.
 
 ```mermaid
-flowchart TD
-  S["Screen — remote client<br/>250 foo.com<br/>MAIL FROM Smith at bar.com"]
-  C["MailFrom"]
-  E["MailTransactionStarted<br/>reverse_path"]
-  S --> C
-  C --> E
+block-beta
+  columns 1
+  actor["Remote client · MAIL FROM Smith at bar.com"]
+  cmd["MailFrom"]
+  evt["MailTransactionStarted"]
 
-  classDef screen fill:#ffffff,stroke:#444,stroke-width:2px,color:#000
-  classDef command fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000
-  classDef event fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
-  class S screen
-  class C command
-  class E event
+  style actor fill:#ffffff,stroke:#444,stroke-width:2px,color:#000
+  style cmd fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000
+  style evt fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
+```
+
+### One event per command
+
+**The target is exactly one.** More than one is legal, but it usually signals that several
+responsibilities have been folded into a single command, and it should be investigated rather than
+accepted.
+
+This is a stronger rule than the corpus states. Dilger names the shape as an anti-pattern —
+*"left chair"*, one command to many events — but calls the four anti-patterns *"not red flags, but
+something to keep an eye on."* Here it is a design target with a stated reason: **multiple events
+usually means multiple responsibility.**
+
+It already earned its keep. In v0.1 `SubmitContent` emitted three event types plus a per-recipient
+fan-out. Scoping to inbound removed the fan-out and the completeness check removed a redundant
+event, leaving one command, one event — and the model got simpler, not poorer.
+
+```mermaid
+block-beta
+  columns 2
+  ok["✅ one command · one event"] bad["⚠️ one command · many events"]
+  c1["Command"] c2["Command"]
+  e1["Event"] e2["Event · Event · Event"]
+
+  style ok fill:#eef7ee,stroke:#4a4,stroke-width:1px,color:#000
+  style bad fill:#fdf1e7,stroke:#c85,stroke-width:1px,color:#000
+  style c1 fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000
+  style c2 fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000
+  style e1 fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
+  style e2 fill:#f5a04f,stroke:#c85,stroke-width:2px,stroke-dasharray:5 3,color:#000
 ```
 
 ---
 
-## 2. A read column (state view)
+## 2. View Slice
 
-Events in, projection out, consumed by whatever sits in that column. This is slice 3,
-`SessionState` — note its sources are from **earlier** columns, because a read model is placed at
-its consumer, not at its source.
+*(aka state view, read model, query)*
+
+Rows run the other way: **events → read model → actor**. This is slice 3, `SessionState`.
 
 ```mermaid
-flowchart TD
-  E1["ConnectionAccepted"]
-  E2["ClientIdentified"]
-  E3["SessionReset"]
-  R["SessionState<br/>identified, transaction_open"]
-  U["consumed by<br/>MailFrom, RcptTo, BeginData"]
-  E1 --> R
-  E2 --> R
-  E3 --> R
-  R --> U
+block-beta
+  columns 1
+  evts["ConnectionAccepted · ClientIdentified · SessionReset"]
+  rm["SessionState · identified, transaction_open"]
+  consumer["consumed by MailFrom, RcptTo, BeginData"]
 
-  classDef event fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
-  classDef readmodel fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000
-  classDef plain fill:#f0f0f0,stroke:#999,stroke-dasharray:4 3,color:#000
-  class E1,E2,E3 event
-  class R readmodel
-  class U plain
+  style evts fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
+  style rm fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000
+  style consumer fill:#ffffff,stroke:#444,stroke-width:2px,color:#000
 ```
+
+A View Slice may draw on events from **anywhere earlier** on the timeline. It is placed at its
+**consumer**, not next to its sources — which is why `SessionState` sits at slice 3 while its
+sources are slices 1 and 2.
+
+Many events feeding one read model is the *"right chair"* shape. Expected for a view that
+accumulates; worth watching if it grows without a matching growth in the question it answers.
 
 ---
 
-## 3. The two column types
+## 3. Both slice types as a grid
 
-The four patterns reduce to these. Automation and Translation are compositions of both.
+The two shapes side by side. Read each slice top to bottom; read the board left to right.
 
 ```mermaid
-flowchart LR
-  subgraph W["WRITE column"]
-    direction TB
-    ws["Trigger / Processor"]
-    wc["COMMAND"]
-    we["EVENT(s)"]
-    ws --> wc
-    wc --> we
-  end
+block-beta
+  columns 2
+  h1["COMMAND SLICE"] h2["VIEW SLICE"]
+  a1["Actor / Processor"] a2["Event(s)"]
+  b1["Command"] b2["Read Model"]
+  c1["Event"] c2["Actor / Processor"]
 
-  subgraph R["READ column"]
-    direction TB
-    re["EVENT(s)"]
-    rr["READ MODEL"]
-    rs["Trigger / Processor"]
-    re --> rr
-    rr --> rs
-  end
-
-  classDef screen fill:#ffffff,stroke:#444,stroke-width:2px,color:#000
-  classDef command fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000
-  classDef event fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
-  classDef readmodel fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000
-  class ws,rs screen
-  class wc command
-  class we,re event
-  class rr readmodel
+  style h1 fill:#e8e8e8,stroke:#444,stroke-width:1px,color:#000
+  style h2 fill:#e8e8e8,stroke:#444,stroke-width:1px,color:#000
+  style a1 fill:#ffffff,stroke:#444,stroke-width:2px,color:#000
+  style b1 fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000
+  style c1 fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
+  style a2 fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
+  style b2 fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000
+  style c2 fill:#ffffff,stroke:#444,stroke-width:2px,color:#000
 ```
+
+Every slice in the model is one of these two. Automation and Translation are **compositions** — a
+View Slice feeding a Command Slice — which is why Dymitruk specifies an automation as *two*
+Given-When-Thens rather than one.
+
+> ⚠️ **Rendering note.** Sections 1–3 use `block-beta`, which is newer than mermaid's flowchart
+> syntax. If any of them shows as raw source while section 4 renders, GitHub's mermaid build
+> predates block diagrams and these should fall back to `flowchart TD` with invisible edges.
 
 ---
 
 ## 4. Inbound timeline — session establishment
 
-Slices 1–3.
+Slices 1–3. Flowchart syntax, as a rendering control against §3.
 
 ```mermaid
 flowchart LR
@@ -144,7 +172,7 @@ flowchart LR
 ## 5. Inbound timeline — the transaction
 
 Slices 4–7. `RecipientDirectory` is the Translation boundary onto the Directory context (H3
-resolved), so its source is outside this model.
+resolved), so its source is outside this model — shown **yellow**.
 
 ```mermaid
 flowchart LR
@@ -196,15 +224,15 @@ flowchart LR
   class r5,r7 readmodel
 ```
 
-Note `x5` is **yellow** — an external event, which is what distinguishes Translation from
-Automation.
+`RcptTo` shows two outcomes, which is **not** the one-event-per-command warning from §1. They are
+alternatives — accepted **or** rejected, never both — not a fan-out.
 
 ---
 
 ## 6. Inbound timeline — content and close
 
-Slices 8–12. `DataPhaseEntered` is red: **H1**, an event on trial because its only candidate
-consumer is the transcript.
+Slices 8–12. `DataPhaseEntered` is red: **H1**, on trial because its only candidate consumer is
+the transcript.
 
 ```mermaid
 flowchart LR
@@ -226,7 +254,7 @@ flowchart LR
     k9 --> e9
   end
 
-  subgraph c1112["10–11 · Reset / Quit"]
+  subgraph c1011["10–11 · Reset / Quit"]
     direction TB
     k11["Reset / Quit"]
     e11["TransactionAborted<br/>SessionClosed"]
@@ -254,20 +282,17 @@ flowchart LR
   class r12 readmodel
 ```
 
-`SessionTranscript` is the **"right chair"** shape — one read model fed by many events. Expected
-here; worth watching if it grows.
-
 ---
 
-## 7. The first worked path
+## 7. Worked paths as sequences
 
-`../paths/helo-multi-recipient.md`, as a sequence. 13 steps over 11 columns; `RcptTo` walked
-three times.
+**Path 1** — [`../paths/helo-multi-recipient.md`](../paths/helo-multi-recipient.md). Three
+recipients, one rejected mid-flow. 13 steps over 11 slices.
 
 ```mermaid
 sequenceDiagram
-    participant C as Remote client (bar.com)
-    participant S as FnEmail (foo.com)
+    participant C as bar.com
+    participant S as foo.com (us)
     S->>C: 220 foo.com Service Ready
     C->>S: HELO bar.com
     S->>C: 250 foo.com
@@ -287,5 +312,28 @@ sequenceDiagram
     S->>C: 221 closing channel
 ```
 
-Outcome is **relative to the actor**: complete success for the server, partial for the sender,
-failure for `Green`. See the path document for why that matters to the golden-path question.
+**Path 2** — [`../paths/helo-single-recipient.md`](../paths/helo-single-recipient.md). One
+recipient, no errors. 11 steps over 11 slices.
+
+```mermaid
+sequenceDiagram
+    participant C as foo.com (relay)
+    participant S as xyz.com (us)
+    S->>C: 220 xyz.com Service Ready
+    C->>S: HELO foo.com
+    S->>C: 250 xyz.com is on the air
+    C->>S: MAIL FROM JQP at bar.com
+    S->>C: 250 OK
+    C->>S: RCPT TO Jones at XYZ.COM
+    S->>C: 250 OK
+    C->>S: DATA
+    S->>C: 354 Start mail input
+    C->>S: headers, body, then dot
+    S->>C: 250 OK queued as x91B4C7
+    C->>S: QUIT
+    S->>C: 221 closing channel
+```
+
+Outcome is relative to the actor. Path 1 is a complete success for the server, **partial** for the
+sender, and a failure for `Green`. Path 2 succeeds for everyone. `Reset` remains the only slice no
+path has touched.
