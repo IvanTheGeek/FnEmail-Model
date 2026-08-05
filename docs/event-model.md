@@ -126,7 +126,7 @@ model.
 |---|---|
 | **Edge** | `ConnectionAccepted`, `ClientIdentified`, `SessionReset`, `SessionClosed` |
 | **Transaction** | `MailTransactionStarted`, `RecipientAccepted`, `RecipientRejected`, `DataPhaseEntered`, `MessageAccepted`, `MessageRejected`, `TransactionAborted` |
-| **Directory** 🔴 | Not owned here — see H3 |
+| **Directory** | ✅ **A separate context**, not a swimlane here — see *H3 resolved* |
 
 ---
 
@@ -186,26 +186,36 @@ Post   MailTransactionStarted{reverse_path}
        OR  reply 503 (no HELO) / 550 (sender rejected)
 ```
 
-### 5 · `RecipientDirectory` — R 🔴 **typed hole, H3**
+### 5 · `RecipientDirectory` — R  *(translation boundary — H3 resolved)*
 
 ```
-Sources   ⚠️ NONE IN THIS MODEL
-Answers   Is this address local? May this client relay?
-Post      RecipientDirectory{is_local: bool, relay_permitted: bool}
+Sources   translated events from the Directory context (deferred)
+Answers   Is this address a local mailbox?
+Post      RecipientDirectory{is_local: bool}
 ```
-Deliberately left unsourced and typed. Mailbox existence comes from provisioning; relay
-authorisation from operator configuration. Neither is an event here. **This is the method
-working** — the hole names a slice that must exist upstream.
+**No longer a hole.** H3 asked whether Directory has its own charter. It does — see *H3 resolved*
+below — so this is an ordinary **Translation** boundary: the Directory context's events arrive as
+external (yellow), are translated into our vocabulary, and this read model projects from the
+translated events rather than from foreign ones directly.
+
+The translation slice itself is deferred with the Directory model. What is *not* deferred is that
+the boundary is now typed and orthodox rather than unexplained.
+
+`relay_permitted` **removed.** Relay is out of scope, so it is constant-false — a rule, not a fact.
+Under G1 nothing varies and nothing consumes the variation.
 
 ### 6 · `RcptTo` — W
 
 ```
 Pre    MailTransactionStarted exists for this session
        RecipientDirectory available
-Post   RecipientAccepted{forward_path, is_local}
+Post   RecipientAccepted{forward_path}
        OR  RecipientRejected{forward_path, reply_code, reason}
 ```
 Walked once per recipient. The same column, not N columns.
+
+`is_local` **removed** from `RecipientAccepted`. In this scope an accepted recipient is necessarily
+local — relay is deferred — so the field is constant-true. A constant is a rule, not a fact.
 
 ### 7 · `TransactionState` — R
 
@@ -273,7 +283,7 @@ Structurally the **"right chair"** — one read model, many events. Expected; wo
 | `SessionReset` | — |
 | `SessionClosed` | `cause` (quit \| timeout \| abort \| shutdown) |
 | `MailTransactionStarted` | `reverse_path` |
-| `RecipientAccepted` | `forward_path`, `is_local` |
+| `RecipientAccepted` | `forward_path` |
 | `RecipientRejected` | `forward_path`, `reply_code`, `reason` |
 | `DataPhaseEntered` 🔴 | — |
 | `MessageAccepted` | `queue_id`, `reverse_path`, `recipients[]`, `content_ref`, `actual_octets`, `received_at` |
@@ -424,8 +434,7 @@ resolves this through the destination gate rather than by argument about protoco
 **H2 — Are protocol errors events?** `RecipientRejected` is; a `503` is not. The line drawn is
 "policy decisions are facts, protocol slips are not" — defensible, unverified.
 
-**H3 — `RecipientDirectory` is unsourced, deliberately.** Not a defect. The hole is now typed, and
-it names a slice that must exist in an upstream model.
+**H3 — RESOLVED. Directory is a separate context.** See below.
 
 **H4 — Stream design.** One stream per session, per transaction, or per message? The session
 outlives the transaction, which argues they are not one stream.
@@ -444,6 +453,42 @@ connection. A normative frame with an operator choice inside it.
 
 **H5 — `AcceptConnection` altitude.** Domain fact or infrastructure noise? It carries
 `peer_address`, which `Received:` needs — that is the argument, not an assumption.
+
+---
+
+## H3 resolved — Directory is a separate context
+
+The question was whether `RecipientDirectory` names a *layer* inside FnEmail's charter or a
+separate context. Applying the criterion in `model-altitude.md` §2.0c — subdivide within a context
+and you have layers; subdivide until the pieces have separate charters and owners and you have
+separate contexts:
+
+| | Inbound SMTP | Directory |
+|---|---|---|
+| **Actors** | remote MTA; operator | administrator provisioning mailboxes |
+| **Lifecycle** | a session lasts seconds | a mailbox lasts years |
+| **Events** | per-connection | `MailboxProvisioned`, `AliasCreated`, `DomainAdded` |
+| **Normative base** | RFC 5321 + 7504 | RFC constrains address *syntax* (§4.1.2) only; **who may hold a mailbox is pure operator policy** |
+| **Changes when** | the RFC set changes — once since 2008 | operator policy changes |
+| **Exists independently?** | no — needs Directory | **yes** — exists whether or not mail ever arrives |
+
+Different actors, different timescales, a different normative source, a different change cadence,
+and independent existence. **Separate context.**
+
+### Three consequences
+
+**1. The interface is orthodox Translation.** Directory's events are external to this model. They
+arrive yellow, get translated into our vocabulary, and `RecipientDirectory` projects from the
+translated events. This is exactly what the Translation pattern is for.
+
+**2. It does not motivate the multiple-models extension.** An earlier note called H3 *"the
+strongest pull toward the multiple-models idea"* in `event-model-extensions.md` §1. That was wrong.
+§1 concerns splitting **one** context into layers — protocol, domain, operational. Directory is a
+**different context**, which orthodox Event Modeling already handles. H3 needs no extension.
+
+**3. Two fields disappear.** Working the boundary removed `relay_permitted` from
+`RecipientDirectory` and `is_local` from `RecipientAccepted`. Both were constants once relay left
+scope, and a constant is a rule rather than a fact.
 
 ---
 

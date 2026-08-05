@@ -36,6 +36,17 @@ Open questions this raises:
 Prior art to check: whether Dilger's *Dynamic Consistency Boundary* chapter (p626) is addressing
 a related problem from a different direction.
 
+⚠️ **Correction.** An earlier note held that FnEmail's H3 (`RecipientDirectory` unsourced) was the
+strongest motivation for this extension. It is not. H3 resolved as a **separate context** —
+different actors, timescales, normative source and change cadence — and separate contexts joined by
+Translation are orthodox Event Modeling, needing no extension at all. See `event-model.md`,
+*H3 resolved*.
+
+This extension is narrower than it looked: it is about splitting **one** context into layers
+(protocol / domain / operational), where every layer shares a charter and an owner. That case is
+still unsupported by the corpus, and the kit still has no mechanism for a second model. But it must
+not be justified with examples that are really separate contexts.
+
 ## 2. GUI as its own model
 
 A corollary of (1): the user interface gets its own event model rather than occupying the

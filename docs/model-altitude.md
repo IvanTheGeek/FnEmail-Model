@@ -285,6 +285,28 @@ behavior" appears three times in the entire corpus and is not a term of art anyw
 
 The domain/business vocabulary is **Dilger's**, brought from DDD.
 
+**But the absence is deliberate, not incidental — and this correction matters.** Dymitruk knows DDD
+well; he avoids its vocabulary on purpose, so that Event Modeling stays legible to anyone who walks
+up to a model, and so that EM is not conflated with DDD. The stated position is that Event Modeling
+*implements* DDD concepts without requiring anyone to have read the blue book.
+
+His written rationale is in the article's *Simplicity* section, and the target is unmistakable:
+
+> *"if an organization chooses to adopt a process called 'X', and **X requires one book and a
+> workshop that takes a week** to go through, it nullifies the effectiveness of X, and here's the
+> worst part, **no matter how good X is**."*
+
+Followed by the halving cascade — everyone says they read the book, half did, half of those claim
+they understood it, half of those actually did.
+
+So the finding stands but an earlier reading of it was wrong: this is **suppression of vocabulary,
+not absence of the concept**.
+
+⚠️ **Consequence for this document.** If EM's vocabulary is deliberately DDD-free, then importing
+DDD terms into it works against the method's design intent — and "context" is Evans' *bounded
+context* wearing a shorter name. Whether §2.0b's axes should be renamed in EM-native terms is an
+open question. It is not merely cosmetic: the whole argument for the vocabulary is adoption cost.
+
 ⚠️ **Scope of this claim.** Only Dymitruk's *written* work is available — the podcast repo carries
 no transcripts and video hosts are blocked by the egress policy. This is "absent from his canonical
 written work", **not** "absent from his vocabulary". He may use these terms freely in talks.

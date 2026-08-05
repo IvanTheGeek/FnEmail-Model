@@ -72,28 +72,31 @@ Wire    C: MAIL FROM:<Smith@bar.com>
 Post    MailTransactionStarted{ reverse_path: "<Smith@bar.com>" }
 ```
 
-### Step 5 · `RecipientDirectory` — R 🔴
+### Step 5 · `RecipientDirectory` — R  *(translation boundary)*
 
 ```
-Sources ⚠️ NONE — the chain breaks here (H3)
-Needs   { is_local: true, relay_permitted: … } for each forward_path
-Post    RecipientDirectory{ is_local: true, relay_permitted: false }
+Sources translated events from the Directory context (deferred)
+Needs   is this address a local mailbox?
+Post    RecipientDirectory{ is_local: true }
 ```
-Every accept path crosses this hole three steps in. Typed so it fails loudly.
+**H3 is now resolved** — Directory is a separate context, so this is an ordinary Translation
+boundary rather than a hole. The translation slice is deferred with the Directory model, but the
+boundary is typed and orthodox. `relay_permitted` removed: relay is out of scope, so it was
+constant-false.
 
 ### Steps 6a–6c · `RcptTo` — W, walked three times
 
 ```
-6a  Pre   MailTransactionStarted ✓ · RecipientDirectory ⚠️
+6a  Pre   MailTransactionStarted ✓ · RecipientDirectory ✓
     Wire  C: RCPT TO:<Jones@foo.com>          S: 250 OK
-    Post  RecipientAccepted{ <Jones@foo.com>, is_local: true }
+    Post  RecipientAccepted{ <Jones@foo.com> }
 
 6b  Wire  C: RCPT TO:<Green@foo.com>          S: 550 No such user here
     Post  RecipientRejected{ <Green@foo.com>, reply_code: 550,
                              reason: "No such user here" }
 
 6c  Wire  C: RCPT TO:<Brown@foo.com>          S: 250 OK
-    Post  RecipientAccepted{ <Brown@foo.com>, is_local: true }
+    Post  RecipientAccepted{ <Brown@foo.com> }
 ```
 One column, three steps, three payloads. Dymitruk: *"a workflow step is considered to be repeated
 on the event model if it uses the same command or view."*
@@ -204,8 +207,10 @@ flagged as **H6**: on a multi-homed server with per-address hostnames, `BY` woul
 
 ## What this walk taught
 
-**H3 is not abstract.** In prose it is a footnote; in a path it is a hard stop at step 5, and
-every accept path crosses it.
+**H3 was not abstract — and walking it is what forced the resolution.** In prose it was a
+footnote; in a path it was a hard stop at step 5 that every accept path crossed. That pressure is
+what got it resolved: Directory turned out to be a separate context, the boundary is orthodox
+Translation, and two constant fields disappeared with it.
 
 **The scenario titled "typical" contains a rejection** — but it is not the only one on offer.
 Corrected after checking the RFC:
