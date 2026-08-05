@@ -72,15 +72,52 @@ command`; **an event may never connect directly to a command.**
 
 | Lane | Kind | Element | Role |
 |---|---|---|---|
-| **Remote MTA** | system actor | **automation node**, labelled with the verb | Drives every write column |
-| **Operator** | human actor | **view screen** — session transcript | Reads; never issues a command |
+| **Remote client** | actor role | **command screens** — the terminal exchange | Drives every write column |
+| **Operator** | actor role | **view screen** — session transcript | Reads; never issues a command |
 
-Dilger 2026: *"Human roles get SCREEN nodes. System actors and processors get AUTOMATION nodes."*
-The node is labelled with the wire line — `MAIL FROM:<…>` — sitting where an endpoint route would.
+**There is no automation node in this model.** An earlier draft put the remote MTA in the actor row
+as one. That was wrong, for two reasons.
 
-Nuance kept visible: the kit describes an automation as something that *"reacts to events
-automatically."* A remote MTA initiates rather than reacts. Right element, slightly outside the
-described case.
+**Dymitruk defines an automation as a todo list belonging to a processor *in our system*:**
+
+> *"We can make the concept of how this occurs with the idea of a 'todo list' for some processor in
+> our system."*
+
+The remote client has no todo list of ours. It is not a processor we drive; it is an actor driving
+us. He also notes automations *"may even actually be manual todo lists that our employees use"* —
+so human-versus-machine was never the distinguishing axis. Working a todo list is.
+
+**And the server cannot tell a human from a script.** `HELO bar.com` is identical whether it came
+from Postfix or from someone typing into `telnet host 25`. SMTP is a human-typeable text protocol
+by design. An element type that flips on a property the system cannot observe is not well formed.
+
+So the remote client is an ordinary **actor role**, and roles get screens. Each write column carries
+a command screen: the prior reply as displayed context, and the line the actor sends.
+
+```
+┌──────────────────────────┐   ┌──────────────────────────┐
+│ 250 foo.com              │   │ 250 OK                   │
+│ > MAIL FROM:<Smith@bar…> │   │ > RCPT TO:<Jones@foo.com>│
+└──────────────────────────┘   └──────────────────────────┘
+        MailFrom column                RcptTo column
+```
+
+Cheap to draw, which matters — *"Drawing a screen must not take longer than 2 minutes."* One screen
+per column per lane, never stacked, per §3.1.
+
+### Where the automation actually belongs
+
+Outbound, not inbound. The roles invert:
+
+| | Inbound *(this model)* | Outbound *(deferred)* |
+|---|---|---|
+| Actor | remote client — **screens** | our delivery processor — **automation, real todo list** |
+| Direction | they command, we reply | we command, they reply |
+| Their replies | our command results | **external events → Translation** |
+
+Outbound the delivery agent genuinely is Adam's automation: it works a todo list, which is the
+book's *Processor-TODO-List* pattern by name. The earlier draft had the right element in the wrong
+model.
 
 ## Ownership swimlanes
 

@@ -140,8 +140,21 @@ The governing rule is Dilger's, 2026, and it is stated in element terms:
 > *"When a processor or system actor reacts to events automatically (no human interaction), place
 > an **AUTOMATION** node in the actor row instead of a SCREEN."* — *ibid.*
 
-So a machine actor occupies the actor row as an **automation node**, and no screen is drawn. That
-alone settles the no-UI case.
+⚠️ **Do not over-apply this.** "System actor" here means an *internal or integrated processor* —
+`eventmodeling-identifying-outputs` glosses it as *"scheduler, background job, external trigger."*
+It does **not** mean "any non-human client."
+
+The distinguishing test is Dymitruk's, and it is about todo lists, not about humans:
+
+> *"the idea of a 'todo list' for some processor **in our system**"*
+
+…and automations *"may even actually be manual todo lists that our employees use"* — so a human can
+be an automation, and a machine can be a role. What decides it is whether the thing works a todo
+list we own, or initiates against us from outside.
+
+An external client — even a fully automated one — is an ordinary **actor role** and gets screens.
+A protocol client is the clear case: a text protocol like SMTP can be driven by a person typing
+into `telnet`, and the server cannot tell the difference, so the element type cannot depend on it.
 
 The **Trigger** framing corroborates it, and is the clearest prose statement of the idea:
 
