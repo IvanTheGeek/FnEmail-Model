@@ -231,9 +231,9 @@ block
 
 ---
 
-## G · Shapes as a colour-independent encoding
+## G · Shapes as a color-independent encoding
 
-If colour ever fails — printing, colour-blind readers, a viewer that strips `classDef` — shape
+If color ever fails — printing, color-blind readers, a viewer that strips `classDef` — shape
 can carry the element type instead.
 
 ```mermaid

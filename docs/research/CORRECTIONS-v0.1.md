@@ -133,7 +133,7 @@ Also apply the validator's Phase 6 check, which is unusually apt for a protocol:
 
 ---
 
-## 8. The translation boundary is asserted in prose and never modelled; one sentence is backwards
+## 8. The translation boundary is asserted in prose and never modeled; one sentence is backwards
 
 **v0.1 claimed** (§4.3): remote MTA replies and DNS answers are external facts translated into our events. "Our timeline never contains a foreign system's events verbatim."
 
@@ -358,7 +358,7 @@ Credit where it is due; none of the following should change.
 - **`MessageAccepted` carrying `reverse_path` and `recipients[]` redundantly.** Looks like duplication; is actually the integration-event contract, and required by the stream-independence checklist.
 - **Message bodies behind a `content_ref`** (§7). Correct, and canonically named "forgettable payload".
 - **The inverted information audit** (§6). The three findings — dropping `peer_address` makes a conformant `Received:` impossible; `declared_size` and `actual_octets` are different facts; loop detection requires stored trace headers — are exactly the payoff the backward-trace technique promises, and the book names that technique explicitly. This is the second-strongest section in the draft.
-- **Replies modelled as views rather than events** (§8.2's current position). Correct, for the reason given.
+- **Replies modeled as views rather than events** (§8.2's current position). Correct, for the reason given.
 - **§5.4's GIVEN/THEN with no WHEN.** Correct form for an automation scenario, per the book.
-- **§5.2's diagnosis** that implementations modelling SMTP as one flat state machine wrongly demand a second `EHLO` after `RSET`. Right, and it is the argument for per-command minimal state rather than the shared projection the same document then draws.
+- **§5.2's diagnosis** that implementations modeling SMTP as one flat state machine wrongly demand a second `EHLO` after `RSET`. Right, and it is the argument for per-command minimal state rather than the shared projection the same document then draws.
 - **`RouteResolved` captured as a fact** before any read model consumes MX data. This satisfies the validator's deterministic-projection rule, which forbids I/O during replay. Deliberate or not, it is correct.

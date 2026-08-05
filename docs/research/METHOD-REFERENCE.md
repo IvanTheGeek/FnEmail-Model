@@ -51,7 +51,7 @@ Dates for ranking:
 Note that Dymitruk's foundational article is still maintained — it is not a 2019 artefact — so it
 ranks high on both authorship and recency.
 
-Caveat: recency does not make a source infallible. The 2026 kit contains a confirmed colour error
+Caveat: recency does not make a source infallible. The 2026 kit contains a confirmed color error
 (see [`UPSTREAM-DEFECTS.md`](UPSTREAM-DEFECTS.md)) that older material gets right. Prefer recent,
 but check against the rest.
 
@@ -84,9 +84,9 @@ finer granularity.
 
 Both are canonical. "Command pattern" is not an error.
 
-### Colours — settled
+### Colors — settled
 
-| Element | Colour |
+| Element | Color |
 |---|---|
 | **Command** | **blue** — invariant across every source |
 | **View / Read Model** | **green** — invariant across every source except one defective file |
@@ -98,7 +98,7 @@ Both are canonical. "Command pattern" is not an error.
 
 **This project uses orange for Event.**
 
-Event's colour is the only one that genuinely moved: yellow in the 2022 material, orange in
+Event's color is the only one that genuinely moved: yellow in the 2022 material, orange in
 Dilger's 2026 cheat sheet and book figures. Command and View never moved.
 
 > ⚠️ **One source is wrong.** The kit's `facilitating-event-modeling-workshops.md` transposes
@@ -262,7 +262,7 @@ Dymitruk's headings, verbatim:
 | 3 | The Story Board | Wireframes/triggers on top. §3.1 **UX Concurrency** |
 | 4 | Identify Inputs | The blue commands |
 | 5 | Identify Outputs | The views/read-models |
-| 6 | Apply Conway's Law | Organise **events** into ownership swimlanes |
+| 6 | Apply Conway's Law | Organize **events** into ownership swimlanes |
 | 7 | Elaborate Scenarios | Given/When/Then |
 | — | Completeness Check | Unnumbered in the article; **step 8** in the kit |
 
@@ -393,6 +393,6 @@ The corpus is thin here. What it does say:
 - Dymitruk's adoption argument cuts both ways — effectiveness *"is inversely proportional to the
   amount of learning individuals must do."* A model requiring extensive explanation is suspect.
 
-No source in this corpus addresses protocol-level or infrastructure modelling directly. Applying
+No source in this corpus addresses protocol-level or infrastructure modeling directly. Applying
 it to RFC 5321 is therefore an extension of the method's demonstrated range, and should be
 labelled as such rather than presented as settled practice.

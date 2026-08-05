@@ -133,7 +133,7 @@ architecture — *"You can use some stable middleware like Apache Kafka or Rabbi
 also be a CSV file uploaded to a network share. From the architectural perspective, it's basically
 all the same."*
 
-### 1.6 Boundary count is organisational
+### 1.6 Boundary count is organizational
 
 > "**Team Structure & Ownership** (Impact: Determines how many swimlanes/systems to create)"
 > — `eventmodeling-applying-conways-law/SKILL.md`, l. 24
@@ -280,7 +280,7 @@ Term counts across the archived corpus:
 
 Zero occurrences of "domain" in Dymitruk's foundational article. His three "business" hits are
 incidental (*"a timeline of the year in that business"*); none is definitional. The single
-"behaviour" is a reference to **Behaviour Driven Development**, not his own usage. "Business
+"behaviour" is a reference to **Behavior Driven Development**, not his own usage. "Business
 behavior" appears three times in the entire corpus and is not a term of art anywhere.
 
 The domain/business vocabulary is **Dilger's**, brought from DDD.
@@ -315,8 +315,8 @@ written work", **not** "absent from his vocabulary". He may use these terms free
 *"empowering the user and informing the user."* His frame is **information and users**, not
 business and domain.
 
-This may be why Event Modeling fits a protocol server at all. A method organised around a business
-domain would make SMTP an awkward guest. A method organised around how information changes over
+This may be why Event Modeling fits a protocol server at all. A method organized around a business
+domain would make SMTP an awkward guest. A method organized around how information changes over
 time from a user's perspective does not care that the user is an MTA.
 
 #### Result 2: layer and context do not separate as peer axes
@@ -406,7 +406,7 @@ noise.
 **G3 — Charter.** Distinguishes **domain** from **product**. A fact required by the charter is
 domain. A fact arising from a choice we made, which we could have made differently while still
 satisfying the charter, is **product**. Test: find the RFC clause. **MUST** → domain.
-**MAY/SHOULD**, or no clause at all → product. Both are modelled; the difference is that product
+**MAY/SHOULD**, or no clause at all → product. Both are modeled; the difference is that product
 facts move when the product moves, and domain facts do not.
 
 **G4 — Substitution.** Distinguishes **protocol** and **infrastructure** from the two above.
@@ -632,7 +632,7 @@ A second model is warranted when **all three** hold:
 mistake, in my opinion… It's simply not defined"*), stream size (*"neither forbidden nor a
 problem"*), and — post-DCB — needing a shared invariant, since DCB *"allows you to temporarily
 construct strong consistency boundaries on demand"* and thereby breaks the old forcing function
-from "must be consistent together" to "must be modelled together." (Ch. 44 is presented as
+from "must be consistent together" to "must be modeled together." (Ch. 44 is presented as
 immature and contested; Greg Young's criticism is cited in it. Treat accordingly.)
 
 ### 4.2 The interface, and its asymmetry
@@ -698,7 +698,7 @@ Why nothing below this line exists in their model, gate by gate:
 
 Even `OrderConfirmationFailed` is questionable in their model: SMTP acceptance is not delivery, so
 what they actually learn at that moment is *"handed off"*, and real failure arrives later as a
-bounce — a different event from a different source. **Modelling their email as one event is not a
+bounce — a different event from a different source. **Modeling their email as one event is not a
 simplification. It is the accurate account of what their business knows.**
 
 ### FnEmail's model

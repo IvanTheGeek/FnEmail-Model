@@ -403,7 +403,7 @@ GIVEN   ClientIdentified(unknown.example),
 WHEN    RcptTo(<victim@third-party.org>)
 THEN    RecipientRejected(reply_code=550, reason="relay not permitted")
 ```
-Modelled as an event, not a bare error — a refused relay attempt is a fact worth keeping.
+Modeled as an event, not a bare error — a refused relay attempt is a fact worth keeping.
 Contrast the sequencing slip above, which produces none. **That line is H2.**
 
 ---

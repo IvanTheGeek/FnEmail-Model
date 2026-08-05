@@ -2,7 +2,7 @@
 
 The first worked path through `../event-model.md` v0.3, with concrete example data.
 
-Modelled on the RFC 5321 Appendix D.1 exchange with `HELO` substituted for `EHLO`.
+Modeled on the RFC 5321 Appendix D.1 exchange with `HELO` substituted for `EHLO`.
 
 ✅ **Verified against the RFC text** (2026-08-05). `rfc-editor.org` is blocked by the egress
 policy, but the specification is mirrored on GitHub, which is reachable — archived at
@@ -195,7 +195,7 @@ only by implication.
 ## What this walk found
 
 Both were invisible on paper and appeared the moment real data was substituted. This is the
-strongest available argument for example-data-first modelling.
+strongest available argument for example-data-first modeling.
 
 **1. `MessageAccepted` had no timestamp.** The `Received:` mapping pointed at
 `MessageAccepted.occurred_at`, which did not exist — only `ConnectionAccepted` carried a

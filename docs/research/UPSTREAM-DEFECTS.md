@@ -5,7 +5,7 @@ can be reported, and so this repo does not silently propagate them.
 
 ---
 
-## D1 — Sticky-note colours transposed in `agent-modeling-kit`
+## D1 — Sticky-note colors transposed in `agent-modeling-kit`
 
 **Status:** confirmed, unreported
 **Severity:** low mechanically, high pedagogically — it is in the *workshop facilitation* guide,
@@ -70,7 +70,7 @@ any source examined.
 
 ### Scope
 
-`grep` across all 68 markdown files in the four `@eventmodelers/*` packages finds colour claims
+`grep` across all 68 markdown files in the four `@eventmodelers/*` packages finds color claims
 in **only these three lines**. The defect is fully isolated — nothing else in the corpus repeats
 it, and no code depends on it.
 
@@ -85,7 +85,7 @@ lines  : 89, 93
 ```
 
 The upstream file is **byte-identical** to the published npm copy, and these are the only three
-colour claims in the entire repository.
+color claims in the entire repository.
 
 The npm `package.json` carries **no `repository` field**, which is likely why this has gone
 unreported — there is no discoverable link from the package to its source. Worth raising
@@ -93,17 +93,17 @@ alongside the fix. There is also no `CONTRIBUTING.md` or root `LICENSE` in the r
 
 ### Ready-to-apply patch
 
-[`kit-colour-fix.patch`](kit-colour-fix.patch) — generated against `main` and verified to apply.
+[`kit-color-fix.patch`](kit-color-fix.patch) — generated against `main` and verified to apply.
 Two lines changed.
 
 ```bash
 gh repo fork Nebulit-GmbH/Eventmodelers-Build-Kits --clone
 cd Eventmodelers-Build-Kits
-git checkout -b fix/workshop-sticky-colours
-git apply /path/to/kit-colour-fix.patch
-git commit -am "Fix transposed sticky-note colours in workshop facilitation reference"
-git push -u origin fix/workshop-sticky-colours
-gh pr create --title "Fix transposed Event/View sticky-note colours in workshop facilitation reference"
+git checkout -b fix/workshop-sticky-colors
+git apply /path/to/kit-color-fix.patch
+git commit -am "Fix transposed sticky-note colors in workshop facilitation reference"
+git push -u origin fix/workshop-sticky-colors
+gh pr create --title "Fix transposed Event/View sticky-note colors in workshop facilitation reference"
 ```
 
 If you run this, consider `git config user.email` set to your GitHub noreply alias
@@ -112,7 +112,7 @@ history permanently.
 
 ### Suggested PR body
 
-> The workshop facilitation reference has the Event and View sticky-note colours transposed.
+> The workshop facilitation reference has the Event and View sticky-note colors transposed.
 >
 > `eventmodelers-cli/stacks/modeling-kit/.../facilitating-event-modeling-workshops.md`, lines 89
 > and 93, currently read `[Green] Event` and `[Orange] View`. This contradicts the Event Modeling
@@ -122,7 +122,7 @@ history permanently.
 > It matters a little more than a typo because it sits in the *facilitation* guide — it's what a
 > room of first-timers copies onto real stickies while learning the convention.
 >
-> These are the only three colour claims in the repository, so the fix is fully isolated.
+> These are the only three color claims in the repository, so the fix is fully isolated.
 >
 > Unrelated but possibly useful: the published `@eventmodelers/*` packages have no `repository`
 > field in `package.json`, so there's no link from npm back here. Adding one would make issues

@@ -1,4 +1,4 @@
-# PR Handoff — eventmodelers kit colour fix
+# PR Handoff — eventmodelers kit color fix
 
 **Self-contained.** Everything needed to open this PR is in this one file. Nothing else has to be
 read first, and it is written so a fresh session can pick it up cold.
@@ -25,7 +25,7 @@ first regardless; it takes seconds and tells you whether it's already fixed.
 
 ## 1. The defect
 
-The workshop facilitation reference has the **Event and View sticky-note colours transposed**.
+The workshop facilitation reference has the **Event and View sticky-note colors transposed**.
 
 ```
 Physical sticky notes:
@@ -58,7 +58,7 @@ table.
 
 ### Scope
 
-These are the **only three colour claims** in the entire repository, and in all 68 markdown files
+These are the **only three color claims** in the entire repository, and in all 68 markdown files
 across the four published `@eventmodelers/*` packages. Nothing else repeats it; no code depends
 on it. The fix is fully isolated.
 
@@ -105,14 +105,14 @@ cd Eventmodelers-Build-Kits
 git config user.email "ivanthegeek@users.noreply.github.com"
 git config user.name  "ivanthegeek"
 
-git checkout -b fix/workshop-sticky-colours
-git apply /path/to/FnEmail/docs/research/kit-colour-fix.patch
+git checkout -b fix/workshop-sticky-colors
+git apply /path/to/FnEmail/docs/research/kit-color-fix.patch
 git diff --stat          # expect: 1 file changed, 2 insertions(+), 2 deletions(-)
 
-git commit -am "Fix transposed Event/View sticky-note colours in workshop facilitation reference"
-git push -u origin fix/workshop-sticky-colours
+git commit -am "Fix transposed Event/View sticky-note colors in workshop facilitation reference"
+git push -u origin fix/workshop-sticky-colors
 gh pr create --repo Nebulit-GmbH/Eventmodelers-Build-Kits \
-  --title "Fix transposed Event/View sticky-note colours in workshop facilitation reference" \
+  --title "Fix transposed Event/View sticky-note colors in workshop facilitation reference" \
   --body-file pr-body.md
 ```
 
@@ -124,7 +124,7 @@ rather use a different identity — just decide before committing, not after.
 
 ## 5. The patch
 
-Also at [`kit-colour-fix.patch`](kit-colour-fix.patch). Generated against `main` @ `e317bdf`,
+Also at [`kit-color-fix.patch`](kit-color-fix.patch). Generated against `main` @ `e317bdf`,
 verified to apply. Inlined here so this file stands alone.
 
 ```diff
@@ -156,7 +156,7 @@ If the patch won't apply because the file moved, the edit is trivial to redo by 
 ## 6. PR title
 
 ```
-Fix transposed Event/View sticky-note colours in workshop facilitation reference
+Fix transposed Event/View sticky-note colors in workshop facilitation reference
 ```
 
 ## 7. PR body
@@ -165,7 +165,7 @@ Copy from here down into `pr-body.md`.
 
 ---
 
-The workshop facilitation reference has the Event and View sticky-note colours transposed.
+The workshop facilitation reference has the Event and View sticky-note colors transposed.
 
 `eventmodelers-cli/stacks/modeling-kit/templates/.claude/skills/eventmodeling-brainstorming-events/references/facilitating-event-modeling-workshops.md`,
 lines 89 and 93, currently read `[Green] Event` and `[Orange] View`.
@@ -177,7 +177,7 @@ is unchanged.
 It matters slightly more than a typo because it's in the *facilitation* guide — it's what a room
 of first-timers copies onto real stickies while they're still learning the convention.
 
-These are the only three colour claims in the repository, so the change is fully isolated.
+These are the only three color claims in the repository, so the change is fully isolated.
 
 Unrelated but possibly useful: the published `@eventmodelers/*` packages have no `repository`
 field in `package.json`, so there's no link from npm back to this repo. Adding one would make
@@ -198,6 +198,6 @@ maintainer prefers.
 ## 9. Context
 
 Full write-up: [`UPSTREAM-DEFECTS.md`](UPSTREAM-DEFECTS.md).
-Colour convention as this project settled it: [`METHOD-REFERENCE.md`](METHOD-REFERENCE.md).
+Color convention as this project settled it: [`METHOD-REFERENCE.md`](METHOD-REFERENCE.md).
 Local mirror of the affected file:
 [`archive/eventmodelers-kits/agent-modeling-kit/skills/eventmodeling-brainstorming-events/references/facilitating-event-modeling-workshops.md`](archive/eventmodelers-kits/agent-modeling-kit/skills/eventmodeling-brainstorming-events/references/facilitating-event-modeling-workshops.md)

@@ -49,7 +49,7 @@ The two commercial books are cited throughout and reproduced nowhere.
 
 5. **Read models sit at their consumer**, not next to the events they project.
 
-6. **Colour is settled**: Command always blue, View always green, Event orange (current) or
+6. **Color is settled**: Command always blue, View always green, Event orange (current) or
    yellow (older). One upstream file transposes Event and View — a confirmed defect, logged in
    `UPSTREAM-DEFECTS.md` with line numbers.
 

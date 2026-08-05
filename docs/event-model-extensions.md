@@ -176,7 +176,7 @@ has found coupling the method says should not exist. No current artifact surface
 ### Prerequisite
 
 Step contracts must be added to the orthodox model before any of this can be built. That is
-already listed under *Deferred* in `event-model.md` — this extension is the reason to prioritise
+already listed under *Deferred* in `event-model.md` — this extension is the reason to prioritize
 it.
 
 ## 4. Two classes of rule: normative vs. operator
