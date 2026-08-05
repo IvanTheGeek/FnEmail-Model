@@ -27,7 +27,14 @@ Expecting 'STR', got 'MD_STR'
 
 That error is more useful than a plain failure. `MD_STR` is a real token, so the **lexer**
 recognises backtick markdown strings — but the `block` **grammar** only accepts `STR`. The feature
-exists in Mermaid and was never wired into block diagrams.
+exists in Mermaid and was never wired into block diagrams. Markdown strings *do* work in
+`flowchart`, where they give partial bold and multi-line labels from one construct.
+
+📌 **Parked for investigation** — is this a deliberate limitation or an omission in the block
+grammar? Worth reading `block.jison` against the flowchart grammar, and checking the issue tracker
+before filing. Recorded as **D3** in
+[`../research/UPSTREAM-DEFECTS.md`](../research/UPSTREAM-DEFECTS.md). If it is fixed upstream,
+group H below becomes unnecessary.
 
 **Consequence: every backtick test will fail the same way** — B2, C1, C3, D1 and E2 are all
 predicted ❌ without needing separate diagnosis. Worth confirming one of them, then skipping the

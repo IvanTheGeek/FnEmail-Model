@@ -146,3 +146,59 @@ own article: the four-building-block framing, and **"Trigger"** as the name for 
 That vocabulary is useful and is used in this repo. But under this project's source-precedence
 rule it ranks below Dymitruk's and Dilger's own material, and claims resting on it should say so.
 See `METHOD-REFERENCE.md` § *Source precedence*.
+
+---
+
+## D3 — Markdown strings absent from Mermaid's `block` grammar
+
+**Status:** ⏳ **to investigate** — not yet confirmed as a defect
+**Severity:** unknown until investigated; currently just a limitation we work around
+
+### The observation
+
+Mermaid **11.16.1**. A backtick markdown string in a `block` label fails to parse:
+
+```
+block
+  columns 1
+  a3["`line one
+line two`"]
+```
+```
+Parse error on line 3:
+... columns 1 a3["`line oneline two`"]
+---------------------^
+Expecting 'STR', got 'MD_STR'
+```
+
+**The error is the interesting part.** `MD_STR` is a real token, so the **lexer** recognises
+backtick markdown strings — the `block` **grammar** simply never accepts them. Markdown strings
+work in `flowchart`, where they give both partial bold and multi-line labels from one construct.
+
+So the feature exists in Mermaid and appears never to have been wired into block diagrams.
+
+### What to check
+
+1. **Is it deliberate or an omission?** Read the block parser grammar —
+   `packages/mermaid/src/diagrams/block/parser/block.jison` in `mermaid-js/mermaid` — and compare
+   its label rule against the flowchart grammar's. If flowchart accepts `MD_STR` where block
+   accepts only `STR`, it is likely an omission rather than a decision.
+2. **Does an issue already exist?** Search `mermaid-js/mermaid` issues for `block` + `markdown
+   string` / `MD_STR` before filing anything.
+3. **Is the fix small?** If it is one grammar alternative plus a renderer path already present for
+   flowcharts, it may be a contributable PR rather than a report.
+4. **Confirm the version boundary.** Verified only against whatever build GitHub serves. Check
+   against current `mermaid` from npm before claiming a version range.
+
+### Why it matters to this repo
+
+It decides the diagram vocabulary. With markdown strings, one construct gives partial bold *and*
+multi-line labels. Without them, **HTML is the only route** — which is why
+[`../diagrams/EXPERIMENT-block-labels.md`](../diagrams/EXPERIMENT-block-labels.md) group H exists
+at all. If this is fixed upstream, group H becomes moot and the labels get considerably simpler.
+
+### Feasibility from here
+
+`github.com` is reachable under this environment's egress policy, so the grammar files and the
+issue tracker can both be read without lifting any restriction. The investigation is doable in
+session whenever it is wanted; it is parked only because it is not on the critical path.
