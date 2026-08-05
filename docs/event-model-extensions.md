@@ -95,15 +95,23 @@ Not as far from orthodox as it looks. Three existing pieces, never joined up:
 
 ### Why RFC 5321 is an unusually good testbed
 
-**The RFC ships the paths.** Appendix D contains worked example sessions — D.1 typical
-transaction, D.2 aborted transaction, D.3 relayed mail, D.4 verifying and sending — each a
-complete wire trace with concrete addresses, domains and reply codes.
+**The RFC ships the paths.** ✅ Verified 2026-08-05 against the archived text
+(`research/archive/rfc/rfc5321.txt`). Appendix D contains four worked scenarios — D.1 typical
+transaction, D.2 aborted transaction, D.3 relayed mail (two steps), D.4 verifying and sending —
+each a complete wire trace with concrete addresses, domains and reply codes.
 
 Under this extension those are not documentation. They are **promoted acceptance tests authored
 by the standards body**, and RFC conformance becomes "these paths pass." Most domains require
 inventing example data; here the normative spec supplies it.
 
-*(Verify the appendix contents against the RFC text before relying on this.)*
+⚠️ **Two qualifications found on verification:**
+
+1. **Every example uses `EHLO`** — five occurrences, zero of `HELO`. Under a HELO-only scope the
+   paths are RFC-*derived*, not RFC-*quoted*. A promotion scheme needs to distinguish the two,
+   because only one of them is evidence of conformance.
+2. **The scenario labelled "typical" is not the clean one.** D.1 contains a `550` rejection
+   mid-flow, as does D.2. The clean single-recipient paths are D.3 and D.4. Whatever picks the
+   "golden path" cannot just take the one the source calls typical.
 
 ### The tension worth keeping
 

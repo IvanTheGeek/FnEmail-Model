@@ -3,9 +3,15 @@
 The first worked path through `../event-model.md` v0.3, with concrete example data.
 
 Modelled on the RFC 5321 Appendix D.1 exchange with `HELO` substituted for `EHLO`.
-⚠️ The RFC data is reproduced from knowledge of the specification and **has not been checked
-against the published text** — `rfc-editor.org` is blocked by this environment's egress policy.
-Verify before promoting this to a conformance test.
+
+✅ **Verified against the RFC text** (2026-08-05). `rfc-editor.org` is blocked by the egress
+policy, but the specification is mirrored on GitHub, which is reachable — archived at
+[`../research/archive/rfc/rfc5321.txt`](../research/archive/rfc/rfc5321.txt). D.1's dialogue
+matches this walk exactly: Jones `250`, Green `550 No such user here`, Brown `250`.
+
+⚠️ **One substitution remains unjustified by the RFC.** D.1 uses `EHLO` and advertises
+`8BITMIME`, `SIZE`, `DSN` and `HELP`. Substituting `HELO` is our scoping decision, not
+something the RFC demonstrates — see *On HELO* below.
 
 **Status:** worked example. Example data is orthodox — Dymitruk: *"The more realistic the data the
 better."* The *step/path* framing anticipates the extension parked in
@@ -201,21 +207,55 @@ flagged as **H6**: on a multi-homed server with per-address hostnames, `BY` woul
 **H3 is not abstract.** In prose it is a footnote; in a path it is a hard stop at step 5, and
 every accept path crosses it.
 
-**The RFC's own happy path contains a rejection.** `Green` gets `550` mid-flow and the session
-continues. So the "golden path" is not error-free — which complicates the golden-path-plus-unique-
-branches promotion rule in `../event-model-extensions.md` §3, because the default already contains
-an error branch.
+**The scenario titled "typical" contains a rejection** — but it is not the only one on offer.
+Corrected after checking the RFC:
+
+| Scenario | Recipients | Errors | Clean? |
+|---|---|---|---|
+| D.1 *A Typical SMTP Transaction* | 3 | `550` on Green | no |
+| D.2 *Aborted SMTP Transaction* | 2 | `550` on Green, then `RSET` | no |
+| **D.3 step 1** *Relayed Mail — source to relay* | **1** | none | **yes** (relay) |
+| **D.3 step 2** *Relayed Mail — relay to destination* | **1** | none | **yes** (local) |
+| D.4 *Verifying and Sending* | 1 | none | yes, but uses `VRFY` |
+
+So a clean single-recipient happy path does exist. **D.3 step 2 is the best inbound one** — the
+destination host receiving mail for a local mailbox, one `RCPT TO`, no errors. It should be the
+golden path; D.1 is better understood as the *multi-recipient with rejection* case.
+
+That weakens, but does not remove, the complication for the promotion rule: the scenario the RFC
+labels "typical" is not the clean one.
 
 **`FOR` was omitted, correctly, and only by accident of this data.** Two recipients means the
 single-recipient branch is never exercised here. One golden path is not coverage.
 
 ---
 
+## On HELO
+
+**No example dialogue in RFC 5321 uses `HELO`.** Five occurrences of `C: EHLO`, zero of `C: HELO`.
+
+Consequence for `../event-model-extensions.md` §3: the claim that "the RFC ships the paths" holds
+for the *shape* of each scenario but not verbatim under our HELO-only scope. Every path needs the
+greeting exchange substituted, which means these are RFC-**derived** paths, not RFC-**quoted**
+ones. Promoting them to conformance tests requires saying which.
+
+## On the `Received:` header
+
+The RFC contains exactly **one** worked `Received:` example, in D.3 step 2:
+
+```
+Received: from bar.com by foo.com ; Thu, 21 May 1998 05:33:29 -0700
+```
+
+Minimal — no address literal, no `with`, no `id`, no `for`. Our completeness table builds a much
+fuller header from §4.4's grammar. Both are legal; the extra clauses are optional. Worth deciding
+deliberately how much we emit rather than inheriting the maximal form by default.
+
 ## Next paths
 
-| Path | Exercises |
-|---|---|
-| **D.2 — aborted transaction** | `Reset`, the only uncovered column |
-| **Single recipient** | the `FOR` clause branch |
-| **No HELO** | `503` sequencing errors |
-| **All recipients rejected** | `BeginData`'s `recipient_count >= 1` precondition failing |
+| Path | Exercises | Source |
+|---|---|---|
+| **D.3 step 2 — single local recipient** | the `FOR` clause branch; the true golden path | RFC, derived |
+| **D.2 — aborted transaction** | `Reset`, the only uncovered column | RFC, derived |
+| **No HELO** | `503` sequencing errors | ours |
+| **All recipients rejected** | `BeginData`'s `recipient_count >= 1` failing | ours |
