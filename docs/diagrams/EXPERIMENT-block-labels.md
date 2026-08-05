@@ -44,6 +44,17 @@ advance and makes group H below the open question.
 **✅ `block-beta` still parses** (A0), so `README.md` is not broken — it wants renaming, not
 migrating.
 
+**✅ HTML works, and partial bold works.** `<b>` and `<strong>` both render (B3, B4), and **C2 —
+the decisive test — passes**: `<b>MailFrom</b> is bold, this is not` bolds only the tagged span.
+A bold title over plain detail is therefore achievable, which was the open question behind the
+whole label design.
+
+**✅ Literal `\n` works for line breaks** (A4), alongside `<br/>` (A1). Worth preferring where a
+label needs no other markup — it keeps the source readable.
+
+**❌ Markdown is not parsed in plain strings either** (B1) — `**bold**` renders its asterisks
+literally. So markdown has no route into a block label by any spelling.
+
 ---
 
 ## A0 · Does the old keyword still work?
@@ -370,32 +381,32 @@ block
 
 Fill in as observed. This table is the deliverable — `README.md` gets rebuilt from whatever wins.
 
-| Test | What it checks | Renders? | Notes |
-|:---:|---|:---:|---|
-| A0 | `block-beta` still parses | ✅ | Old keyword still accepted — `README.md` wants renaming, not migrating |
-| A1 | `<br/>` | ✅ | |
-| A2 | `<br>` unclosed | | |
-| A3 | markdown string newline | ❌ | `Parse error … Expecting 'STR', got 'MD_STR'` — markdown strings are not in the `block` grammar |
-| A4 | literal `\n` | ✅ | |
-| B1 | `**` plain string | ❌| |
-| B2 | `**` markdown string |❌| ❌ predicted ❌ — same `MD_STR` cause as A3 |
-| B3 | `<b>` |✅ | |
-| B4 | `<strong>` |✅ | |
-| C1 | partial bold, markdown | x| predicted ❌ — same `MD_STR` cause as A3 |
-| C2 | **partial bold, HTML** | y| the decisive one |
-| C3 | italic + bold mixed | x| predicted ❌ — same `MD_STR` cause as A3 |
-| D1 | bold + newline, markdown | x| predicted ❌ — same `MD_STR` cause as A3 |
-| D2 | bold + newline, HTML | | |
-| D3 | three lines | | |
-| E1 | real slice, HTML | | |
-| E2 | real slice, markdown | | predicted ❌ — same `MD_STR` cause as A3 |
-| F1 | natural wrap | | |
-| F2 | forced width via span | | |
-| G | shapes | | |
-| H1 | `text-align` via `style` | | |
-| H2 | `<div align='left'>` | | |
-| H3 | `<div style='text-align:left'>` | | |
-| H4 | `text-align` via `classDef` | | |
-| H5 | `<span>` inline style | | tests whether nested HTML survives at all |
-| H6 | `&nbsp;` padding hack | | always works if entities render |
-| H7 | leading spaces | | |
+| Test | What it checks                  | Renders? | Notes |
+|:--:|---------------------------------|:--------:|-------|
+| A0 | `block-beta` still parses       |    ✅     | Old keyword still accepted — `README.md` wants renaming, not migrating |
+| A1 | `<br/>`                         |    ✅     |  |
+| A2 | `<br>` unclosed                 |          |  |
+| A3 | markdown string newline         |    ❌     | `Parse error … Expecting 'STR', got 'MD_STR'` — markdown strings are not in the `block` grammar |
+| A4 | literal `\n`                    |    ✅     | **Works** — simpler than `<br/>`, and no HTML needed for line breaks alone |
+| B1 | `**` plain string               |    ❌     | Renders the asterisks literally — markdown is not parsed in a plain `STR` |
+| B2 | `**` markdown string            |    ❌     | same `MD_STR` cause as A3 |
+| B3 | `<b>`                           |    ✅     |  |
+| B4 | `<strong>`                      |    ✅     |  |
+| C1 | partial bold, markdown          |    ❌     | same `MD_STR` cause as A3 |
+| C2 | **partial bold, HTML**          |    ✅     | **The decisive one, and it passes.** Label design is unblocked |
+| C3 | italic + bold mixed             |    ❌     | same `MD_STR` cause as A3 |
+| D1 | bold + newline, markdown        |    ❌     | same `MD_STR` cause as A3 |
+| D2 | bold + newline, HTML            |          |  |
+| D3 | three lines                     |          |  |
+| E1 | real slice, HTML                |          |  |
+| E2 | real slice, markdown            |          | predicted ❌ — same `MD_STR` cause as A3 |
+| F1 | natural wrap                    |          |  |
+| F2 | forced width via span           |          |  |
+| G  | shapes                          |          |  |
+| H1 | `text-align` via `style`        |          |  |
+| H2 | `<div align='left'>`            |          |  |
+| H3 | `<div style='text-align:left'>` |          |  |
+| H4 | `text-align` via `classDef`     |          |  |
+| H5 | `<span>` inline style           |          | tests whether nested HTML survives at all |
+| H6 | `&nbsp;` padding hack           |          | always works if entities render |
+| H7 | leading spaces                  |          |  |
