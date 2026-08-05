@@ -3,7 +3,7 @@
 Mermaid renderings of `../event-model.md` v0.3. GitHub renders these inline; the Android app shows
 the source, so read this page on GitHub or desktop.
 
-**Colours** — Event **orange** · Command **blue** · Read Model **green** · Screen **white** ·
+**Colors** — Event **orange** · Command **blue** · Read Model **green** · Screen **white** ·
 external **yellow** · hotspot **red**.
 
 **Terminology.** *Slice*, not column — Adam's own word. The two slice types are named here as this
