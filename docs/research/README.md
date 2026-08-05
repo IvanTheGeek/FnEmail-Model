@@ -8,7 +8,7 @@ Primary-source research behind FnEmail's event model.
 |---|---|
 | [`METHOD-REFERENCE.md`](METHOD-REFERENCE.md) | **Start here.** The method as its authors define it, with the places the sources contradict each other named rather than smoothed over. |
 | [`../event-model.md`](../event-model.md) | The model itself — RFC 5321 inbound, HELO only, v0.3. |
-| [`../paths/`](../paths/) | Worked paths through the model, with example data. |
+| [`../paths/`](../paths/) | Worked paths through the model, with example data. 2 walked, 11 of 12 columns covered. |
 | [`../diagrams/`](../diagrams/) | Mermaid renderings — renders on GitHub and desktop, not in the Android app. |
 | [`../model-altitude.md`](../model-altitude.md) | Domain / product / protocol / infrastructure — the gate sequence for deciding what belongs in the model. Resolves H1. |
 | [`CORRECTIONS-v0.1.md`](CORRECTIONS-v0.1.md) | 20 corrections from the first draft. Useful as a catalogue of ways to misapply the method. |

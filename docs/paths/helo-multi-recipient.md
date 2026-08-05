@@ -235,7 +235,8 @@ What survives for the promotion rule: the scenario the RFC labels "typical" is n
 so a designation scheme cannot simply take the source's word for which path is canonical.
 
 **`FOR` was omitted, correctly, and only by accident of this data.** Two recipients means the
-single-recipient branch is never exercised here. One golden path is not coverage.
+single-recipient branch is never exercised here. One path is not coverage — now covered by
+[`helo-single-recipient.md`](helo-single-recipient.md), which emits it.
 
 ---
 
@@ -292,7 +293,7 @@ actor lane rather than as a single verdict is open — see `../event-model-exten
 
 | Path | Exercises | Source |
 |---|---|---|
-| **D.3 step 2 — single local recipient** | the `FOR` clause branch; a candidate for golden | RFC, derived |
+| ~~D.3 step 2 — single local recipient~~ | ✅ **walked** — [`helo-single-recipient.md`](helo-single-recipient.md) | RFC, derived |
 | **D.2 — aborted transaction** | `Reset`, the only uncovered column | RFC, derived |
 | **No HELO** | `503` sequencing errors | ours |
 | **All recipients rejected** | `BeginData`'s `recipient_count >= 1` failing | ours |
