@@ -1,238 +1,281 @@
-# FnEmail — Event Model (RFC 5321, inbound)
+# FnEmail — Event Model (RFC 5321, inbound, HELO)
 
-Status: **draft v0.2 — rebuilt against primary sources**
-Scope: **incoming SMTP only.** Outbound relay, retry, bounce and DNS are deliberately deferred.
+Status: **draft v0.3 — scoped down to the HELO path**
+Scope: **inbound SMTP, `HELO` only.** No ESMTP, no relay, no outbound.
 
 Method reference: `research/METHOD-REFERENCE.md`. Corrections from v0.1: `research/CORRECTIONS-v0.1.md`.
-Extension ideas are parked in `event-model-extensions.md` and are **not** applied here — this
-document is orthodox Dymitruk/Dilger by intent, so that extensions can be measured against it.
+Extensions are parked in `event-model-extensions.md` and **not** applied here — this document is
+orthodox Dymitruk/Dilger by intent, so extensions can be measured against it.
 
 ---
 
-## What changed from v0.1
+## Scope
 
-v0.1 was written from recall. Reading the primary sources overturned much of it.
+`HELO` only. That removes more than one verb, because the whole extension mechanism is ESMTP:
 
-| v0.1 | Correction |
+| Removed | Why |
 |---|---|
-| Four "swimlanes" = wireframe/command/read-model/event rows | **Swimlanes** are actor lanes (step 3.1) or event-ownership lanes (step 6). The rows are not swimlanes. |
-| "The wire IS the wireframe" | Wrong construct, right instinct. The canonical element is a **Trigger**, which explicitly admits *"the route of an http endpoint"* — so an SMTP verb qualifies with no adaptation. |
-| Reply codes are the UI lane | Reply codes are the **synchronous result of a command**. The operator's transcript is a separate **view screen** in an Admin actor lane. |
-| Narrative phases | **Slices.** One column, one command *or* one read model. This is the structural fix. |
-| "Pivot event" | Not a term in the corpus. The RFC §2.1 insight is real and kept — relabelled as a **responsibility boundary**, not presented as method vocabulary. |
-| 1 command → many events (celebrated) | The **"left chair"** anti-pattern. Inbound-only scope dissolves it. |
-| Completeness traced backward only | **Bidirectional** — every field needs an origin *and* a destination. |
-| Four patterns as primitives | Two **column types**; four patterns are the workshop vocabulary over them. |
-| Open questions in an appendix | **Hotspots**, on the model. |
-| Processor implicit in prose | **Processor** is a first-class element. |
+| `EHLO` / extension negotiation | ESMTP (§2.2) |
+| `STARTTLS` | RFC 3207 extension |
+| `SIZE=` on `MAIL FROM` | RFC 1870 extension |
+| `BODY=8BITMIME` | RFC 6152 extension |
+| Relay, outbound, DNS, bounce | deferred by scope |
+
+Twelve slices remain. Every reply is 3-digit only — no enhanced status codes (RFC 3463 is also an
+extension).
+
+## Changes from v0.2
+
+- Dropped the `StartTls` slice; `Ehlo` → `Helo`, `protocol` fixed at `SMTP`.
+- `MailTransactionStarted` loses `declared_size` and `body_type`; the declared-size error scenario
+  goes with them. Size enforcement now only happens on `actual_octets`.
+- **Added step contracts** to every slice. These are not new work — a contract is a GWT with the
+  example data removed, so `GIVEN` is the precondition and `THEN` the postcondition.
+- **H3 reframed.** An unsourced read model is the method working, not a defect: the hole becomes
+  known and names a slice that must exist upstream. It is now marked as a *typed* hole so that a
+  path crossing it fails loudly.
 
 ---
 
 ## Conventions
 
-Colours: Event **orange** · Command **blue** · Read Model **green** · Screen **white** ·
-external event **yellow** · hotspot **red**
+Event **orange** · Command **blue** · Read Model **green** · Screen **white** · hotspot **red**.
+Command is blue and Read Model is green in every source; Event is orange here (see
+`research/UPSTREAM-DEFECTS.md` for the one file that disagrees).
 
-Command is always blue and Read Model is always green across every source. Event is legitimately
-orange (current) or yellow (older material); **this project uses orange**. One file in the
-upstream kit transposes Event and View — it is wrong, and is documented in
-`research/UPSTREAM-DEFECTS.md`.
-
-**Arrows are not used.** Meaning is carried by lane position, left-to-right time, and which
-pattern a column matches. Legal adjacency still binds (Dymitruk): `command → event → view →
-trigger/processor → command`; **an event may never connect directly to a command.**
+**Arrows are not used.** Meaning comes from lane position, left-to-right time, and which pattern a
+column matches. Legal adjacency still binds: `command → event → view → trigger/processor →
+command`; **an event may never connect directly to a command.**
 
 ---
 
 ## Actor swimlanes
 
-Two actors, top of the board (step 3.1).
-
 | Lane | Kind | Element | Role |
 |---|---|---|---|
-| **Remote MTA** | system actor | **automation node** — labelled with the protocol verb | Drives every write column |
+| **Remote MTA** | system actor | **automation node**, labelled with the verb | Drives every write column |
 | **Operator** | human actor | **view screen** — session transcript | Reads; never issues a command |
 
-The remote MTA gets an automation node, not a screen. Dilger, 2026: *"Human roles get SCREEN
-nodes. System actors and processors get AUTOMATION nodes."* The node is labelled with the wire
-command line — `MAIL FROM:<…>` — which sits exactly where an endpoint route would.
+Dilger 2026: *"Human roles get SCREEN nodes. System actors and processors get AUTOMATION nodes."*
+The node is labelled with the wire line — `MAIL FROM:<…>` — sitting where an endpoint route would.
 
-One nuance worth recording: the kit's phrasing describes a processor that *"reacts to events
-automatically."* The remote MTA does not react to our events, it initiates. The element is still
-right — a machine actor with no human interaction — but this is slightly outside the case the
-kit describes.
-
-Constraint observed: *"There are no screens that appear above one another"* — the Operator lane's
-transcript gets its own column; it is not stacked onto a command column.
-
----
+Nuance kept visible: the kit describes an automation as something that *"reacts to events
+automatically."* A remote MTA initiates rather than reacts. Right element, slightly outside the
+described case.
 
 ## Ownership swimlanes
 
-Step 6. Events organised by owner:
-
 | Swimlane | Owns |
 |---|---|
-| **Edge** | `ConnectionAccepted`, `ClientIdentified`, `TlsNegotiated`, `SessionReset`, `SessionClosed` |
-| **Transaction** | `MailTransactionStarted`, `RecipientAccepted`, `RecipientRejected`, `DataPhaseEntered`, `MessageAccepted`, `MessageRejected`, `MessageDeferred`, `TransactionAborted` |
-| **Directory** 🔴 | Mailbox existence and relay authorisation — **hotspot**, see H3 |
+| **Edge** | `ConnectionAccepted`, `ClientIdentified`, `SessionReset`, `SessionClosed` |
+| **Transaction** | `MailTransactionStarted`, `RecipientAccepted`, `RecipientRejected`, `DataPhaseEntered`, `MessageAccepted`, `MessageRejected`, `TransactionAborted` |
+| **Directory** 🔴 | Not owned here — see H3 |
 
 ---
 
 ## The responsibility boundary
 
-RFC 5321 §2.1:
+RFC 5321 §2.1: *"when an SMTP server accepts a message, it is accepting responsibility for
+delivering or reporting the failure to do so."*
 
-> when an SMTP server accepts a message, it is accepting responsibility for delivering or
-> reporting the failure to do so.
+`MessageAccepted` is where obligation begins. Left of it, abandoning costs nothing. Right of it is
+delivery — out of scope.
 
-`MessageAccepted` — emitted with the `250` after the final `<CRLF>.<CRLF>` — is where obligation
-begins. Left of it, abandoning the session costs nothing. Right of it lies delivery, which is out
-of scope for v0.2.
-
-This is a **domain observation about SMTP**, not Event Modeling vocabulary. v0.1 called it a
-"pivot event" and implied the method sanctioned the term. It does not.
+A domain observation about SMTP, **not** Event Modeling vocabulary.
 
 ---
 
-## Slice inventory
+## Slices and contracts
 
-Timeline runs left to right. Each row is one column. `W` = write column (command),
-`R` = read column (read model).
+`W` = write column (one command). `R` = read column (one read model).
 
-| # | Slice | Type | Pattern | Produces / projects |
-|---|---|---|---|---|
-| 1 | `AcceptConnection` | W | State Change | `ConnectionAccepted` \| error `554` |
-| 2 | `Ehlo` | W | State Change | `ClientIdentified` \| error `500/501` |
-| 3 | `StartTls` | W | State Change | `TlsNegotiated` \| error `454` |
-| 4 | `SessionState` | R | State View | ← `ConnectionAccepted`, `ClientIdentified`, `TlsNegotiated`, `SessionReset` |
-| 5 | `MailFrom` | W | State Change | `MailTransactionStarted` \| error `503/550/552` |
-| 6 | `RecipientDirectory` 🔴 | R | State View | ← *unresolved — see H3* |
-| 7 | `RcptTo` | W | State Change | `RecipientAccepted` \| `RecipientRejected` |
-| 8 | `TransactionState` | R | State View | ← `MailTransactionStarted`, `RecipientAccepted`, `TransactionAborted` |
-| 9 | `BeginData` 🔴 | W | State Change | `DataPhaseEntered` \| error `503/554` — *see H1* |
-| 10 | `SubmitContent` | W | State Change | `MessageAccepted` \| `MessageRejected` \| `MessageDeferred` |
-| 11 | `Reset` | W | State Change | `TransactionAborted` |
-| 12 | `Quit` | W | State Change | `SessionClosed` |
-| 13 | `SessionTranscript` | R | State View | ← every event above |
+### 1 · `AcceptConnection` — W
 
-Thirteen slices, each independently buildable, each communicating only via events.
+```
+Pre    none
+Post   ConnectionAccepted{peer_address, local_address, occurred_at}
+       OR  reply 554, no event
+```
+Exists to carry `peer_address`, which the `Received:` header requires and nothing else supplies.
 
-**Read models are placed at their consumer, not their source.** `SessionState` projects
-`ClientIdentified` from early in the session but sits at column 4 because that is where the
-sequencing decision needs it. `TransactionState` likewise serves columns 7, 9 and 10.
+### 2 · `Helo` — W
 
-### No `ServiceGreetingSent` event
+```
+Pre    ConnectionAccepted exists
+Post   ClientIdentified{claimed_domain, protocol:"SMTP"}
+       OR  reply 501 (bad syntax) / 500 (unrecognised)
+```
 
-The `220` banner is not modelled as an event. Nothing consumes it: the transcript can render it
-via `derived:` from `ConnectionAccepted` plus configuration, and the `Received:` header takes
-`server_domain` from config. Under the bidirectional check it has an origin but no destination,
-so it does not earn a place. `ServiceRefused` **is** a real decision (`554`) and appears as
-`AcceptConnection`'s error scenario.
+### 3 · `SessionState` — R
 
-This is the completeness check doing actual work rather than ratifying what was already drawn.
+```
+Sources   ConnectionAccepted, ClientIdentified, SessionReset
+Answers   Has the client identified itself? Is a transaction open?
+Post      SessionState{identified: bool, transaction_open: bool}
+```
+Placed here because slices 4, 6 and 8 consume it — not next to its sources.
+
+### 4 · `MailFrom` — W
+
+```
+Pre    SessionState.identified = true
+Post   MailTransactionStarted{reverse_path}
+       OR  reply 503 (no HELO) / 550 (sender rejected)
+```
+
+### 5 · `RecipientDirectory` — R 🔴 **typed hole, H3**
+
+```
+Sources   ⚠️ NONE IN THIS MODEL
+Answers   Is this address local? May this client relay?
+Post      RecipientDirectory{is_local: bool, relay_permitted: bool}
+```
+Deliberately left unsourced and typed. Mailbox existence comes from provisioning; relay
+authorisation from operator configuration. Neither is an event here. **This is the method
+working** — the hole names a slice that must exist upstream.
+
+### 6 · `RcptTo` — W
+
+```
+Pre    MailTransactionStarted exists for this session
+       RecipientDirectory available
+Post   RecipientAccepted{forward_path, is_local}
+       OR  RecipientRejected{forward_path, reply_code, reason}
+```
+Walked once per recipient. The same column, not N columns.
+
+### 7 · `TransactionState` — R
+
+```
+Sources   MailTransactionStarted, RecipientAccepted, TransactionAborted
+Answers   Open? Reverse path? How many recipients?
+Post      TransactionState{open: bool, reverse_path, recipient_count}
+```
+
+### 8 · `BeginData` — W 🔴 **H1**
+
+```
+Pre    TransactionState.open = true
+       TransactionState.recipient_count >= 1
+Post   DataPhaseEntered
+       OR  reply 503 (no recipients)
+```
+The *command* is sound — it makes a real decision. The *event* is on trial: its only candidate
+consumer is the transcript rendering `354`.
+
+### 9 · `SubmitContent` — W
+
+```
+Pre    DataPhaseEntered for the current transaction
+Post   MessageAccepted{queue_id, reverse_path, recipients[], content_ref, actual_octets}
+       OR  MessageRejected{reply_code, reason}
+```
+**One command, one event.** v0.1 emitted three event types plus a per-recipient fan-out — the
+"left chair". Inbound scope removed the fan-out; the forward completeness pass removed
+`MessageContentReceived` as redundant.
+
+### 10 · `Reset` — W
+
+```
+Pre    SessionState.identified = true
+Post   TransactionAborted{cause:"rset"}
+       Postcondition explicitly does NOT touch SessionState
+```
+
+### 11 · `Quit` — W
+
+```
+Pre    ConnectionAccepted exists
+Post   SessionClosed{cause}
+```
+
+### 12 · `SessionTranscript` — R
+
+```
+Sources   every event above
+Answers   What happened on this session, and why was it rejected?
+Post      an ordered rendering of the wire exchange
+```
+Structurally the **"right chair"** — one read model, many events. Expected; worth watching.
 
 ---
 
 ## Events
 
-Past tense, facts only, no computed fields.
-
 | Event | Fields |
 |---|---|
 | `ConnectionAccepted` | `peer_address`, `local_address`, `occurred_at` |
-| `ClientIdentified` | `claimed_domain`, `protocol` (SMTP\|ESMTP), `extensions_offered[]` |
-| `TlsNegotiated` | `cipher`, `protocol_version`, `peer_cert_subject?` |
+| `ClientIdentified` | `claimed_domain`, `protocol` (always `SMTP`) |
 | `SessionReset` | — |
 | `SessionClosed` | `cause` (quit \| timeout \| abort \| shutdown) |
-| `MailTransactionStarted` | `reverse_path`, `declared_size?`, `body_type?` |
+| `MailTransactionStarted` | `reverse_path` |
 | `RecipientAccepted` | `forward_path`, `is_local` |
 | `RecipientRejected` | `forward_path`, `reply_code`, `reason` |
 | `DataPhaseEntered` 🔴 | — |
 | `MessageAccepted` | `queue_id`, `reverse_path`, `recipients[]`, `content_ref`, `actual_octets` |
 | `MessageRejected` | `reply_code`, `reason` |
-| `MessageDeferred` | `reply_code`, `reason` |
 | `TransactionAborted` | `cause` (rset \| quit \| disconnect) |
 
-`declared_size` (from `MAIL FROM … SIZE=`) and `actual_octets` (measured at receipt) are
-**different facts** and both are kept. Conflating them is a classic `SIZE`-enforcement bug.
+Message bodies stay out of the log behind `content_ref` — the book's *forgettable payload*.
 
-Message bodies stay out of the event log behind `content_ref` — the book's *forgettable payload*.
-Keeping octets in the stream turns the log into a mail spool and makes replay impossible.
+### No `ServiceGreetingSent`
+
+The `220` banner is not an event. Nothing consumes it: the transcript renders it `derived:` from
+`ConnectionAccepted` plus config, and `Received:` takes `BY` from config. Origin but no
+destination — it does not earn a place. Deleted by the forward completeness pass, which is the
+check doing real work rather than ratifying what was drawn.
 
 ---
 
 ## Scenarios
 
-### 1 — Sequencing: `RCPT` before `MAIL` (§4.1.1)
-
+**Sequencing — `RCPT` before `MAIL`** (§4.1.1)
 ```
-Slice:  RcptTo                                              [error]
+Slice   RcptTo                                            [error]
 GIVEN   ConnectionAccepted, ClientIdentified
 WHEN    RcptTo(<bob@example.org>)
 THEN    error 503 Bad sequence of commands
 ```
 
-### 2 — `RSET` clears the transaction, keeps the session (§4.1.1.5)
-
+**`RSET` clears the transaction, keeps the session** (§4.1.1.5)
 ```
-Slice:  Reset                                        [state change]
+Slice   Reset                                      [state change]
 GIVEN   ClientIdentified(mail.acme.com),
         MailTransactionStarted(<alice@acme.com>),
         RecipientAccepted(<bob@fn.email>)
 WHEN    Reset
-THEN    TransactionAborted(cause=rset)                     → 250 OK
+THEN    TransactionAborted(cause=rset)                   → 250 OK
 ```
-
 ```
-Slice:  SessionState                                   [state view]
-GIVEN   ClientIdentified(mail.acme.com), TlsNegotiated(...), SessionReset
+Slice   SessionState                                 [state view]
+GIVEN   ClientIdentified(mail.acme.com), SessionReset
 WHEN    Query(session)
-THEN    SessionState{ identified: true, tls: true, transaction: none }
+THEN    SessionState{identified: true, transaction_open: false}
 ```
 
-The session survives; only the transaction resets. Two slices, two specs — this is why the
-split into separate read and write columns matters rather than being ceremony.
-
-### 3 — Responsibility transfer
-
+**Responsibility transfer**
 ```
-Slice:  SubmitContent                                [state change]
+Slice   SubmitContent                              [state change]
 GIVEN   MailTransactionStarted(<alice@acme.com>),
         RecipientAccepted(<bob@fn.email>),
         RecipientAccepted(<carol@fn.email>),
         DataPhaseEntered
 WHEN    SubmitContent(octets, dot-unstuffed)
 THEN    MessageAccepted(queue_id, content_ref, actual_octets)
-                                          → 250 OK queued as <queue_id>
+                                       → 250 OK queued as <queue_id>
 ```
 
-**One command, one event.** In v0.1 this emitted three event types plus a per-recipient fan-out —
-the "left chair". Scoping to inbound removed the fan-out, and the completeness check removed
-`MessageContentReceived` as redundant with `MessageAccepted`.
-
-### 4 — `SIZE` exceeded (§4.5.3.1.10, RFC 1870)
-
+**Relay refused**
 ```
-Slice:  SubmitContent                                       [error]
-GIVEN   MailTransactionStarted(<alice@acme.com>, declared_size=1000),
-        RecipientAccepted(<bob@fn.email>), DataPhaseEntered
-WHEN    SubmitContent(octets where actual_octets=52_000_000)
-THEN    error 552 Message exceeds fixed maximum message size
-```
-
-### 5 — Relay refused
-
-```
-Slice:  RcptTo                                       [state change]
-GIVEN   ClientIdentified(unknown.example), MailTransactionStarted(<x@elsewhere>)
+Slice   RcptTo                                     [state change]
+GIVEN   ClientIdentified(unknown.example),
+        MailTransactionStarted(<x@elsewhere>),
+        RecipientDirectory{is_local: false, relay_permitted: false}
 WHEN    RcptTo(<victim@third-party.org>)
 THEN    RecipientRejected(reply_code=550, reason="relay not permitted")
 ```
-
-Modelled as an event, not a bare error: a refused relay attempt is a fact worth keeping. Contrast
-scenario 1, where a protocol sequencing slip produces no event. **That distinction is a live
-question — see H2.**
+Modelled as an event, not a bare error — a refused relay attempt is a fact worth keeping.
+Contrast the sequencing slip above, which produces none. **That line is H2.**
 
 ---
 
@@ -240,90 +283,60 @@ question — see H2.**
 
 Bidirectional: every field needs an origin **and** a destination.
 
-### Backward — the `Received:` header (§4.4)
+**Backward — `Received:` (§4.4)**
 
 | Clause | Origin |
 |---|---|
 | `FROM` domain | `ClientIdentified.claimed_domain` |
 | `FROM` address literal | `ConnectionAccepted.peer_address` |
 | `BY` | config (`derived:`) |
-| `WITH ESMTPS` | `ClientIdentified.protocol` + `TlsNegotiated` |
+| `WITH SMTP` | `ClientIdentified.protocol` — always `SMTP` in this scope |
 | `ID` | `MessageAccepted.queue_id` |
 | `FOR` | `RecipientAccepted.forward_path` *(only when exactly one)* |
 | timestamp | `MessageAccepted.occurred_at` |
 
-Every clause resolves. Inverting it is where the value is: drop `peer_address` from
-`ConnectionAccepted` and a conformant `Received:` header becomes impossible to write — caught on
-the model, not three weeks into implementation.
+**Forward — the transcript**
 
-### Forward — the session transcript
+> If the session transcript cannot be reconstructed from the event stream alone, the model is
+> incomplete.
 
-The `SessionTranscript` read model is what makes the forward direction testable:
-
-> **If the session transcript cannot be reconstructed from the event stream alone, the model is
-> incomplete.**
-
-Stronger than the header check in two ways: it covers the whole session rather than one field
-set, and it exercises the direction that exposes events nothing consumes. `DataPhaseEntered`
-survives or dies by this test (H1).
+Covers the whole session rather than one field set, and exercises the direction that exposes
+events nothing consumes. `DataPhaseEntered` lives or dies by it.
 
 ---
 
 ## Hotspots
 
-Open questions, on the model rather than in an appendix. *"Unknowns become hotspots."*
+**H1 — Does `DataPhaseEntered` earn its place?** Its only candidate consumer is the transcript
+rendering `354`. A question about what the operator needs to see.
 
-**H1 — Does `DataPhaseEntered` earn its place?**
-It is a genuine fact, but its only candidate consumer is the transcript rendering `354 Start mail
-input`. If the transcript begins at `MAIL FROM`, nothing consumes it and it should go. This is a
-question about what the operator needs to see, not about protocol purity.
+**H2 — Are protocol errors events?** `RecipientRejected` is; a `503` is not. The line drawn is
+"policy decisions are facts, protocol slips are not" — defensible, unverified.
 
-**H2 — Are protocol errors events?**
-`RecipientRejected` is modelled as an event; a `503` sequencing error is not. The line drawn is
-"policy decisions are facts, protocol slips are not" — defensible but unverified. Auditing and
-abuse detection may want both.
+**H3 — `RecipientDirectory` is unsourced, deliberately.** Not a defect. The hole is now typed, and
+it names a slice that must exist in an upstream model.
 
-**H3 — Where does recipient knowledge come from?**
-`RecipientDirectory` has no event source in this model. Mailbox existence and relay authorisation
-originate in provisioning, which is a different concern entirely. Candidates: a Logic Read Model
-over configuration, or a genuinely separate model. This is the strongest pull toward the
-multiple-models idea parked in `event-model-extensions.md`.
+**H4 — Stream design.** One stream per session, per transaction, or per message? The session
+outlives the transaction, which argues they are not one stream.
 
-**H4 — Stream design.**
-Unresolved: one stream per session, per transaction, or per message? The session outlives the
-transaction (scenario 2), which argues they are not the same stream. Needs the book's
-stream-design guidance (p137–151) applied properly.
-
-**H5 — Pipelining (RFC 2920).**
-The timeline assumes one command per column. Pipelining collapses round trips. Whether that
-changes the model or only the transport is unexamined.
-
-**H6 — `AcceptConnection` altitude.**
-Is a TCP accept a domain fact or infrastructure noise? It carries `peer_address`, which the
-`Received:` header needs, so it currently earns its place — but that is the argument, not an
-assumption.
+**H5 — `AcceptConnection` altitude.** Domain fact or infrastructure noise? It carries
+`peer_address`, which `Received:` needs — that is the argument, not an assumption.
 
 ---
 
 ## Deferred
 
-Out of scope for v0.2, to be modelled once inbound is settled:
-
-- Outbound delivery, relay, retry, bounce generation
-- DNS/MX resolution (the Translation pattern's natural home)
-- The Processor-TODO-List pattern for the delivery queue
-- Submission (RFC 6409) on :587 — same protocol shape, different policy
-- Authentication (RFC 4954)
-- Workflow step contracts — pre/postconditions per slice, for parallel implementation
+`EHLO`/ESMTP and extension negotiation · `STARTTLS` · `SIZE` · `8BITMIME` · enhanced status codes ·
+pipelining · `VRFY`/`EXPN`/`HELP`/`NOOP` · outbound delivery, relay, retry, bounce · DNS/MX
+translation · submission on :587 · authentication.
 
 ---
 
 ## Method caveat
 
-No source in the corpus applies Event Modeling to a protocol server. The method is demonstrated
-on user-facing business systems throughout. This model is therefore an **extension of its
-demonstrated range**, and the two places that strain hardest are the trigger row (a machine actor
-rather than a person) and the absence of any real screen. Both have canonical footing — triggers
-admit API routes, screens are optional — but neither is a case its authors worked through.
+No source in the corpus applies Event Modeling to a protocol server. The two places this strains
+hardest are the trigger row (a machine actor, not a person) and the absence of any real screen.
+Both have canonical footing — automation nodes for system actors, screens optional — but neither
+is a case its authors worked through.
 
-Treat the structure as sound and the application as unproven.
+Structure sound; application unproven.

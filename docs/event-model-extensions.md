@@ -4,7 +4,7 @@ Ideas for extending Event Modeling beyond what Dymitruk and Dilger describe.
 
 **Deliberately not applied to `event-model.md`.** The orthodox model is being built first, by
 the book, so that any extension can be measured against it rather than blended into it. Nothing
-here should leak into v0.2.
+here should leak into the orthodox model (currently v0.3).
 
 Status: **captured, not developed.**
 
@@ -87,6 +87,9 @@ Not as far from orthodox as it looks. Three existing pieces, never joined up:
   pre/postconditions per step, defined so teams can work in parallel, and otherwise unused. They
   are exactly the path-joining rule: A+B composes iff A's postconditions satisfy B's
   preconditions.
+  **A contract is a GWT with the example data removed** — the schema of which a step is one
+  inhabitant. `GIVEN` is the precondition, `THEN` the postcondition, `WHEN` the step itself.
+  Contracts are therefore not extra work on top of scenarios; they are the same artifact typed.
 - **Example data is mandated**: *"Also put all relevant information in it. The more realistic the
   data the better."*
 
@@ -113,10 +116,14 @@ has found coupling the method says should not exist. No current artifact surface
 
 ### Open design questions
 
-1. **Does example data belong to the step or the path?** Preferred reading: the column is a
-   *slot*, the path supplies the data — so one `RcptTo` column appears in many paths with
-   different addresses. Putting data on the step instead collapses back into scenarios and gains
-   nothing.
+1. **Does example data belong to the step or the path?** **Settled: the step.** A step is a
+   *(column, data)* pair — an identified atom that participates in many paths. An earlier draft
+   argued the opposite (column as slot, path supplies data) on the grounds that data-in-step
+   "collapses back into scenarios." That was wrong: a scenario is per-slice GWT, whereas a step
+   is a reusable node. Data-in-step is also the only version that supports §8, since a real event
+   log needs identified atoms to match against.
+   Open sub-question: **when are two steps the same step?** Without an answer, every distinct data
+   value spawns a node and the catalog stops being navigable.
 2. **What makes composition legal?** Step contracts are the obvious answer, but they must
    actually exist first. Nothing in `event-model.md` v0.2 has them yet.
 3. **What bounds the trek space?** Free composition explodes combinatorially. "Meaningful" needs
@@ -127,6 +134,17 @@ has found coupling the method says should not exist. No current artifact surface
    mess the single timeline exists to prevent.
 6. **Relationship to Dilger's "chapters"** (blue arrow grouping slices) — coarse grouping that
    already exists. Is a chapter a degenerate path, or an orthogonal concept?
+7. **Naming — avoid "workflow" for the business-level grouping.** Dymitruk already uses *workflow
+   step* for one column, i.e. the technical unit. Three distinct things are in play and two are
+   already named:
+   | Thing | Name | Altitude |
+   |---|---|---|
+   | One column | **workflow step** (Dymitruk) | technical unit |
+   | A named business grouping | **chapter** (Dilger) | business narrative |
+   | A concrete traversal with data | **path** (this extension) | execution instance |
+   Caveat: a chapter groups *adjacent* slices. If business groupings must span non-contiguous
+   slices, chapters need extending from "contiguous group" to "named semantic group" — at which
+   point it may be a fourth construct rather than a reuse.
 
 ### Prerequisite
 
@@ -134,7 +152,79 @@ Step contracts must be added to the orthodox model before any of this can be bui
 already listed under *Deferred* in `event-model.md` — this extension is the reason to prioritise
 it.
 
-## 4. (open)
+## 4. Two classes of rule: normative vs. operator
+
+Some rules are **hard-lined** — an external authority defines them and the system has no
+discretion. RFC 5321 for a mail server; IRS regulations for tax software. Others are **operator
+or business configuration** — chosen locally, within what the hard rules permit.
+
+The clean example: RFC 5321 defines what a valid email address *can* be. A given server operator
+may accept only a subset. Both are rules; only one is negotiable.
+
+Implications to work out:
+
+- Are these two kinds of scenario, two kinds of slice, or two models?
+- Under §3, RFC-defined paths are **hard-lined** — failing one is a conformance defect. Operator
+  paths are per-deployment and their expected outcomes vary by config. That means a path needs a
+  *class*, and the promoted test suite is really two suites.
+- Does an operator rule ever *loosen* a normative one? If never, that is a checkable invariant:
+  the operator's accepted set must be a subset of the RFC's.
+
+## 5. Business errors vs. technical errors as separate models
+
+Dymitruk is firm that the model shows **business/domain** errors, not technical ones.
+
+The extension: model both, in **separate models**, and let a viewer merge them — with visibility
+selectable by the reader. The domain model stays clean, and the technical detail exists without
+polluting it.
+
+This is where the SMTP work keeps landing: `DataPhaseEntered` and a `503` sequencing error are
+protocol facts, not domain facts, and forcing them onto one timeline is what makes H1 and H2
+awkward. Two models dissolves both questions.
+
+Related: Dilger appears to advocate multiple domain models directly, stacking a short HELO line
+above or below a fuller EHLO model — which is the same move applied to protocol variants rather
+than to error classes.
+
+## 6. The live model viewer
+
+Paths, models and layers are only useful if they can be selected. The intended artifact is a
+**live viewer**, not a static board:
+
+- Choose a path or trek, or step through interactively
+- Choose which models to include (domain / protocol / GUI)
+- Choose depth and layer
+
+With **persona defaults**: a CEO view that is very high level; a technical-ops view; an accounting
+view; a contributor view that follows exactly what happens on the technical side. One artifact,
+many audiences — the same model serving as user documentation, onboarding, and technical
+reference depending on which knobs are set.
+
+This is also the answer to §3's question 5 (board or beside it): **neither** — paths are selected
+in a viewer, so the static board never branches.
+
+## 7. Graphs
+
+If steps are nodes and paths are walks, the model is a graph and graph tooling applies directly:
+
+- **Forensics** — an operator's event log is a walk. Which known walks reach this error node, and
+  where does the log diverge? (see §8)
+- **Coverage** — promotion becomes spanning-tree-plus-unique-edges rather than a judgement call
+- **Reachability** — which slices can never be reached? which errors have no path to them?
+
+## 8. Paths as a support and diagnosis artifact
+
+A use for §3 that has nothing to do with testing.
+
+An operator hits an error and hands over their event log. Because every event leading to the
+error is on the path, the failure can be traced back through the exact sequence that produced it
+— not reconstructed from guesswork or partial logs.
+
+This is a strong argument for **data living in the step** (§3, question 1). If data lives on the
+path, an incoming log has no atoms to match against. If steps are identified nodes, the log maps
+onto a known sequence and the point of divergence is detectable mechanically.
+
+## 9. (open)
 
 Space for what emerges next.
 
