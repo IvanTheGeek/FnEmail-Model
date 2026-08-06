@@ -9,6 +9,16 @@ renderer actually does, keep only what works in both.
 
 Open this page in both and fill in the verdict table at the bottom.
 
+**Renderers under test.** A technique must work in both.
+
+| Renderer | Version |
+|:--|:--|
+| **Claude Android app** | **1.260721.20** (build 26072120) |
+| **GitHub** | web renderer, viewed in Chrome on Android and on desktop; predictions cross-checked against the `POST /markdown` API |
+
+Record the app version with any future result — the app updates independently of this repository,
+and a verdict without a version cannot be re-checked.
+
 ---
 
 ## 1. Inline HTML — the obvious approaches

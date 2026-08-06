@@ -5,6 +5,16 @@ label syntax, superseded) and [`EXPERIMENT-text-color.md`](EXPERIMENT-text-color
 — chips won). Same method: try every candidate, open it in **both** renderers, keep only what
 works in both.
 
+**Renderers under test.** A technique must work in both.
+
+| Renderer | Version |
+|:--|:--|
+| **Claude Android app** | **1.260721.20** (build 26072120) |
+| **GitHub** | web renderer, viewed in Chrome on Android and on desktop; predictions cross-checked against the `POST /markdown` API |
+
+Record the app version with any future result — the app updates independently of this repository,
+and a verdict without a version cannot be re-checked.
+
 ---
 
 ## The problem
