@@ -55,9 +55,23 @@ Inside a table cell, which is where the chips live:
 | Read Model | 🟩 | $\color{green}{\text{Read Model}}$ |
 | hotspot | 🟥 | $\color{red}{\text{hotspot}}$ |
 
-⚠️ **Known distortion.** In the Claude app this renders in LaTeX math style — italic serif — and
-without `\text{}` a hyphen becomes a minus sign with maths spacing. `math-color-red` came out as
-*math − color − red*. The `\text{}` wrapper is what to watch in the results above.
+> ⚠️ **Tested 2026-08-06 — colour works in both, but `\text{}` is honoured by only one.**
+>
+> | | GitHub | Claude app |
+> |:--|:--|:--|
+> | colour appears | ✅ | ✅ |
+> | bare `$\color{}{}$` | italic serif, `-` → minus sign | italic serif, `-` → minus sign |
+> | **`$\color{}{\text{}}$`** | ✅ **normal body font, hyphens intact** | ❌ **still italic serif, still minus signs** |
+> | in a table cell | ✅ normal font, correctly coloured | ⚠️ coloured but serif |
+>
+> **This is the asymmetry section 1 was checking for**, in a milder form. Not colour-versus-nothing,
+> but **clean-versus-mangled**: `$\color{red}{\text{math-color-red}}$` renders as `math-color-red`
+> on GitHub and as *math − color − red* in the app. You would author it, see it correct, and it
+> would degrade where the model is read on a phone.
+>
+> The failure is *legible* rather than silent, which is better than `<br>` was — a reader sees odd
+> typography rather than two words fused together. But it is still one renderer disagreeing with
+> the other about the same source.
 
 ---
 
@@ -71,6 +85,22 @@ without `\text{}` a hyphen becomes a minus sign with maths spacing. `math-color-
 # a hash line is a comment
   an unmarked line is plain
 ```
+
+> ⚠️ **Tested 2026-08-06 — the two renderers give different numbers of colours.**
+>
+> | line | GitHub | Claude app |
+> |:--|:--|:--|
+> | `+` | green **+ green background** | green text |
+> | `-` | red **+ red background** | red text |
+> | `!` | **orange + orange background** | **green — wrong** |
+> | `@@` | **purple** | plain |
+> | `#` | grey comment | plain |
+>
+> GitHub gives five distinguishable treatments with background fills; the app gives **two**. The
+> `!` line is actively misleading — orange on GitHub, green in the app, so the same source says
+> "warning" in one place and "added" in the other.
+>
+> Two usable colours, code-block-only, first character hijacked. Confirms the original assessment.
 
 Works on GitHub — confirmed, the API emits `pl-mi1` and `pl-md` highlight classes. But it is only
 available **inside a code block**, offers roughly four colours whose meaning is fixed by diff
@@ -102,9 +132,9 @@ Fill in from both renderers. A technique needs **two ✅** to be usable.
 | 1B | `<font color>` | ❌ | ❌ | ❌ | plain text in both |
 | 1C | `<span class>` | ❌ | ❌ | ❌ | plain text in both |
 | 1D | `<div style>` | ❌ | ❌ | ❌ | plain text in both; also **breaks paragraph flow** — GitHub runs the next paragraph on, the app leaves a gap |
-| 2 | `$\color{}{}$` | | | ✅ syntactically | distorts to math italic |
-| 2 | `$\color{}{\text{}}$` | | | ✅ syntactically | `\text{}` should stop the distortion |
-| 3 | ` ```diff ` | ✅ | ✅ | ❌ code block only | ~4 fixed colours |
+| 2 | `$\color{}{}$` | ⚠️ | ⚠️ | ✅ | colours, but italic serif and `-` → minus in **both** |
+| 2 | `$\color{}{\text{}}$` | ✅ | ❌ | ✅ | **GitHub honours `\text{}`, the app ignores it** — clean vs mangled |
+| 3 | ` ```diff ` | ✅ 5 colours | ⚠️ 2 colours | ❌ code block only | `!` is **orange on GitHub, green in the app** |
 | 4 | emoji chip | ✅ | ✅ | ✅ | current convention |
 
 ---
