@@ -257,7 +257,7 @@ Eight base styles. Source, in order:
 
 | Modifier | Sample | Source | Note |
 |:--|:--|:--|:--|
-| **ALL CAPS** | `220 FOO.COM READY` | content change, not markup | Free — works everywhere, survives copy-paste, but destroys case-sensitive data. Safe for protocol verbs (`HELO`, `MAIL FROM`), unsafe for domains and paths |
+| **ALL CAPS** | `220 FOO.COM READY` | content change, not markup | Free, survives copy-paste. ⚠️ **Corrected:** an earlier note here said "unsafe for domains and paths". Wrong — RFC 5321 §2.4 puts verbs *and domains* under case-insensitive rules, so caps is safe for both. It is **mailbox local-parts** that MUST preserve case, so `<Smith@bar.com>` may never be capitalized as a notation choice. See `../event-model.md` → *Case sensitivity* |
 | **~~strikethrough~~** | ~~`220 foo.com Ready`~~ | `~~...~~` | Available and unused. Reads as *removed* or *superseded*, so it carries a meaning already — hard to repurpose |
 | **quotes as delimiter** | `"bar.com"` vs `bar.com` | content | Already in use for values. Zero markup cost, and the quotes are themselves the signal |
 | **angle brackets** | `<Smith@bar.com>` | content | RFC 5321's own delimiter for a path. Free, and *already meaningful* to the domain |

@@ -344,6 +344,61 @@ it payload.
 `ConnectionAccepted.occurred_at` is removed by the same reasoning inverted — nothing consumes it,
 and ambient store time covers the diagnostic need.
 
+### Case sensitivity — settled from the RFC
+
+**Question:** if FnEmail receives `helo bar.com`, or `HeLo bar.com`, is that valid?
+
+**Answer: valid, and rejecting it would put FnEmail in violation.** RFC 5321 §2.4 is explicit:
+
+> *"Verbs and argument values (e.g., "TO:" or "to:" in the RCPT command and extension name
+> keywords) are **not case sensitive**, with the sole exception in this specification of a mailbox
+> local-part … a command verb, an argument value other than a mailbox local-part, and free form
+> text **MAY be encoded in upper case, lower case, or any mixture of upper and lower case with no
+> impact on its meaning**."*
+
+The specification anticipates servers that get this wrong and names them:
+
+> *"A few SMTP servers, **in violation of this specification** (and RFC 821) require that command
+> verbs be encoded by clients in upper case."*
+
+So `helo`, `HELO` and `HeLo` are the same command. There is no reply code for wrong-case verbs
+because there is no such thing.
+
+**Three consequences for this model.**
+
+**1. Verb case is not a fact.** The `Helo` slice is the same command whatever case arrived, so there
+is no `claimed_verb_case` field and there must never be one. The case that reached the wire fails
+**G1** — nothing consumes it — and fails **G2**, since it changes nothing about what the system will
+accept next. It is not low-altitude detail; it is *not information*.
+
+**2. `claimed_domain` is case-insensitive**, because §2.4 puts mailbox domains under
+*"normal DNS rules"*. `BAR.COM` and `bar.com` are the same claim. The model may normalize it, and
+any comparison must not be case-sensitive.
+
+**3. ⚠️ Local-parts MUST preserve case, and this is a real constraint the model was not recording.**
+
+> *"The local-part of a mailbox **MUST BE** treated as case sensitive. Therefore, SMTP
+> implementations **MUST take care to preserve the case** of mailbox local-parts. In particular, for
+> some hosts, the user "smith" is different from the user "Smith"."*
+
+That is a **MUST**, so by **G3** it is **domain**, not product. It binds every field carrying a
+mailbox: `reverse_path`, `forward_path`, and `recipients` on `MessageAccepted`. Those values may not
+be case-folded on the way in, on the way out, or in any read model that compares them. It also
+propagates into output — `Received:`'s `FOR` clause carries `forward_path` verbatim.
+
+The walked paths already exercise this without having been designed to: `Smith`, `Jones`, `JQP`,
+`Green` and `Brown` are all mixed-case local-parts, so any implementation that folded case would
+produce visibly wrong `Received:` headers. That is rule 8 working — real data catching a constraint
+nobody had written down.
+
+Note the asymmetry inside one address. In `<Jones@XYZ.COM>` from
+[`paths/helo-single-recipient.md`](paths/helo-single-recipient.md), **`Jones` is case-sensitive and
+`XYZ.COM` is not** — the same string, two different rules, split at the `@`.
+
+⚠️ **One caution the RFC adds against itself:** *"exploiting the case sensitivity of mailbox
+local-parts impedes interoperability and is **discouraged**."* So the rule is *preserve*, not
+*depend on* — MUST-preserve paired with SHOULD-NOT-rely-upon.
+
 ### ⚠️ `local_address` is an orphan
 
 Found by walking the path with data. It has an origin and **no destination**: `Received:`'s `BY`
