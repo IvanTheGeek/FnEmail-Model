@@ -14,24 +14,42 @@ project prefers them, with the corpus synonyms in parentheses:
 | **Command Slice** | state change · write column · `state-change` |
 | **View Slice** | state view · read model · query · `state-view` |
 
+**Rendering vocabulary.** Settled empirically in
+[`EXPERIMENT-block-labels.md`](EXPERIMENT-block-labels.md) — the Mermaid docs specify none of it.
+One `classDef` per element type carries **color, left alignment and height together**; labels use
+`<b>` for the title and `\n` for breaks; markdown never works; boxes never wrap.
+
+**No arrows.** Meaning is carried by row position and left-to-right time. Rows are fixed:
+
+```
+row 1   Actor / Screen
+row 2   Command (blue)  ·or·  Read Model (green)   ← never both; that is the slice type
+row 3   Event (orange)
+```
+
+A Command Slice reads **top to bottom**. A View Slice reads **bottom to top**. Same three rows.
+
 ---
 
 ## 1. Command Slice
 
 *(aka state change, write column)*
 
-Three rows, one slice: **actor → command → event**. This is slice 4, `MailFrom`.
+Slice 4, `MailFrom`.
 
 ```mermaid
-block-beta
+block
   columns 1
-  actor["Remote client · MAIL FROM Smith at bar.com"]
-  cmd["MailFrom"]
-  evt["MailTransactionStarted"]
+  actor["<b>Remote client</b>\nMAIL FROM:&lt;Smith@bar.com&gt;"]
+  cmd["<b>MailFrom</b>\nreverse_path"]
+  evt["<b>MailTransactionStarted</b>\nreverse_path"]
 
-  style actor fill:#ffffff,stroke:#444,stroke-width:2px,color:#000
-  style cmd fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000
-  style evt fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
+  classDef screen fill:#ffffff,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:70px
+  classDef command fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:70px
+  classDef event fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:70px
+  class actor screen
+  class cmd command
+  class evt event
 ```
 
 ### One event per command
@@ -50,19 +68,26 @@ fan-out. Scoping to inbound removed the fan-out and the completeness check remov
 event, leaving one command, one event — and the model got simpler, not poorer.
 
 ```mermaid
-block-beta
+block
   columns 2
-  ok["✅ one command · one event"] bad["⚠️ one command · many events"]
-  c1["Command"] c2["Command"]
-  e1["Event"] e2["Event · Event · Event"]
+  ok["<b>✅ one command → one event</b>"] bad["<b>⚠️ one command → many events</b>\n'left chair'"]
+  c1["<b>Command</b>"] c2["<b>Command</b>"]
+  e1["<b>Event</b>"] e2["<b>Event</b> · <b>Event</b> · <b>Event</b>"]
 
-  style ok fill:#eef7ee,stroke:#4a4,stroke-width:1px,color:#000
-  style bad fill:#fdf1e7,stroke:#c85,stroke-width:1px,color:#000
-  style c1 fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000
-  style c2 fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000
-  style e1 fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
-  style e2 fill:#f5a04f,stroke:#c85,stroke-width:2px,stroke-dasharray:5 3,color:#000
+  classDef okh fill:#eef7ee,stroke:#4a4,stroke-width:1px,color:#000,text-align:left,height:50px
+  classDef badh fill:#fdf1e7,stroke:#c85,stroke-width:1px,color:#000,text-align:left,height:50px
+  classDef command fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:50px
+  classDef event fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:50px
+  classDef warn fill:#f5a04f,stroke:#c85,stroke-width:2px,stroke-dasharray:5 3,color:#000,text-align:left,height:50px
+  class ok okh
+  class bad badh
+  class c1,c2 command
+  class e1 event
+  class e2 warn
 ```
+
+**`RcptTo` does not trip this rule.** `RecipientAccepted` and `RecipientRejected` are
+*alternatives* — accepted **or** rejected, never both — not a fan-out.
 
 ---
 
@@ -70,18 +95,21 @@ block-beta
 
 *(aka state view, read model, query)*
 
-Rows run the other way: **events → read model → actor**. This is slice 3, `SessionState`.
+Slice 3, `SessionState`. Same three rows, read **bottom to top**.
 
 ```mermaid
-block-beta
+block
   columns 1
-  evts["ConnectionAccepted · ClientIdentified · SessionReset"]
-  rm["SessionState · identified, transaction_open"]
-  consumer["consumed by MailFrom, RcptTo, BeginData"]
+  consumer["<b>consumed by</b>\nMailFrom · RcptTo · BeginData"]
+  rm["<b>SessionState</b>\nidentified\ntransaction_open"]
+  evts["<b>ConnectionAccepted</b>\n<b>ClientIdentified</b>\n<b>SessionReset</b>"]
 
-  style evts fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
-  style rm fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000
-  style consumer fill:#ffffff,stroke:#444,stroke-width:2px,color:#000
+  classDef screen fill:#ffffff,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:70px
+  classDef readmodel fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:70px
+  classDef event fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:70px
+  class consumer screen
+  class rm readmodel
+  class evts event
 ```
 
 A View Slice may draw on events from **anywhere earlier** on the timeline. It is placed at its
@@ -93,80 +121,59 @@ accumulates; worth watching if it grows without a matching growth in the questio
 
 ---
 
-## 3. Both slice types as a grid
+## 3. Both slice types, side by side
 
-The two shapes side by side. Read each slice top to bottom; read the board left to right.
+The shared row structure, and why the two never mix. Row 2 holds a command **or** a read model —
+that choice *is* the slice type.
 
 ```mermaid
-block-beta
+block
   columns 2
-  h1["COMMAND SLICE"] h2["VIEW SLICE"]
-  a1["Actor / Processor"] a2["Event(s)"]
-  b1["Command"] b2["Read Model"]
-  c1["Event"] c2["Actor / Processor"]
+  h1["<b>COMMAND SLICE</b>\nread top → bottom"] h2["<b>VIEW SLICE</b>\nread bottom → top"]
+  a1["Actor / Processor"] a2["Actor / Processor"]
+  b1["<b>Command</b>"] b2["<b>Read Model</b>"]
+  c1["<b>Event</b>"] c2["<b>Event(s)</b>"]
 
-  style h1 fill:#e8e8e8,stroke:#444,stroke-width:1px,color:#000
-  style h2 fill:#e8e8e8,stroke:#444,stroke-width:1px,color:#000
-  style a1 fill:#ffffff,stroke:#444,stroke-width:2px,color:#000
-  style b1 fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000
-  style c1 fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
-  style a2 fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
-  style b2 fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000
-  style c2 fill:#ffffff,stroke:#444,stroke-width:2px,color:#000
+  classDef hdr fill:#e8e8e8,stroke:#444,stroke-width:1px,color:#000,text-align:left,height:55px
+  classDef screen fill:#ffffff,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:55px
+  classDef command fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:55px
+  classDef readmodel fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:55px
+  classDef event fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:55px
+  class h1,h2 hdr
+  class a1,a2 screen
+  class b1 command
+  class b2 readmodel
+  class c1,c2 event
 ```
 
 Every slice in the model is one of these two. Automation and Translation are **compositions** — a
 View Slice feeding a Command Slice — which is why Dymitruk specifies an automation as *two*
 Given-When-Thens rather than one.
 
-> ⚠️ **Syntax note.** Sections 1–3 were written using `block-beta`. As of Mermaid **11.16.1** the
-> keyword is plain **`block`** — the beta suffix is gone. These render today, so the old form is
-> still being accepted, but they should be migrated. Label formatting is being settled first in
-> [`EXPERIMENT-block-labels.md`](EXPERIMENT-block-labels.md), then this page gets rebuilt from
-> whatever wins.
-
 ---
 
 ## 4. Inbound timeline — session establishment
 
-Slices 1–3. Flowchart syntax, as a rendering control against §3.
+Slices 1–3. Columns are slices; rows are element types; `space` marks a row a slice does not use.
 
 ```mermaid
-flowchart LR
-  subgraph c1["1 · AcceptConnection"]
-    direction TB
-    s1["tcp connect"]
-    k1["AcceptConnection"]
-    e1["ConnectionAccepted<br/>peer_address"]
-    s1 --> k1
-    k1 --> e1
-  end
+block
+  columns 3
+  h1["<b>1 · AcceptConnection</b>"] h2["<b>2 · Helo</b>"] h3["<b>3 · SessionState</b>"]
+  s1["tcp connect"] s2["HELO bar.com"] s3["<b>consumed by</b>\nslices 4, 6, 8"]
+  k1["<b>AcceptConnection</b>"] k2["<b>Helo</b>"] r3["<b>SessionState</b>\nidentified"]
+  e1["<b>ConnectionAccepted</b>\npeer_address"] e2["<b>ClientIdentified</b>\nclaimed_domain"] space
 
-  subgraph c2["2 · Helo"]
-    direction TB
-    s2["HELO bar.com"]
-    k2["Helo"]
-    e2["ClientIdentified<br/>claimed_domain"]
-    s2 --> k2
-    k2 --> e2
-  end
-
-  subgraph c3["3 · SessionState"]
-    direction TB
-    r3["SessionState<br/>identified"]
-  end
-
-  e1 --> r3
-  e2 --> r3
-
-  classDef screen fill:#ffffff,stroke:#444,stroke-width:2px,color:#000
-  classDef command fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000
-  classDef event fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
-  classDef readmodel fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000
-  class s1,s2 screen
+  classDef hdr fill:#e8e8e8,stroke:#444,stroke-width:1px,color:#000,text-align:left,height:45px
+  classDef screen fill:#ffffff,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:70px
+  classDef command fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:70px
+  classDef readmodel fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:70px
+  classDef event fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:70px
+  class h1,h2,h3 hdr
+  class s1,s2,s3 screen
   class k1,k2 command
-  class e1,e2 event
   class r3 readmodel
+  class e1,e2 event
 ```
 
 ---
@@ -177,116 +184,68 @@ Slices 4–7. `RecipientDirectory` is the Translation boundary onto the Director
 resolved), so its source is outside this model — shown **yellow**.
 
 ```mermaid
-flowchart LR
-  subgraph c4["4 · MailFrom"]
-    direction TB
-    s4["MAIL FROM"]
-    k4["MailFrom"]
-    e4["MailTransactionStarted"]
-    s4 --> k4
-    k4 --> e4
-  end
+block
+  columns 4
+  h4["<b>4 · MailFrom</b>"] h5["<b>5 · RecipientDirectory</b>"] h6["<b>6 · RcptTo</b>"] h7["<b>7 · TransactionState</b>"]
+  s4["MAIL FROM"] s5["<b>consumed by</b>\nslice 6"] s6["RCPT TO"] s7["<b>consumed by</b>\nslices 6, 8, 9"]
+  k4["<b>MailFrom</b>"] r5["<b>RecipientDirectory</b>\nis_local"] k6["<b>RcptTo</b>"] r7["<b>TransactionState</b>\nrecipient_count"]
+  e4["<b>MailTransactionStarted</b>\nreverse_path"] x5["<b>Directory context</b>\ntranslated — external"] e6["<b>RecipientAccepted</b>\n<b>RecipientRejected</b> 550"] space
 
-  subgraph c5["5 · RecipientDirectory"]
-    direction TB
-    x5["Directory context<br/>translated — external"]
-    r5["RecipientDirectory<br/>is_local"]
-    x5 --> r5
-  end
-
-  subgraph c6["6 · RcptTo"]
-    direction TB
-    s6["RCPT TO"]
-    k6["RcptTo"]
-    e6["RecipientAccepted"]
-    e6b["RecipientRejected<br/>550"]
-    s6 --> k6
-    k6 --> e6
-    k6 --> e6b
-  end
-
-  subgraph c7["7 · TransactionState"]
-    direction TB
-    r7["TransactionState<br/>recipient_count"]
-  end
-
-  e4 --> r7
-  e6 --> r7
-  r5 --> k6
-
-  classDef screen fill:#ffffff,stroke:#444,stroke-width:2px,color:#000
-  classDef command fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000
-  classDef event fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
-  classDef external fill:#f7e463,stroke:#444,stroke-width:2px,color:#000
-  classDef readmodel fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000
-  class s4,s6 screen
+  classDef hdr fill:#e8e8e8,stroke:#444,stroke-width:1px,color:#000,text-align:left,height:45px
+  classDef screen fill:#ffffff,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:75px
+  classDef command fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:75px
+  classDef readmodel fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:75px
+  classDef event fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:75px
+  classDef external fill:#f7e463,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:75px
+  class h4,h5,h6,h7 hdr
+  class s4,s5,s6,s7 screen
   class k4,k6 command
-  class e4,e6,e6b event
-  class x5 external
   class r5,r7 readmodel
+  class e4,e6 event
+  class x5 external
 ```
 
-`RcptTo` shows two outcomes, which is **not** the one-event-per-command warning from §1. They are
-alternatives — accepted **or** rejected, never both — not a fan-out.
+The **yellow** cell is what distinguishes Translation from Automation — the source events belong to
+another context.
 
 ---
 
 ## 6. Inbound timeline — content and close
 
-Slices 8–12. `DataPhaseEntered` is red: **H1**, on trial because its only candidate consumer is
-the transcript.
+Slices 8–12. `DataPhaseEntered` is **red**: hotspot **H1**, on trial because its only candidate
+consumer is the transcript.
 
 ```mermaid
-flowchart LR
-  subgraph c8["8 · BeginData"]
-    direction TB
-    s8["DATA"]
-    k8["BeginData"]
-    e8["DataPhaseEntered<br/>H1 — consumer?"]
-    s8 --> k8
-    k8 --> e8
-  end
+block
+  columns 5
+  h8["<b>8 · BeginData</b>"] h9["<b>9 · SubmitContent</b>"] h10["<b>10 · Reset</b>"] h11["<b>11 · Quit</b>"] h12["<b>12 · SessionTranscript</b>"]
+  s8["DATA"] s9["content · then dot"] s10["RSET"] s11["QUIT"] s12["<b>Operator</b>\nreads transcript"]
+  k8["<b>BeginData</b>"] k9["<b>SubmitContent</b>"] k10["<b>Reset</b>"] k11["<b>Quit</b>"] r12["<b>SessionTranscript</b>"]
+  e8["<b>DataPhaseEntered</b>\nH1 — consumer?"] e9["<b>MessageAccepted</b>\nqueue_id · received_at"] e10["<b>TransactionAborted</b>"] e11["<b>SessionClosed</b>"] space
 
-  subgraph c9["9 · SubmitContent"]
-    direction TB
-    s9["content then dot"]
-    k9["SubmitContent"]
-    e9["MessageAccepted<br/>queue_id, received_at"]
-    s9 --> k9
-    k9 --> e9
-  end
-
-  subgraph c1011["10–11 · Reset / Quit"]
-    direction TB
-    k11["Reset / Quit"]
-    e11["TransactionAborted<br/>SessionClosed"]
-    k11 --> e11
-  end
-
-  subgraph c12["12 · SessionTranscript"]
-    direction TB
-    r12["SessionTranscript<br/>operator view"]
-  end
-
-  e8 --> r12
-  e9 --> r12
-  e11 --> r12
-
-  classDef screen fill:#ffffff,stroke:#444,stroke-width:2px,color:#000
-  classDef command fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000
-  classDef event fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
-  classDef hotspot fill:#f4a0a0,stroke:#a33,stroke-width:2px,color:#000
-  classDef readmodel fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000
-  class s8,s9 screen
-  class k8,k9,k11 command
-  class e9,e11 event
-  class e8 hotspot
+  classDef hdr fill:#e8e8e8,stroke:#444,stroke-width:1px,color:#000,text-align:left,height:45px
+  classDef screen fill:#ffffff,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:75px
+  classDef command fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:75px
+  classDef readmodel fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:75px
+  classDef event fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:75px
+  classDef hotspot fill:#f4a0a0,stroke:#a33,stroke-width:2px,color:#000,text-align:left,height:75px
+  class h8,h9,h10,h11,h12 hdr
+  class s8,s9,s10,s11,s12 screen
+  class k8,k9,k10,k11 command
   class r12 readmodel
+  class e9,e10,e11 event
+  class e8 hotspot
 ```
+
+`SessionTranscript` is the **"right chair"** shape — one read model fed by every event above.
+Expected here; worth watching if it grows.
 
 ---
 
 ## 7. Worked paths as sequences
+
+Sequence diagrams, not blocks — a path is a conversation over time, which is what this diagram
+type is for.
 
 **Path 1** — [`../paths/helo-multi-recipient.md`](../paths/helo-multi-recipient.md). Three
 recipients, one rejected mid-flow. 13 steps over 11 slices.
@@ -337,5 +296,5 @@ sequenceDiagram
 ```
 
 Outcome is relative to the actor. Path 1 is a complete success for the server, **partial** for the
-sender, and a failure for `Green`. Path 2 succeeds for everyone. `Reset` remains the only slice no
-path has touched.
+sender, and a failure for `Green`. Path 2 succeeds for everyone. `Reset` — slice 10 — remains the
+only slice no path has touched.
