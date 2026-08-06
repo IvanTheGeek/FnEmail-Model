@@ -39,7 +39,7 @@ the other half of that pair. See *What this walk tested*.
 
 | | **`AcceptConnection`** — C |
 |:--|:--|
-| ⬜ **Screen** | `S: 220 foo.com Simple Mail Transfer Service Ready` |
+| ⬜ **Actor** | `S: 220 foo.com Simple Mail Transfer Service Ready` |
 | 🟦 **Command** | **AcceptConnection** |
 | 🟧 **Event** | **ConnectionAccepted**&#10;<br>`peer_address: "203.0.113.20"` · `local_address: "192.0.2.10:25"` |
 
@@ -49,7 +49,7 @@ the other half of that pair. See *What this walk tested*.
 
 | | **`Helo`** — C |
 |:--|:--|
-| ⬜ **Screen** | `C: HELO bar.com`&#10;<br>`S: 250 foo.com` |
+| ⬜ **Actor** | `C: HELO bar.com`&#10;<br>`S: 250 foo.com` |
 | 🟦 **Command** | **Helo** |
 | 🟧 **Event** | **ClientIdentified**&#10;<br>`claimed_domain: "bar.com"` · `protocol: "SMTP"` |
 
@@ -67,7 +67,7 @@ the other half of that pair. See *What this walk tested*.
 
 | | **`MailFrom`** — C |
 |:--|:--|
-| ⬜ **Screen** | `C: MAIL FROM:<Smith@bar.com>`&#10;<br>`S: 250 OK` |
+| ⬜ **Actor** | `C: MAIL FROM:<Smith@bar.com>`&#10;<br>`S: 250 OK` |
 | 🟦 **Command** | **MailFrom** |
 | 🟧 **Event** | **MailTransactionStarted**&#10;<br>`reverse_path: "<Smith@bar.com>"` |
 
@@ -89,7 +89,7 @@ paths cross.
 
 | | **`RcptTo`** — C |
 |:--|:--|
-| ⬜ **Screen** | `C: RCPT TO:<Jones@foo.com>`&#10;<br>`S: 250 OK` |
+| ⬜ **Actor** | `C: RCPT TO:<Jones@foo.com>`&#10;<br>`S: 250 OK` |
 | 🟦 **Command** | **RcptTo** |
 | 🟧 **Event** | **RecipientAccepted**&#10;<br>`forward_path: "<Jones@foo.com>"` |
 
@@ -109,7 +109,7 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 
 | | **`BeginData`** — C |
 |:--|:--|
-| ⬜ **Screen** | `C: DATA`&#10;<br>`S: 354 Start mail input; end with <CRLF>.<CRLF>` |
+| ⬜ **Actor** | `C: DATA`&#10;<br>`S: 354 Start mail input; end with <CRLF>.<CRLF>` |
 | 🟦 **Command** | **BeginData** |
 | 🟥 **Event** | **DataPhaseEntered**&#10;<br>*no payload — H1: does it earn its place?* |
 
@@ -122,7 +122,7 @@ does not resolve it — it just shows the event firing with nothing downstream t
 
 | | **`SubmitContent`** — C |
 |:--|:--|
-| ⬜ **Screen** | `C: Date: Tue, 19 May 1998 09:14:02 -0700`&#10;<br>`C: From: Smith <Smith@bar.com>`&#10;<br>`C: To: Jones@foo.com`&#10;<br>`C: Subject: Tuesday`&#10;<br>`C: (blank)`&#10;<br>`C: Blah blah blah...`&#10;<br>`C: .`&#10;<br>`S: 250 OK` |
+| ⬜ **Actor** | `C: Date: Tue, 19 May 1998 09:14:02 -0700`&#10;<br>`C: From: Smith <Smith@bar.com>`&#10;<br>`C: To: Jones@foo.com`&#10;<br>`C: Subject: Tuesday`&#10;<br>`C: (blank)`&#10;<br>`C: Blah blah blah...`&#10;<br>`C: .`&#10;<br>`S: 250 OK` |
 | 🟦 **Command** | **SubmitContent** |
 | 🟧 **Event** | **MessageAccepted**&#10;<br>`queue_id: "f2C8D14"` · `reverse_path: "<Smith@bar.com>"`&#10;<br>`recipients: ["<Jones@foo.com>"]` · `content_ref: "blob:sha256:9c1e…"`&#10;<br>`actual_octets: 194` · `received_at: "1998-05-19T09:14:07-07:00"` |
 
@@ -135,7 +135,7 @@ delivering or reporting failure — RFC 5321 §2.1.
 
 | | **`Quit`** — C |
 |:--|:--|
-| ⬜ **Screen** | `C: QUIT`&#10;<br>`S: 221 foo.com Service closing transmission channel` |
+| ⬜ **Actor** | `C: QUIT`&#10;<br>`S: 221 foo.com Service closing transmission channel` |
 | 🟦 **Command** | **Quit** |
 | 🟧 **Event** | **SessionClosed**&#10;<br>`cause: "quit"` |
 

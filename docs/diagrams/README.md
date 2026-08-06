@@ -5,6 +5,12 @@ and in the Android app.
 
 **Colors** — 🟧 Event · 🟦 Command · 🟩 Read Model · ⬜ Screen · 🟨 external · 🟥 hotspot.
 
+**The top row is the Actor row, not the Screen row.** *Screen* names an **element**; *Actor* names
+the **lane**, and the lane is what a row is. The corpus supports the distinction — Dymitruk's step
+3.1 calls them *"swim-lanes to show different people (or sometimes systems)"* and adds *"we also
+show any **automation** here with a symbol like gears."* A lane holding both screens and automations
+cannot be named after one of them. The ⬜ chip still marks a Screen where one sits in the lane.
+
 The chip carries the element type where a row is mixed; elsewhere the row label carries it. A chip
 is not decoration — in Event Modeling **color is the element type**, and Command-blue and
 ReadModel-green are invariant across every source.
@@ -29,7 +35,7 @@ are still fine, because a count is a fact about the model rather than a handle o
 **No arrows.** Meaning is carried by row position and left-to-right time. Rows are fixed:
 
 ```
-row 1   Actor / Screen
+row 1   Actor      screen, or automation for a processor
 row 2   Command (blue)  ·or·  Read Model (green)   ← never both; that is the slice type
 row 3   Event (orange)
 ```
@@ -83,7 +89,7 @@ The `MailFrom` slice.
 
 | | **MailFrom** |
 |:--|:--|
-| ⬜ **Screen** | **Remote client**&#10;<br>`MAIL FROM:<Smith@bar.com>` |
+| ⬜ **Actor** | **Remote client**&#10;<br>`MAIL FROM:<Smith@bar.com>` |
 | 🟦 **Command** | **MailFrom**&#10;<br>`reverse_path` |
 | 🟧 **Event** | **MailTransactionStarted**&#10;<br>`reverse_path` |
 
@@ -140,7 +146,7 @@ that choice *is* the slice type.
 
 | | **COMMAND SLICE**&#10;<br>read top → bottom | **VIEW SLICE**&#10;<br>read bottom → top |
 |:--|:--|:--|
-| ⬜ **Row 1** | Actor / Processor | Actor / Processor |
+| ⬜ **Actor** | Actor / Processor | Actor / Processor |
 | **Row 2** | 🟦 **Command** | 🟩 **Read Model** |
 | 🟧 **Row 3** | **Event** | **Event(s)** |
 
@@ -156,7 +162,7 @@ Given-When-Thens rather than one.
 
 | | **AcceptConnection** | **Helo** | **SessionState** |
 |:--|:--|:--|:--|
-| ⬜ **Screen** | tcp connect | `HELO bar.com` | **consumed by**&#10;<br>MailFrom · RcptTo · BeginData |
+| ⬜ **Actor** | tcp connect | `HELO bar.com` | **consumed by**&#10;<br>MailFrom · RcptTo · BeginData |
 | **Cmd / View** | 🟦 **AcceptConnection** | 🟦 **Helo** | 🟩 **SessionState**&#10;<br>`identified` |
 | 🟧 **Event** | **ConnectionAccepted**&#10;<br>`peer_address` | **ClientIdentified**&#10;<br>`claimed_domain` | — |
 
@@ -169,7 +175,7 @@ resolved), so its source is outside this model — shown 🟨 **yellow**.
 
 | | **MailFrom** | **RecipientDirectory** | **RcptTo** | **TransactionState** |
 |:--|:--|:--|:--|:--|
-| ⬜ **Screen** | `MAIL FROM` | **consumed by**&#10;<br>RcptTo | `RCPT TO` | **consumed by**&#10;<br>RcptTo · BeginData · SubmitContent |
+| ⬜ **Actor** | `MAIL FROM` | **consumed by**&#10;<br>RcptTo | `RCPT TO` | **consumed by**&#10;<br>RcptTo · BeginData · SubmitContent |
 | **Cmd / View** | 🟦 **MailFrom** | 🟩 **RecipientDirectory**&#10;<br>`is_local` | 🟦 **RcptTo** | 🟩 **TransactionState**&#10;<br>`recipient_count` |
 | **Event** | 🟧 **MailTransactionStarted**&#10;<br>`reverse_path` | 🟨 **Directory context**&#10;<br>translated — external | 🟧 **RecipientAccepted**&#10;<br>🟧 **RecipientRejected** `550` | — |
 
@@ -185,7 +191,7 @@ consumer is the transcript.
 
 | | **BeginData** | **SubmitContent** | **Reset** | **Quit** | **SessionTranscript** |
 |:--|:--|:--|:--|:--|:--|
-| ⬜ **Screen** | `DATA` | content · then dot | `RSET` | `QUIT` | **Operator**&#10;<br>reads transcript |
+| ⬜ **Actor** | `DATA` | content · then dot | `RSET` | `QUIT` | **Operator**&#10;<br>reads transcript |
 | **Cmd / View** | 🟦 **BeginData** | 🟦 **SubmitContent** | 🟦 **Reset** | 🟦 **Quit** | 🟩 **SessionTranscript** |
 | **Event** | 🟥 **DataPhaseEntered**&#10;<br>H1 — consumer? | 🟧 **MessageAccepted**&#10;<br>`queue_id` · `received_at` | 🟧 **TransactionAborted** | 🟧 **SessionClosed** | — |
 
@@ -199,7 +205,7 @@ Expected here; worth watching if it grows.
 Two paths are walked with real data in [`../paths/`](../paths/). They are **not redrawn here as
 sequence diagrams**, for two reasons.
 
-**The top row already is the conversation.** Read the ⬜ Screen row of §4 → §5 → §6 left to right
+**The top row already is the conversation.** Read the ⬜ Actor row of §4 → §5 → §6 left to right
 and you have the exchange: `tcp connect`, `HELO`, `MAIL FROM`, `RCPT TO`, `DATA`, content, `QUIT`.
 A separate sequence diagram restates what the timeline's first row carries, and restating it means
 two artifacts that can disagree.

@@ -27,7 +27,7 @@ element types, chips carry the type, `&#10;<br>` breaks a line.
 
 | | **`Helo`** — C |
 |:--|:--|
-| ⬜ **Screen** | `C: HELO bar.com`&#10;<br>`S: 250 foo.com` |
+| ⬜ **Actor** | `C: HELO bar.com`&#10;<br>`S: 250 foo.com` |
 | 🟦 **Command** | **Helo** |
 | 🟧 **Event** | **ClientIdentified**&#10;<br>`claimed_domain: "bar.com"` · `protocol: "SMTP"` |
 
@@ -40,11 +40,11 @@ Then the contract, which is what makes it a *walk* rather than a picture:
 
 ## Rules
 
-**The Screen row holds the wire, verbatim.** `C:` is the client, `S:` is us. Reply codes are exact,
+**The Actor row holds the wire, verbatim.** `C:` is the client, `S:` is us. Reply codes are exact,
 including the text after them. This is the row a reader follows to reconstruct the conversation —
 which is why this project needs no sequence diagram (see `../diagrams/README.md` §7).
 
-**A View Slice has no wire.** Nothing crosses the network to build a read model. Its Screen row
+**A View Slice has no wire.** Nothing crosses the network to build a read model. Its Actor row
 names the **consumer** instead, and its bottom row names the **source events** rather than an
 emitted one. A View Slice reads bottom to top.
 
