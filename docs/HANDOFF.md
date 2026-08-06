@@ -251,16 +251,22 @@ TLS, so use `www.`.
   171,925 words. Dilger's posts, under **use-don't-republish**.
 - Dilger's 171 public repos cataloged.
 
-Spoken corpus now **982,637 words**. Findings in research: `model-altitude-theory.md` §2.0d and
-`METHOD-REFERENCE.md`.
+Spoken corpus now **982,637 words** across **33 distinct recordings** (two were the same talk
+uploaded twice). **All 33 talks have been read in full** — 687 findings, every quotation verified by
+grep against source, 687/687 exact. See research: `TALKS-FINDINGS.md` and `TALKS-FINDINGS-CORPUS.md`.
+
+- **The bibliography's text sources have been verified** — 26 sources, 89 attributed claims: 53
+  confirmed, 19 refuted, 6 refuted on wording, 7 not found. The block is lifted *and* the reading is
+  now done. Corrections are in research: `BIBLIOGRAPHY.md`.
+- **The method's origin story does not hold.** Hacker News has no Event Modeling story in 2018; the
+  front-page item is 2019-09-29 and points at the website, not Medium; and the canonical article was
+  composed in the git repo across June–July 2019 rather than moved there finished. Verified directly
+  against the HN API and the repo history.
 
 **What has not:**
 
-- ~150 of the bibliography's *text* sources still carry search-summary confidence and have never
-  been read directly — InfoQ, CACM, Hanselminutes, .NET Rocks, Loosely Coupled, Linux.com,
-  DDD TW 2021, the Vancouver Tech episodes. The block is lifted; the reading is outstanding.
-- The 452k-word talks corpus is **retrieved but barely read.** It has been term-swept, not studied.
-  A 3.7-hour workshop recording and a 2.5-hour Vernon conversation are sitting there unexamined.
+- Four sources remain genuinely **unverifiable** — LinkedIn (blocks fetching) and one paywalled
+  page. They keep their caveats rather than losing them.
 - `app.eventmodelers.ai` — the platform the archived skills are written against.
 - The Mermaid repo, for D3.
 - The 2018 Medium article. Still no URL.
