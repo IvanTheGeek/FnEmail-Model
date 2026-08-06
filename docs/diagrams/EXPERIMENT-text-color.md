@@ -163,7 +163,7 @@ Fill in from both renderers. A technique needs **two ✅** to be usable.
 | | outcome |
 |:--|:--|
 | **Inline HTML** | fails in both. Not a trap, just unavailable |
-| **LaTeX maths** | colors in both, but `\text{}` works on GitHub only — **clean on GitHub, mangled in the app** |
+| **LaTeX math** | colors in both, but `\text{}` works on GitHub only — **clean on GitHub, mangled in the app** |
 | **Diff blocks** | five colors on GitHub, two in the app, and `!` means *warning* in one and *added* in the other |
 | **Emoji chips** | identical in both |
 
@@ -174,13 +174,13 @@ browser side by side.
 
 One meta-result worth keeping. The failure modes differ in how loudly they fail, and that ordering
 matters more than the pass/fail: `<br>` failed **silently** (two words fused, nothing to notice),
-maths fails **legibly** (odd typography, obviously wrong), and diff's `!` line fails
+math fails **legibly** (odd typography, obviously wrong), and diff's `!` line fails
 **deceptively** (a different meaning in each renderer, both plausible). Deceptive is the worst of
 the three, and it is the one a reader is least likely to catch.
 
 ---
 
-## What would have changed if maths had passed both
+## What would have changed if math had passed both
 
 Written before the test, kept unedited.
 
@@ -193,10 +193,10 @@ the name itself, which is a different claim: it says the *word* is orange rather
 `$\color{orange}{\text{Event}}$` does not, and the project already chose the greppable form once —
 that is why the slice-type chip is `🟦C` and not a bare square.
 
-**And maths is a heavier dependency.** It needs a maths renderer, not a markdown renderer, which is
+**And math is a heavier dependency.** It needs a math renderer, not a markdown renderer, which is
 the same class of dependency Mermaid was — and shedding that dependency is the whole reason these
 tables exist.
 
-So the likely outcome is that maths works and is still not adopted. Recording that is the point:
+So the likely outcome is that math works and is still not adopted. Recording that is the point:
 the next person to ask *"can we just color the text?"* gets an answer with evidence rather than an
 opinion.

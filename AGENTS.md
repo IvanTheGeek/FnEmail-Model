@@ -46,9 +46,16 @@ missed **generalises** because it did not allow the third-person `-es`. It also 
 against a list of both kinds before trusting it. **A check that cries wolf gets ignored, which is
 worse than no check.**
 
+⚠️ **Run the check as a gate, not as company.** Later on 2026-08-06 the commit-message grep was put
+in the *same* shell invocation as the `git commit` that followed it. It fired correctly, on
+*labelling*, and the commit went out anyway — the statements were sequential, so nothing was
+conditional on the result. A check whose output nobody waits for is not a check. Run it, read it,
+*then* commit.
+
 **Existing commit messages are left as they are.** Rewriting thirty commits to fix spelling would
-destroy the history that records how the project actually went, for a cosmetic gain. Recorded here
-instead, per rule 4.
+destroy the history that records how the project actually went, for a cosmetic gain. That applies to
+`d8036c2` and its *labelling* too: it is one commit old and force-pushing over it would rewrite a
+branch already pushed, which is a worse trade than the typo. Recorded here instead, per rule 4.
 
 **The one exception is a quotation** — see rule 2. The corpus uses the British spelling of *color*,
 and a quote keeps it. Prefer naming that fact over reproducing the word.
