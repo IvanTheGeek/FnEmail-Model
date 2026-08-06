@@ -261,7 +261,7 @@ block
   f1["MailTransactionStarted carrying reverse_path and nothing else at all in this scope"]
 ```
 
-### F2 · Width forced by a wide neighbour
+### F2 · Width forced by a wide neighbor
 
 `f2b:3` spans three columns, setting the row width.
 
@@ -271,6 +271,20 @@ block
   f2a["narrow"]:1
   f2b["this block spans three columns"]:3
   f2c["narrow"]:1
+```
+### F3 · Span, corrected
+
+F2 was mis-constructed: `f2a:1` + `f2b:3` is **4 units in a 3-column grid**, so `f2b` took the two
+remaining columns and `f2c` wrapped to a second row. The span works; the arithmetic did not.
+
+This version keeps each row's total at 3.
+
+```mermaid
+block
+  columns 3
+  f3a["a"] f3b["b"] f3c["c"]
+  f3d["this one spans all three"]:3
+  f3e["d"] f3f["e"] f3g["f"]
 ```
 
 ---
@@ -375,21 +389,6 @@ block
   style h7 fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
 ```
 
-### F3 · Span, corrected
-
-F2 was mis-constructed: `f2a:1` + `f2b:3` is **4 units in a 3-column grid**, so `f2b` took the two
-remaining columns and `f2c` wrapped to a second row. The span works; the arithmetic did not.
-
-This version keeps each row's total at 3.
-
-```mermaid
-block
-  columns 3
-  f3a["a"] f3b["b"] f3c["c"]
-  f3d["this one spans all three"]:3
-  f3e["d"] f3f["e"] f3g["f"]
-```
-
 ---
 
 ## H8 · Control — does alignment actually *do* anything?
@@ -431,14 +430,14 @@ block and **centred** in the grey one. If both are centred, that approach failed
 
 Follows from **E1**: blocks centre on **both** axes. In a grid of slices with labels of differing
 height, nothing shares a baseline — a one-line slice floats in the middle of its row while its
-neighbour fills top to bottom. Top-aligning would fix that.
+neighbor fills top to bottom. Top-aligning would fix that.
 
 **Prerequisite:** a box is sized by its content, so a "large box" has to come from somewhere. Two
 candidates, and the second may not work at all.
 
 ### I0 · Baseline — where does text sit by default?
 
-A tall neighbour sets the row height. No styling. This establishes what we are trying to change.
+A tall neighbor sets the row height. No styling. This establishes what we are trying to change.
 
 ```mermaid
 block
@@ -515,20 +514,20 @@ block
 
 ### I6 · Explicit `height` — can a box be made tall on its own?
 
-No tall neighbour. If this works, box height is controllable directly and I0's premise is not the
+No tall neighbor. If this works, box height is controllable directly and I0's premise is not the
 only route.
 
 ```mermaid
 block
   columns 2
   i6a["<b>height forced to 160px?</b>"]
-  i6b["<b>unstyled neighbour</b>"]
+  i6b["<b>unstyled neighbor</b>"]
   style i6a fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000,height:160px
   style i6b fill:#eeeeee,stroke:#444,stroke-width:2px,color:#000
 ```
 
 **What to look for across I1–I5:** the green block's text should sit **flush with the top** of its
-box while the grey neighbour fills the row. If green and grey both centre, that approach did
+box while the grey neighbor fills the row. If green and grey both centre, that approach did
 nothing.
 
 ---
@@ -574,7 +573,7 @@ Fill in as observed. This table is the deliverable — `README.md` gets rebuilt 
 | I3 | wrapper `height:100%` | | |
 | I4 | flex `align-self:flex-start` | | likeliest to be the real lever |
 | I5 | trailing `<br/>` padding | | guaranteed floor, needs tuning per row |
-| I6 | explicit `height` on `style` | | can a box be made tall without a neighbour? |
+| I6 | explicit `height` on `style` | | can a box be made tall without a neighbor? |
 
 **✅ᵣ = rendered without error — *not* confirmation the alignment took effect.** H1–H7 all
 parse, but a silently-ignored CSS declaration also parses. **H8 is the control that tells them
