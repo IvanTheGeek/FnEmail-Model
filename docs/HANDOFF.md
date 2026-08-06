@@ -100,7 +100,7 @@ anything** — three of five mirrored repos carry no license.
 |---|---|
 | **Command Slice / View Slice** — not "write column / read column". *Slice*, not column | `event-model.md` conventions |
 | **Events are orange**, Command blue, Read Model green, Screen white, external yellow, hotspot red | research: `METHOD-REFERENCE.md` |
-| **No arrows** — meaning is row position and left-to-right time | `diagrams/README.md` |
+| **No arrows** — meaning is row position and left-to-right time | `diagrams/README.md` — but see the caveat below |
 | **US spelling** throughout (color, modeling, centered, neighbor) | corrected twice; keep it |
 | **One event per command** is a design target, stronger than the corpus's "keep an eye on it" | `diagrams/README.md` §1 |
 | **Two slice types, not four patterns** — Automation and Translation are compositions | research: `METHOD-REFERENCE.md` |
@@ -109,6 +109,30 @@ anything** — three of five mirrored repos carry no license.
 | **Golden path deliberately unassigned** — *happy* is descriptive, *golden* is a designation | `paths/helo-multi-recipient.md` |
 | **Mermaid label vocabulary** — settled empirically | `diagrams/EXPERIMENT-block-labels.md` |
 | **The method research is a separate repo** — FnEmail uses Event Modeling, is not about it | §1 above |
+
+> ⚠️ **The "no arrows" decision needs a caveat, added 2026-08-06.** It stands as a *diagramming*
+> choice, but the corpus shows arrows are working notation in 12+ independent talks, and they have a
+> job the project was not accounting for.
+>
+> `METHOD-REFERENCE.md`'s claim that *"arrows are notation, not semantics"* is **confirmed** —
+> Dymitruk says *"as the tooling matures those those arrows should just autofill"*, so they are
+> derived, not authored. But their purpose is **information-completeness tracing**: *"they're really
+> about pointing … for the purpose of information completeness where you do use the arrows to make
+> sure that you can follow a piece of information."* Arrow-free diagrams forgo that affordance. That
+> is a fair trade — this project does the completeness check in prose — but it **is** a trade.
+>
+> Three further points the rule was conflating:
+> - The one hard rule is **directional**: no arrow points backwards.
+> - **Fan-out is not branching.** One event feeding two read models is *"just lines of where the
+>   information goes but it's really one story."* "No arrows" and "no branching" are separate claims.
+> - Elements with **no inbound arrow are the model's origins** — the first screen, external inputs.
+>
+> Detail in research: `TALKS-FINDINGS-CORPUS.md` §1.
+>
+> ⚠️ **And hotspots are Dilger's device, not Dymitruk's.** He removed them from what he took over
+> from Event Storming — *"there is no there's no hotspots"* — and refuses to standardise any marker
+> for open questions. This project's seven hotspots are legitimate, since Dilger is canonical, but
+> §7 rule 4 presents "unknowns become hotspots" as method-neutral and it is not. `TALKS-FINDINGS-CORPUS.md` §2.
 
 ### The mermaid vocabulary in one block
 
@@ -183,6 +207,13 @@ block
   he avoids DDD as a *prerequisite*. See research: `model-altitude-theory.md` §2.0d. **Context
   keeps its name.** What remains open is the narrower question the evidence does not touch:
   whether an EM-native name would be *clearer* on its own merits.
+- **Store-first or validate-first? A new open decision, 2026-08-06.** The corpus contradicts itself
+  on whether an event is written before or after validation. Dymitruk: *"the first thing you do
+  after you click a button on a form is just store the damn thing as fast as you can just write to
+  disk boom."* Dilger, opposite: *"a successful command execution means there is a new event."*
+  **This model takes the second position** — `ClientIdentified` on success, `501`/`500` produce no
+  event — which was assumed rather than decided. It is close kin to H2. See research:
+  `TALKS-FINDINGS-CORPUS.md` §3.
 - **The author's disagreements with Adam's method** — mentioned but never captured. Worth its own
   document; a disagreement is a different category from an extension.
 - ~~**Written permission from Dilger.**~~ **Settled 2026-08-06 — not needed.** His verbal grant
