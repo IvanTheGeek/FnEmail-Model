@@ -395,4 +395,4 @@ The corpus is thin here. What it does say:
 
 No source in this corpus addresses protocol-level or infrastructure modeling directly. Applying
 it to RFC 5321 is therefore an extension of the method's demonstrated range, and should be
-labelled as such rather than presented as settled practice.
+labeled as such rather than presented as settled practice.

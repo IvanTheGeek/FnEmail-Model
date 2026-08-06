@@ -171,7 +171,7 @@ Parse error on line 3:
 Expecting 'STR', got 'MD_STR'
 ```
 
-**The error is the interesting part.** `MD_STR` is a real token, so the **lexer** recognises
+**The error is the interesting part.** `MD_STR` is a real token, so the **lexer** recognizes
 backtick markdown strings — the `block` **grammar** simply never accepts them. Markdown strings
 work in `flowchart`, where they give both partial bold and multi-line labels from one construct.
 

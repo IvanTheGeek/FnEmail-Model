@@ -26,7 +26,7 @@ Expecting 'STR', got 'MD_STR'
 ```
 
 That error is more useful than a plain failure. `MD_STR` is a real token, so the **lexer**
-recognises backtick markdown strings — but the `block` **grammar** only accepts `STR`. The feature
+recognizes backtick markdown strings — but the `block` **grammar** only accepts `STR`. The feature
 exists in Mermaid and was never wired into block diagrams. Markdown strings *do* work in
 `flowchart`, where they give partial bold and multi-line labels from one construct.
 
@@ -54,6 +54,48 @@ label needs no other markup — it keeps the source readable.
 
 **❌ Markdown is not parsed in plain strings either** (B1) — `**bold**` renders its asterisks
 literally. So markdown has no route into a block label by any spelling.
+
+---
+
+## ✅ Settled — the label vocabulary
+
+```
+block
+  columns 1
+  id["<b>Title</b>\ndetail line\ndetail line"]
+  style id fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000,text-align:left
+```
+
+| Need | Answer |
+|---|---|
+| Emphasis | `<b>` or `<strong>`, **partial works** (C2) |
+| Line break | `\n` or `<br/>` — both work (A1, A4) |
+| Markdown | **never** — no spelling of it reaches a block label |
+| Wrapping | **none.** Boxes grow arbitrarily wide; breaks are mandatory (F1) |
+| Horizontal align | **`text-align:left` works** (H1, H3, confirmed by H8) |
+| Vertical align | **no CSS route** — see below |
+| Box height | **`height:` works** (I6) |
+| Column span | `:n`, rows summing to the column count (F3) |
+| Nested HTML | survives generally — `<span>`, `<div>` all fine (H5) |
+
+### The horizontal/vertical asymmetry
+
+**Horizontal alignment is stylable; vertical alignment is not.** Every CSS route to top-aligning
+failed — `vertical-align` via `style` (I1), via a `div` wrapper (I2), a wrapper forced to full
+height (I3), and flexbox `align-self` (I4). All four render cleanly and all four leave the text
+centered.
+
+That asymmetry is consistent with how the label is positioned: `text-align` acts *within* the
+label's own box, so it takes effect, while vertical centering is done by placing the whole label
+group — which CSS applied to the label cannot override.
+
+⚠️ **A prediction of mine was wrong.** I expected I4 (`align-self:flex-start`) to be "the real
+lever" on the theory that labels sit in a flex container. It fails like the rest. Recorded because
+the reasoning sounded good and was worthless — the render decided it.
+
+**So top-alignment has exactly one route: I5, trailing `<br/>` padding.** Ugly by hand, free if
+diagrams are generated. Combined with I6's explicit `height`, a grid of uniform-height slices with
+top-aligned text is achievable — just not declaratively.
 
 ---
 
@@ -311,7 +353,7 @@ block
 
 **The open question**, now that markdown strings are ruled out and HTML is the only route.
 
-Mermaid centres label text by default. A slice label with a bold title over a field list reads far
+Mermaid centers label text by default. A slice label with a bold title over a field list reads far
 better left-aligned, so: can it be forced?
 
 ### H1 · `text-align` via `style`
@@ -422,13 +464,13 @@ block
 ```
 
 **What to look for:** in each pair the short line `short` should sit **flush left** in the green
-block and **centred** in the grey one. If both are centred, that approach failed.
+block and **centered** in the grey one. If both are centered, that approach failed.
 
 ---
 
 ## I · Vertical alignment — can text sit at the top of a tall box?
 
-Follows from **E1**: blocks centre on **both** axes. In a grid of slices with labels of differing
+Follows from **E1**: blocks center on **both** axes. In a grid of slices with labels of differing
 height, nothing shares a baseline — a one-line slice floats in the middle of its row while its
 neighbor fills top to bottom. Top-aligning would fix that.
 
@@ -448,7 +490,7 @@ block
   style i0short fill:#eeeeee,stroke:#444,stroke-width:2px,color:#000
 ```
 
-**Expect:** `short` sits vertically centred. If it is already at the top, group I is moot.
+**Expect:** `short` sits vertically centered. If it is already at the top, group I is moot.
 
 ### I1 · `vertical-align:top` via `style`
 
@@ -500,7 +542,7 @@ block
 
 ### I5 · Trailing `<br/>` padding — the guaranteed floor
 
-Pad the bottom so the centred content is pushed to the top. Works regardless of what CSS reaches
+Pad the bottom so the centered content is pushed to the top. Works regardless of what CSS reaches
 the label, exactly like H6 does horizontally. Ugly, and it needs the padding count tuned per row.
 
 ```mermaid
@@ -527,7 +569,7 @@ block
 ```
 
 **What to look for across I1–I5:** the green block's text should sit **flush with the top** of its
-box while the grey neighbor fills the row. If green and grey both centre, that approach did
+box while the grey neighbor fills the row. If green and grey both center, that approach did
 nothing.
 
 ---
@@ -536,45 +578,45 @@ nothing.
 
 Fill in as observed. This table is the deliverable — `README.md` gets rebuilt from whatever wins.
 
-| Test | What it checks                     | Result | Notes |
-|:--:|------------------------------------|:------:|-------|
-| A0 | `block-beta` still parses          |   ✅    | Old keyword still accepted — `README.md` wants renaming, not migrating |
-| A1 | `<br/>`                            |   ✅    |  |
-| A2 | `<br>` unclosed                    |        |  |
-| A3 | markdown string newline            |   ❌    | `Parse error … Expecting 'STR', got 'MD_STR'` |
-| A4 | literal `\n`                       |   ✅    | **Works** — simpler than `<br/>` where no other markup is needed |
-| B1 | `**` plain string                  |   ❌    | Asterisks render literally — markdown not parsed in a plain `STR` |
-| B2 | `**` markdown string               |   ❌    | same `MD_STR` cause as A3 |
-| B3 | `<b>`                              |   ✅    |  |
-| B4 | `<strong>`                         |   ✅    |  |
-| C1 | partial bold, markdown             |   ❌    | same `MD_STR` cause as A3 |
-| C2 | **partial bold, HTML**             |   ✅    | **Decisive, and it passes.** Label design unblocked |
-| C3 | italic + bold mixed                |   ❌    | same `MD_STR` cause as A3 |
-| D1 | bold + newline, markdown           |   ❌    | same `MD_STR` cause as A3 |
-| D2 | bold + newline, HTML               |   ✅    |  |
-| D3 | three lines                        |   ✅    |  |
-| E1 | real slice, HTML                   |   ✅    | `MailFrom` sits vertically centred — blocks centre on both axes |
-| E2 | real slice, markdown               |   ❌    | same `MD_STR` cause as A3 |
-| F1 | natural wrap                       |   ❌    | **No wrapping.** One long line; the box grows arbitrarily wide. Line breaks are mandatory, not optional |
-| F2 | forced width via span              |   ⚠️    | Test mis-built — 1+3 in a 3-column grid. Span works; see **F3** |
-| F3 | span, corrected                    |   ✅    | rows summing to 3 |
-| G  | shapes                             |   ✅    |  |
-| H1 | `text-align` via `style`           |   ✅ᵣ   |  |
-| H2 | `<div align='left'>`               |   ✅ᵣ   |  |
-| H3 | `<div style='text-align:left'>`    |   ✅ᵣ   |  |
-| H4 | `text-align` via `classDef`        |   ✅ᵣ   |  |
-| H5 | `<span>` inline style              |   ✅ᵣ   | **nested HTML survives** — not just `<b>`/`<br/>` |
-| H6 | `&nbsp;` padding hack              |   ✅ᵣ   | the guaranteed floor if CSS never reaches the text |
-| H7 | leading spaces                     |   ✅ᵣ   |  |
-| H8 | **control — aligned vs unaligned** |   ✅    | **answers whether H1–H7 actually align** |
-| I0 | baseline — default vertical position |✅ | establishes what I1–I5 are changing |
-| I1 | `vertical-align:top` via `style` | ❌|short sits vertically centred |
-| I2 | `<div style='vertical-align:top'>` | ❌|short sits vertically centred |
-| I3 | wrapper `height:100%` |❌ |short sits vertically centred |
-| I4 | flex `align-self:flex-start` |❌ | likeliest to be the real lever - short sits vertically centred|
-| I5 | trailing `<br/>` padding |✅ | guaranteed floor, needs tuning per row |
-| I6 | explicit `height` on `style` | ✅| can a box be made tall without a neighbor? |
+| Test | What it checks                       | Result | Notes |
+|:--:|--------------------------------------|:----:|-------|
+| A0 | `block-beta` still parses            |  ✅   | Old keyword still accepted — `README.md` wants renaming, not migrating |
+| A1 | `<br/>`                              |  ✅   |  |
+| A2 | `<br>` unclosed                      |      |  |
+| A3 | markdown string newline              |  ❌   | `Parse error … Expecting 'STR', got 'MD_STR'` |
+| A4 | literal `\n`                         |  ✅   | **Works** — simpler than `<br/>` where no other markup is needed |
+| B1 | `**` plain string                    |  ❌   | Asterisks render literally — markdown not parsed in a plain `STR` |
+| B2 | `**` markdown string                 |  ❌   | same `MD_STR` cause as A3 |
+| B3 | `<b>`                                |  ✅   |  |
+| B4 | `<strong>`                           |  ✅   |  |
+| C1 | partial bold, markdown               |  ❌   | same `MD_STR` cause as A3 |
+| C2 | **partial bold, HTML**               |  ✅   | **Decisive, and it passes.** Label design unblocked |
+| C3 | italic + bold mixed                  |  ❌   | same `MD_STR` cause as A3 |
+| D1 | bold + newline, markdown             |  ❌   | same `MD_STR` cause as A3 |
+| D2 | bold + newline, HTML                 |  ✅   |  |
+| D3 | three lines                          |  ✅   |  |
+| E1 | real slice, HTML                     |  ✅   | `MailFrom` sits vertically centered — blocks center on both axes |
+| E2 | real slice, markdown                 |  ❌   | same `MD_STR` cause as A3 |
+| F1 | natural wrap                         |  ❌   | **No wrapping.** One long line; the box grows arbitrarily wide |
+| F2 | forced width via span                |  ⚠️  | Test mis-built — 1+3 in a 3-column grid. See **F3** |
+| F3 | span, corrected                      |  ✅   | rows summing to the column count |
+| G  | shapes                               |  ✅   | 📷 *screenshot wanted* — which of the six render distinctly? |
+| H1 | `text-align` via `style`             |  ✅   | **Confirmed by H8** — flush left vs centered control |
+| H2 | `<div align='left'>`                 |  ✅ᵣ  |  |
+| H3 | `<div style='text-align:left'>`      |  ✅   | **Confirmed by H8** — also works |
+| H4 | `text-align` via `classDef`          |  ✅ᵣ  | 📷 *screenshot wanted* — **matters most of the remaining** |
+| H5 | `<span>` inline style                |  ✅ᵣ  | **nested HTML survives** — not just `<b>`/`<br/>` |
+| H6 | `&nbsp;` padding hack                |  ✅ᵣ  | the guaranteed floor if CSS never reaches the text |
+| H7 | leading spaces                       |  ✅ᵣ  |  |
+| H8 | **control — aligned vs unaligned**   |  ✅   | **H1 and H3 both genuinely align** |
+| I0 | baseline — default vertical position |  ✅   | centered, as expected — so I1–I5 have something to change |
+| I1 | `vertical-align:top` via `style`     |  ❌   | stays vertically centered |
+| I2 | `<div style='vertical-align:top'>`   |  ❌   | stays vertically centered |
+| I3 | wrapper `height:100%`                |  ❌   | stays vertically centered |
+| I4 | flex `align-self:flex-start`         |  ❌   | stays centered — **I predicted this would be the lever. It is not.** |
+| I5 | trailing `<br/>` padding             |  ✅   | **the only route to top-alignment.** Needs tuning per row |
+| I6 | explicit `height` on `style`         |  ✅   | **box height is directly controllable** — no tall neighbor needed |
 
-**✅ᵣ = rendered without error — *not* confirmation the alignment took effect.** H1–H7 all
-parse, but a silently-ignored CSS declaration also parses. **H8 is the control that tells them
-apart.** Until it is run, group H is unresolved.
+**✅ = confirmed to do what it claims. ✅ᵣ = rendered without error, effect unverified.**
+A silently-ignored CSS declaration parses as cleanly as one that works, so ✅ᵣ is not a pass.
+📷 marks the two still worth a screenshot.

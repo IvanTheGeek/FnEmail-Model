@@ -120,7 +120,7 @@ inventing example data; here the normative spec supplies it.
 1. **Every example uses `EHLO`** — five occurrences, zero of `HELO`. Under a HELO-only scope the
    paths are RFC-*derived*, not RFC-*quoted*. A promotion scheme needs to distinguish the two,
    because only one of them is evidence of conformance.
-2. **The scenario labelled "typical" is not the clean one.** D.1 contains a `550` rejection
+2. **The scenario labeled "typical" is not the clean one.** D.1 contains a `550` rejection
    mid-flow, as does D.2. The clean single-recipient paths are D.3 and D.4. Whatever picks the
    "golden path" cannot just take the one the source calls typical.
 
