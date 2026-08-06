@@ -120,6 +120,13 @@ Emoji chips are **characters, not markup**, so no sanitiser can touch them:
 | 🟦 **Command** | **Helo** |
 | 🟧 **Event** | **ClientIdentified**&#10;<br>`claimed_domain: "bar.com"` |
 
+> ✅ **Tested 2026-08-06 — identical in both renderers.** All seven chips render as distinct
+> squares, ⬜ and ⬛ are clearly told apart, `&#10;<br>` breaks correctly, code spans are monospace.
+> The one difference is cosmetic and carries no meaning: GitHub draws a grey pill behind code
+> spans, the app does not.
+>
+> **This is the only technique in the experiment that renders the same in both.**
+
 ---
 
 ## Verdicts
@@ -135,14 +142,37 @@ Fill in from both renderers. A technique needs **two ✅** to be usable.
 | 2 | `$\color{}{}$` | ⚠️ | ⚠️ | ✅ | colours, but italic serif and `-` → minus in **both** |
 | 2 | `$\color{}{\text{}}$` | ✅ | ❌ | ✅ | **GitHub honours `\text{}`, the app ignores it** — clean vs mangled |
 | 3 | ` ```diff ` | ✅ 5 colours | ⚠️ 2 colours | ❌ code block only | `!` is **orange on GitHub, green in the app** |
-| 4 | emoji chip | ✅ | ✅ | ✅ | current convention |
+| 4 | emoji chip | ✅ | ✅ | ✅ | **identical in both** — the only one |
 
 ---
 
-## What would change if maths passes both
+## Conclusion — closed 2026-08-06
 
-Nothing immediately, and probably nothing ever — but worth stating so the question is closed rather
-than left open.
+**Chips stay. Nothing else survives both renderers.**
+
+| | outcome |
+|:--|:--|
+| **Inline HTML** | fails in both. Not a trap, just unavailable |
+| **LaTeX maths** | colours in both, but `\text{}` works on GitHub only — **clean on GitHub, mangled in the app** |
+| **Diff blocks** | five colours on GitHub, two in the app, and `!` means *warning* in one and *added* in the other |
+| **Emoji chips** | identical in both |
+
+The prediction written below, before any of this was run, held up. What the testing added was a
+reason the prediction did not contain: **both alternatives disagree between the two renderers this
+project has to satisfy.** Reasoning alone would not have found that — it needed the phone and the
+browser side by side.
+
+One meta-result worth keeping. The failure modes differ in how loudly they fail, and that ordering
+matters more than the pass/fail: `<br>` failed **silently** (two words fused, nothing to notice),
+maths fails **legibly** (odd typography, obviously wrong), and diff's `!` line fails
+**deceptively** (a different meaning in each renderer, both plausible). Deceptive is the worst of
+the three, and it is the one a reader is least likely to catch.
+
+---
+
+## What would have changed if maths had passed both
+
+Written before the test, kept unedited.
 
 **The chip is a swatch, not a label.** Colour in Event Modeling *is* the element type, and a chip
 puts that colour beside the name without altering the name. Coloured text would have to recolour
