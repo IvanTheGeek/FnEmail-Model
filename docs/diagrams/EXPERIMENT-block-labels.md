@@ -574,6 +574,66 @@ nothing.
 
 ---
 
+## J · The composite — does it all work together?
+
+Every technique above is confirmed **individually**. That is not the same as confirming they
+**compose**. This builds the real artifact — a Command Slice beside a View Slice — using only
+settled techniques, and is the last thing that could still surprise us.
+
+Uses: `classDef` per element type (H4), `text-align:left` through that classDef (H4),
+`\n` line breaks (A4), `<b>` titles with partial bold (C2), and explicit `height` for uniform
+rows (I6).
+
+### J1 · Two slices, styled entirely by `classDef`
+
+```mermaid
+block
+  columns 2
+  j1h1["<b>4 · MailFrom</b>\nCommand Slice"] j1h2["<b>3 · SessionState</b>\nView Slice"]
+  j1a["<b>Remote client</b>\nMAIL FROM:&lt;Smith@bar.com&gt;"] j1b["<b>ConnectionAccepted</b>\n<b>ClientIdentified</b>\n<b>SessionReset</b>"]
+  j1c["<b>MailFrom</b>\nreverse_path"] j1d["<b>SessionState</b>\nidentified\ntransaction_open"]
+  j1e["<b>MailTransactionStarted</b>\nreverse_path"] j1f["<b>consumed by</b>\nMailFrom · RcptTo · BeginData"]
+
+  classDef hdr fill:#e8e8e8,stroke:#444,stroke-width:1px,color:#000,text-align:left
+  classDef screen fill:#ffffff,stroke:#444,stroke-width:2px,color:#000,text-align:left
+  classDef command fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000,text-align:left
+  classDef event fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000,text-align:left
+  classDef readmodel fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000,text-align:left
+  class j1h1,j1h2 hdr
+  class j1a,j1f screen
+  class j1c command
+  class j1e,j1b event
+  class j1d readmodel
+```
+
+**What to look for:** every label flush left, bold titles over plain detail, and the two columns
+reading as parallel slices. Rows will be ragged in height — that is what J2 tests.
+
+### J2 · Same, with `height` forcing uniform rows
+
+```mermaid
+block
+  columns 2
+  j2a["<b>Remote client</b>\nMAIL FROM:&lt;Smith@bar.com&gt;"] j2b["<b>ConnectionAccepted</b>\n<b>ClientIdentified</b>\n<b>SessionReset</b>"]
+  j2c["<b>MailFrom</b>\nreverse_path"] j2d["<b>SessionState</b>\nidentified\ntransaction_open"]
+  j2e["<b>MailTransactionStarted</b>\nreverse_path"] j2f["<b>consumed by</b>\nMailFrom · RcptTo"]
+
+  classDef row fill:#ffffff,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:90px
+  classDef cmd fill:#8ecafc,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:90px
+  classDef evt fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:90px
+  classDef rm fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000,text-align:left,height:90px
+  class j2a,j2f row
+  class j2c cmd
+  class j2e,j2b evt
+  class j2d rm
+```
+
+**The question J2 answers:** does `height` in a `classDef` give uniform rows, or does it only work
+in a per-block `style` as I6 tested? If it works here, generated diagrams get uniform layout for
+free.
+
+---
+
 ## Results
 
 Fill in as observed. This table is the deliverable — `README.md` gets rebuilt from whatever wins.
@@ -619,4 +679,7 @@ Fill in as observed. This table is the deliverable — `README.md` gets rebuilt 
 
 **✅ = confirmed to do what it claims. ✅ᵣ = rendered without error, effect unverified.**
 A silently-ignored CSS declaration parses as cleanly as one that works, so ✅ᵣ is not a pass.
-📷 marks the two still worth a screenshot.
+📷 marks what is still worth a screenshot.
+
+| J1 | composite — everything together, `classDef` only | | 📷 **the real artifact** |
+| J2 | same, `height` in `classDef` for uniform rows | | 📷 does `height` scale through `classDef`? |
