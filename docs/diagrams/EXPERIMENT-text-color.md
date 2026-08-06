@@ -21,6 +21,14 @@ Open this page in both and fill in the verdict table at the bottom.
 
 <div style="color:red">D. div with a style attribute</div>
 
+> ✅ **Tested 2026-08-06 — all four fail in *both* renderers.** No colour anywhere; every one is
+> plain black text on GitHub and in the Claude app alike. The feared asymmetry — colour in one
+> renderer, silence in the other — **does not occur**, so there is no trap here to avoid.
+>
+> One incidental difference: `<div>` is a block element, and the two renderers disagree on the
+> break around it. GitHub runs the following paragraph straight on; the app leaves a gap. Neither
+> colours it, but it is a reason to avoid raw block-level HTML in these documents regardless.
+
 **Expected: all four fail on GitHub.** Its sanitiser strips `style` and `class` attributes and
 removes `<font>` entirely — confirmed against the `/markdown` API. Included anyway because the
 Claude app may not sanitise, and a technique that works in only one renderer is worse than none:
@@ -90,10 +98,10 @@ Fill in from both renderers. A technique needs **two ✅** to be usable.
 
 | # | Technique | GitHub | Claude Android | Usable in a table cell? | Notes |
 |:--|:--|:--|:--|:--|:--|
-| 1A | `<span style>` | | | | |
-| 1B | `<font color>` | | | | |
-| 1C | `<span class>` | | | | |
-| 1D | `<div style>` | | | | |
+| 1A | `<span style>` | ❌ | ❌ | ❌ | plain text in both |
+| 1B | `<font color>` | ❌ | ❌ | ❌ | plain text in both |
+| 1C | `<span class>` | ❌ | ❌ | ❌ | plain text in both |
+| 1D | `<div style>` | ❌ | ❌ | ❌ | plain text in both; also **breaks paragraph flow** — GitHub runs the next paragraph on, the app leaves a gap |
 | 2 | `$\color{}{}$` | | | ✅ syntactically | distorts to math italic |
 | 2 | `$\color{}{\text{}}$` | | | ✅ syntactically | `\text{}` should stop the distortion |
 | 3 | ` ```diff ` | ✅ | ✅ | ❌ code block only | ~4 fixed colours |
