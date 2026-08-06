@@ -110,6 +110,31 @@ Live samples, for the second renderer:
 > styling inside it.** Rule 6's escape hatch is closed, and every scheme below that used it is
 > dead.
 
+> 🛑 **Bigger finding, 2026-08-06 — the Claude app does not apply bold to monospace at all.**
+>
+> The proof is above and was missed on the first reading. **Samples 3 and 4 render identically** in
+> the app. Sample 3 is ``*`code`*``, italic only. Sample 4 is ``***`code`***``, bold *and* italic.
+> If bold applied, they would differ. It is dropped. Sample 2, ``**`code`**``, is likewise the same
+> weight as plain sample 1.
+>
+> | | GitHub | Claude app |
+> |:--|:--|:--|
+> | bold on a code span | ✅ | ❌ **ignored** |
+> | italic on a code span | ✅ | ✅ |
+> | bold on standard text | ✅ | ✅ |
+>
+> **Both routes to bold-inside-monospace are now closed.** `<code><b>` fails because the app strips
+> `<code>`; ``**`code`**`` fails because the app drops the weight. There is no third route.
+>
+> ⚠️ **This was under-called once already.** An earlier note read L's rendering as a *weak* signal —
+> "nearly invisible in the app". It is not weak, it is **absent**, and the difference matters: a
+> weak signal is a design trade-off, an absent one is a dead technique. Reported from desktop as
+> well as phone, so this is the app's renderer generally, not the mobile font fallback that caused
+> the box-drawing failure.
+>
+> **Three surviving axes**, and only three: **font family** (mono vs standard), **italic** (on
+> either), and **bold on standard text only**.
+
 ---
 
 ## 2. Candidate schemes — wire lines
@@ -367,35 +392,39 @@ dead techniques named in the Verdicts. Pick by eye.
 | | fixed part | variable part | rendered |
 |:--|:--|:--|:--|
 | **V1** | mono | mono | `220 foo.com Simple Mail Transfer Service Ready` |
-| **V2** | mono **bold** | mono | **`220`**` foo.com Simple Mail Transfer Service Ready` |
-| **V3** | mono **bold** | mono *italic* | **`220`** *`foo.com Simple Mail Transfer Service Ready`* |
+| ~~V2~~ | ~~mono bold~~ | mono | ❌ **DEAD** — app drops bold on mono · **`220`**` foo.com Simple Mail Transfer Service Ready` |
+| ~~V3~~ | ~~mono bold~~ | mono *italic* | ❌ **DEAD** · **`220`** *`foo.com Simple Mail Transfer Service Ready`* |
 | **V4** | mono | mono *italic* | `220` *`foo.com Simple Mail Transfer Service Ready`* |
-| **V5** | mono **bold** | standard | **`220`** foo.com Simple Mail Transfer Service Ready |
+| ~~V5~~ | ~~mono bold~~ | standard | ❌ **DEAD** · **`220`** foo.com Simple Mail Transfer Service Ready |
 | **V6** | mono | standard | `220` foo.com Simple Mail Transfer Service Ready |
 | **V7** | mono | standard *italic* | `220` *foo.com Simple Mail Transfer Service Ready* |
-| **V8** | mono **bold** | standard *italic* | **`220`** *foo.com Simple Mail Transfer Service Ready* |
+| ~~V8~~ | ~~mono bold~~ | standard *italic* | ❌ **DEAD** · **`220`** *foo.com Simple Mail Transfer Service Ready* |
 | **V9** | mono | standard **bold** | `220` **foo.com Simple Mail Transfer Service Ready** |
 | **V10** | mono *italic* | mono | *`220`* `foo.com Simple Mail Transfer Service Ready` |
-| **V11** | mono ***bold italic*** | mono | ***`220`*** `foo.com Simple Mail Transfer Service Ready` |
+| ~~V11~~ | ~~mono bold italic~~ | mono | ❌ **DEAD**, renders as V10 · ***`220`*** `foo.com Simple Mail Transfer Service Ready` |
 
-`V1` = D · `V2` = L · `V3` = B · `V5` = M · `V7` = C
+`V1` = D · ~~`V2` = L~~ · ~~`V3` = B~~ · ~~`V5` = M~~ · `V7` = C
+
+🛑 **Five of eleven are dead** — every one that bolds monospace. **B, L and M all die with them**, and those were the three leading candidates.
 
 ### Payload field — the name is schema, the value is an instance
 
 | | field | value | rendered |
 |:--|:--|:--|:--|
 | **F1** | mono | mono | `claimed_domain: "bar.com"` |
-| **F2** | mono **bold** | mono | **`claimed_domain`**`: "bar.com"` |
-| **F3** | mono **bold** | mono *italic* | **`claimed_domain`**: *`"bar.com"`* |
+| ~~F2~~ | ~~mono bold~~ | mono | ❌ **DEAD** · **`claimed_domain`**`: "bar.com"` |
+| ~~F3~~ | ~~mono bold~~ | mono *italic* | ❌ **DEAD** · **`claimed_domain`**: *`"bar.com"`* |
 | **F4** | mono | mono *italic* | `claimed_domain`: *`"bar.com"`* |
-| **F5** | mono **bold** | standard | **`claimed_domain`**: "bar.com" |
+| ~~F5~~ | ~~mono bold~~ | standard | ❌ **DEAD** · **`claimed_domain`**: "bar.com" |
 | **F6** | mono | standard | `claimed_domain`: "bar.com" |
 | **F7** | mono | standard *italic* | `claimed_domain`: *"bar.com"* |
-| **F8** | mono **bold** | standard *italic* | **`claimed_domain`**: *"bar.com"* |
+| ~~F8~~ | ~~mono bold~~ | standard *italic* | ❌ **DEAD** · **`claimed_domain`**: *"bar.com"* |
 | **F9** | mono | standard **bold** | `claimed_domain`: **"bar.com"** |
 | **F10** | standard **bold** | mono | **claimed_domain**: `"bar.com"` |
 
-`F1` = J · `F2` = L · `F4` = H · `F5` = M · `F7` = I
+`F1` = J · ~~`F2` = L~~ · `F4` = H · ~~`F5` = M~~ · `F7` = I
+
+**F10 is now the only variant that carries bold at all**, because its bold sits on standard text. It was added as the option nobody had stated; it is now the only one of its kind.
 
 ⚠️ **F10 inverts the assumption** every other row shares — that the *field name* is the monospace
 thing. If the value is the literal protocol byte-string and the name is our label for it, monospace
@@ -422,12 +451,14 @@ Noise is only judgeable at length. Same three variants, applied to `MessageAccep
 
 `queue_id: "f2C8D14"` · `reverse_path: "<Smith@bar.com>"` · `received_at: "1998-05-19T09:14:07-07:00"`
 
-### In the cell, all four
+### In the cell — survivors only
+
+Rebuilt after the bold-on-monospace finding. Every variant here renders in both.
 
 | | **`Helo`** — C |
 |:--|:--|
-| ⬛ **Actor** | **`250`**` foo.com` — V2&#10;<br>**`250`** foo.com — V5&#10;<br>`250` *foo.com* — V7&#10;<br>`250 foo.com` — V1 |
-| 🟧 **Event** | **`claimed_domain`**`: "bar.com"` — F2&#10;<br>**`claimed_domain`**: "bar.com" — F5&#10;<br>`claimed_domain`: *`"bar.com"`* — F4&#10;<br>`claimed_domain: "bar.com"` — F1 |
+| ⬛ **Actor** | `250` foo.com — V6&#10;<br>`250` *foo.com* — V7&#10;<br>`250` **foo.com** — V9&#10;<br>`250 foo.com` — V1 |
+| 🟧 **Event** | `claimed_domain`: "bar.com" — F6&#10;<br>`claimed_domain`: *`"bar.com"`* — F4&#10;<br>**claimed_domain**: `"bar.com"` — F10&#10;<br>`claimed_domain: "bar.com"` — F1 |
 
 ---
 
@@ -444,20 +475,27 @@ Fill in from both. A scheme needs **two ✅** and must survive a table cell.
 | 3 | ``*`code`*`` | ✅ | ✅ | ✅ | live primitive |
 | 4 | ``***`code`***`` | ✅ | ✅ | ✅ | live primitive |
 | 5 | adjacent code spans | ✅ | ✅ | ✅ | live primitive · GitHub pills each one |
-| **B** | mono-bold + mono-italic | ✅ | ✅ | ✅ | **LIVE** · 3 pills on GitHub — *noted, not disqualifying* |
+| ~~**B**~~ | mono-bold + mono-italic | ✅ | ❌ | — | 🛑 **DEAD** — app drops bold on mono |
 | **C** | mono + standard-italic | ✅ | ✅ | ✅ | **LIVE** · same in both |
 | **D** | control, all mono | ✅ | ✅ | ✅ | **LIVE** · baseline |
 | **H** | mono field + mono-italic value | ✅ | ✅ | ✅ | **LIVE** · 2 pills on GitHub |
 | **I** | mono field + standard-italic value | ✅ | ✅ | ✅ | **LIVE** · same in both |
 | **J** | control, fields all mono | ✅ | ✅ | ✅ | **LIVE** · baseline |
-| **L** | mono-bold schema + mono instance | ✅ | ⚠️ | ✅ | **LIVE, but weak** — bold-in-mono is nearly invisible in the app; on GitHub the *pill boundary* separates more than the bold does |
-| **M** | mono-bold schema + standard instance | ✅ | ✅ | ✅ | **LIVE, strongest separation** — changes font family, not weight |
+| ~~**L**~~ | mono-bold schema + mono instance | ✅ | ❌ | — | 🛑 **DEAD** — the bold is not weak, it is absent |
+| ~~**M**~~ | mono-bold schema + standard instance | ⚠️ | ⚠️ | — | 🛑 **DEAD as written** — the bold is lost in the app. The *font-family* half survives as **V6/F6** |
 | **N** | case carries the protocol | — | — | — | ❌ **DEAD on correctness**, not rendering — verbs are not uppercase by protocol |
 | — | §4 cell with `&#10;<br>` | ✅ | ✅ | ✅ | breaks survive alongside styling |
 
-**Only three things are actually dead**, and none died on taste: HTML (the app strips it), markdown
-nesting into a code span (mechanically impossible), and **N** (its premise about SMTP was false).
-Everything else renders in both and is a live choice.
+**Four things are dead now**, and none died on taste:
+
+1. **HTML** — the app strips `<code>`
+2. **Markdown nesting into a code span** — mechanically impossible
+3. **N** — its premise about SMTP verbs was factually false
+4. 🛑 **Bold on monospace** — the app ignores the weight. This one arrived last and took **B, L and
+   M** with it, which were the three leading candidates.
+
+What is left is a smaller and clearer field: **font family, italic, and bold on standard text
+only.** Every surviving scheme uses one or two of those three.
 
 ---
 

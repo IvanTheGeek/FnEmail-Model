@@ -103,6 +103,12 @@ because it is a font problem rather than a markup one — no markup change can f
 caution applies to the ellipsis, em dash and middot inside a block where columns must line up; they are fine in
 prose. Tested in [`docs/diagrams/EXPERIMENT-inline-styling.md`](docs/diagrams/EXPERIMENT-inline-styling.md).
 
+**Bold does not apply to monospace in the Claude app.** ``**`code`**`` renders at normal weight
+there and bold on GitHub; `<code><b>` fails too, because the app strips `<code>`. There is no third
+route, so **monospace text cannot be bolded** for a reader on the app. Italic on a code span *does*
+work. The three usable axes are font family, italic, and bold on standard text only. Tested in
+[`docs/diagrams/EXPERIMENT-inline-styling.md`](docs/diagrams/EXPERIMENT-inline-styling.md).
+
 **To show a backtick inside a code span, use double backticks as the delimiter.** Backslash escapes
 **do not work inside a code span** — the backslash renders literally and the escaped backtick still
 closes the span, splitting the content in half. Write ``` ``**`code`**`` ``` and never
