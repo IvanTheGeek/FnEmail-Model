@@ -145,6 +145,24 @@ block
 
 *(H3 is resolved.)*
 
+> **Three hotspots gained corpus evidence on 2026-08-06**, from reading the workshop recording and
+> the Vernon deep dive in full. Detail and quotations in research: `TALKS-FINDINGS.md`.
+>
+> - **H2 — are protocol errors events?** The corpus answer is a **size test, not a kind test**. A
+>   large divergence gets its own workflow placed to the right with a cross-reference back; a small
+>   one stays as a red error scenario on the slice. *"if there's really large workflow changes for
+>   the sad path we generally put them all the way to the right and start a new workflow and
+>   cross-reference it back to where the bad things happened in the middle."*
+> - **H5 — is `AcceptConnection` a domain fact or infrastructure noise?** Neither, and the framing
+>   was a false choice. Dymitruk puts infrastructure on the model in **its own lower swimlane,
+>   hidden when discussing business**, admitted exactly when *"our business is so tied to a piece of
+>   infrastructure working correctly that it makes sense to at least have a place to discuss that."*
+>   For a conformant SMTP server, TCP acceptance is that.
+> - **H4 — stream boundaries.** No direct answer, but the **reservation pattern** is an argument for
+>   the *transaction*: *"the structure is always a two-phase commit type … you always have two events
+>   in that scenario … reserve, actually debit, this is your pattern."* SMTP's `RCPT TO` → final
+>   `CRLF.CRLF` is that shape, arrived at from the RFC rather than from the method.
+
 > **H4 gets no help from the spoken corpus.** Swept 2026-08-06 across both bodies of transcript —
 > 46 podcast episodes and 35 recorded talks, **982,637 words**. `stream boundary` and `stream
 > design` return **zero hits in either**. So does `SMTP`, in the talks. Two independent corpora,
