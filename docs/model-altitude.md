@@ -328,7 +328,7 @@ to be countable and terminable in the transcript. But it has not been subjected 
 completeness pass that deleted `ServiceGreetingSent`, and by symmetry it should be.
 
 **Proposed new hotspot, H8 — Does `SessionClosed` earn its place?** Note the coupling: deleting it
-leaves slice 11 (`Quit`) with no post-condition event, which is legal under H2's rule but odd for a
+leaves `Quit` (`Quit`) with no post-condition event, which is legal under H2's rule but odd for a
 non-error command. Decide the two together.
 
 ### Pattern across the nine
@@ -493,7 +493,7 @@ Two consequences worth keeping:
 - **Q5. H1 restated:** does the operator need to distinguish abandonment-before-body from
   abandonment-during-body? Answer decides `DataPhaseEntered` outright.
 - **Q6. New — H8:** does `SessionClosed` survive a forward completeness pass? Decide jointly with
-  slice 11's post-condition.
+  `Quit`'s post-condition.
 - **Q7.** Should `RecipientRejected` gain `disposition: permanent | transient`, promoting the
   retryability decision out of the reply code? Same question for `MessageRejected`.
 - **Q8.** Should `TransactionAborted.cause` be renamed to domain values

@@ -295,7 +295,7 @@ Conventions that matter more than they look:
 8. **Refer to slices by name, not number.** Slice numbering is an artifact of the current altitude
    and scope — change either and the whole sequence renumbers, silently breaking every
    cross-reference. Position on the timeline already carries order, so the number adds fragility
-   without adding meaning. Counts are fine: "twelve slices" is a fact about the model, "slice 4" is
+   without adding meaning. Counts are fine: "twelve slices" is a fact about the model, "the `MailFrom` slice" is
    a handle that will move.
 9. **Nothing third-party enters this repo.** Cite it, quote it briefly with attribution, link it —
    but the copy lives in the research repo. This is what keeps FnEmail releasable.

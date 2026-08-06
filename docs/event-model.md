@@ -155,7 +155,7 @@ Slice, not column — Adam's own word. Corpus synonyms: a Command Slice is *stat
 *write column* / `state-change`; a View Slice is *state view* / *read model* / *query* /
 `state-view`. Quotations from the sources keep their own terms.
 
-### 1 · `AcceptConnection` — C
+### `AcceptConnection` — C
 
 ```
 Pre    none
@@ -170,7 +170,7 @@ say so. It *"SHOULD NOT be used for situations in which the server rejects mail 
 hosts or addresses"*, which is exactly our blocklist case. `554` remains right. See H7 for the
 case where `521` would apply.
 
-### 2 · `Helo` — C
+### `Helo` — C
 
 ```
 Pre    ConnectionAccepted exists
@@ -178,16 +178,16 @@ Post   ClientIdentified{claimed_domain, protocol:"SMTP"}
        OR  reply 501 (bad syntax) / 500 (unrecognized)
 ```
 
-### 3 · `SessionState` — V
+### `SessionState` — V
 
 ```
 Sources   ConnectionAccepted, ClientIdentified, SessionReset
 Answers   Has the client identified itself? Is a transaction open?
 Post      SessionState{identified: bool, transaction_open: bool}
 ```
-Placed here because slices 4, 6 and 8 consume it — not next to its sources.
+Placed here because `MailFrom`, `RcptTo` and `BeginData` consume it — not next to its sources.
 
-### 4 · `MailFrom` — C
+### `MailFrom` — C
 
 ```
 Pre    SessionState.identified = true
@@ -195,7 +195,7 @@ Post   MailTransactionStarted{reverse_path}
        OR  reply 503 (no HELO) / 550 (sender rejected)
 ```
 
-### 5 · `RecipientDirectory` — V  *(translation boundary — H3 resolved)*
+### `RecipientDirectory` — V  *(translation boundary — H3 resolved)*
 
 ```
 Sources   translated events from the Directory context (deferred)
@@ -213,7 +213,7 @@ the boundary is now typed and orthodox rather than unexplained.
 `relay_permitted` **removed.** Relay is out of scope, so it is constant-false — a rule, not a fact.
 Under G1 nothing varies and nothing consumes the variation.
 
-### 6 · `RcptTo` — C
+### `RcptTo` — C
 
 ```
 Pre    MailTransactionStarted exists for this session
@@ -226,7 +226,7 @@ Walked once per recipient. The same slice, not N slices.
 `is_local` **removed** from `RecipientAccepted`. In this scope an accepted recipient is necessarily
 local — relay is deferred — so the field is constant-true. A constant is a rule, not a fact.
 
-### 7 · `TransactionState` — V
+### `TransactionState` — V
 
 ```
 Sources   MailTransactionStarted, RecipientAccepted, TransactionAborted
@@ -234,7 +234,7 @@ Answers   Open? Reverse path? How many recipients?
 Post      TransactionState{open: bool, reverse_path, recipient_count}
 ```
 
-### 8 · `BeginData` — C 🔴 **H1**
+### `BeginData` — C 🔴 **H1**
 
 ```
 Pre    TransactionState.open = true
@@ -245,7 +245,7 @@ Post   DataPhaseEntered
 The *command* is sound — it makes a real decision. The *event* is on trial: its only candidate
 consumer is the transcript rendering `354`.
 
-### 9 · `SubmitContent` — C
+### `SubmitContent` — C
 
 ```
 Pre    DataPhaseEntered for the current transaction
@@ -257,7 +257,7 @@ Post   MessageAccepted{queue_id, reverse_path, recipients[], content_ref,
 "left chair". Inbound scope removed the fan-out; the forward completeness pass removed
 `MessageContentReceived` as redundant.
 
-### 10 · `Reset` — C
+### `Reset` — C
 
 ```
 Pre    SessionState.identified = true
@@ -265,14 +265,14 @@ Post   TransactionAborted{cause:"rset"}
        Postcondition explicitly does NOT touch SessionState
 ```
 
-### 11 · `Quit` — C
+### `Quit` — C
 
 ```
 Pre    ConnectionAccepted exists
 Post   SessionClosed{cause}
 ```
 
-### 12 · `SessionTranscript` — V
+### `SessionTranscript` — V
 
 ```
 Sources   every event above
