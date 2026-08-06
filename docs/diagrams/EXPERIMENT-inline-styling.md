@@ -227,6 +227,108 @@ Compare against the current form:
 
 ---
 
+---
+
+## 5. The full matrix
+
+The schemes above were picked before the option space was mapped. This is the map.
+
+**Three orthogonal axes**, plus modifiers that ride on top of any cell:
+
+| | upright | **bold** | *italic* | ***bold italic*** |
+|:--|:--|:--|:--|:--|
+| **standard** | 220 foo.com Ready | **220 foo.com Ready** | *220 foo.com Ready* | ***220 foo.com Ready*** |
+| **mono** | `220 foo.com Ready` | **`220 foo.com Ready`** | *`220 foo.com Ready`* | ***`220 foo.com Ready`*** |
+
+Eight base styles. Source, in order:
+
+| | source |
+|:--|:--|
+| standard | `220 foo.com Ready` — no markup |
+| standard bold | `**220 foo.com Ready**` |
+| standard italic | `*220 foo.com Ready*` |
+| standard bold italic | `***220 foo.com Ready***` |
+| mono | ``` `220 foo.com Ready` ``` |
+| mono bold | ``` **`220 foo.com Ready`** ``` |
+| mono italic | ``` *`220 foo.com Ready`* ``` |
+| mono bold italic | ``` ***`220 foo.com Ready`*** ``` |
+
+### Modifiers that combine with any of the eight
+
+| Modifier | Sample | Source | Note |
+|:--|:--|:--|:--|
+| **ALL CAPS** | `220 FOO.COM READY` | content change, not markup | Free — works everywhere, survives copy-paste, but destroys case-sensitive data. Safe for protocol verbs (`HELO`, `MAIL FROM`), unsafe for domains and paths |
+| **~~strikethrough~~** | ~~`220 foo.com Ready`~~ | `~~...~~` | Available and unused. Reads as *removed* or *superseded*, so it carries a meaning already — hard to repurpose |
+| **quotes as delimiter** | `"bar.com"` vs `bar.com` | content | Already in use for values. Zero markup cost, and the quotes are themselves the signal |
+| **angle brackets** | `<Smith@bar.com>` | content | RFC 5321's own delimiter for a path. Free, and *already meaningful* to the domain |
+| **separator choice** | `field: value` · `field = value` · `field · value` | content | Distinguishes without styling anything |
+
+### Two more the list did not include
+
+**Links are colored in both renderers**, and are the only remaining route to color that is not
+markup a sanitizer strips: [220 foo.com Ready](#). ⚠️ **Do not adopt** — it is semantic abuse, the
+target has to go somewhere, and a reader will tap it. Recorded so the option is closed rather than
+rediscovered.
+
+**Emoji chips can sit inline**, not only in a row label: 🟥 `550 No such user here`. Already the
+project's color mechanism, already proven in both renderers, and it adds a *distinct* channel
+rather than competing with the font axes. Currently unused inside a wire line.
+
+---
+
+## 6. Schemes without italic on values
+
+Constraint from review: *italic is a strong differentiator but tiring in quantity, and unwanted on
+the values a reader looks at most.* That rules out **B**, **C**, **H** and **I** as written, since
+all four put the value in italic.
+
+The remaining lever is **bold**, and it inverts cleanly. Rather than marking the *variable* part,
+mark the *fixed* part — the thing the model defines:
+
+**L — bold names the schema, plain is the instance.** One font, one axis, no italic.
+
+| | |
+|:--|:--|
+| Event title | **ClientIdentified** |
+| Field and value | **`claimed_domain`**`: "bar.com"` |
+| Wire line | **`220`**` foo.com Simple Mail Transfer Service Ready` |
+
+**M — as L, but the value drops to standard font.** Monospace then means *literal protocol bytes*,
+so the value stops claiming to be one.
+
+| | |
+|:--|:--|
+| Field and value | **`claimed_domain`**: "bar.com" |
+| Wire line | **`220`** foo.com Simple Mail Transfer Service Ready |
+
+**N — ALL CAPS carries the protocol, bold carries the schema.** No second font weight on the wire.
+
+| | |
+|:--|:--|
+| Wire line | `C: HELO bar.com` — verb already caps by protocol |
+| Reply | `S: 220 foo.com Simple Mail Transfer Service Ready` |
+| Field and value | **`claimed_domain`**`: "bar.com"` |
+
+⚠️ **N is nearly free** because SMTP verbs are already uppercase and reply codes are already
+digits — the protocol has done the differentiating for us. The open question is whether that is
+enough on its own, which is scheme **D**, the control, wearing a different justification.
+
+### Noise budget
+
+Ranked by how many style changes appear in one line, since the stated goal is the fewest that still
+distinguish:
+
+| Scheme | Style changes per line | Value in italic? |
+|:--|--:|:--|
+| **D** control | 0 | no |
+| **N** caps + bold field | 1 | no |
+| **M** bold mono + standard | 2 | no |
+| **L** bold mono + plain mono | 2 | no |
+| **C** / **I** | 2 | **yes** |
+| **B** / **H** | 3 | **yes** |
+
+---
+
 ## Verdicts
 
 Fill in from both. A scheme needs **two ✅** and must survive a table cell.
@@ -244,10 +346,13 @@ Fill in from both. A scheme needs **two ✅** and must survive a table cell.
 | F | HTML, all-mandated line | ✅ | ❌ | — | dead with 6 |
 | G | HTML bold field | ✅ | ❌ | — | dead with 6 |
 | K | HTML, many fields | ✅ | ❌ | — | dead with 6 |
-| **B** | bold code + italic code | ⚠️ **3 pills** | ✅ one line | ❌ **diverges** | best in the app, worst on GitHub |
-| **C** | code + plain italic | ✅ | ✅ | ✅ **same in both** | font change, not span boundary |
-| **H** | code field + italic code value | ⚠️ 2 pills | ✅ | ⚠️ | same divergence, milder |
-| **I** | code field + plain italic | ✅ | ✅ | ✅ **same in both** | C's equivalent for payloads |
+| **B** | bold code + italic code | ⚠️ **3 pills** | ✅ one line | ❌ **diverges** | best in the app, worst on GitHub; also **italic value — ruled out on review** |
+| **C** | code + plain italic | ✅ | ✅ | ✅ **same in both** | font change, not span boundary; **italic value — ruled out on review** |
+| **H** | code field + italic code value | ⚠️ 2 pills | ✅ | ⚠️ | same divergence, milder; **italic value — ruled out** |
+| **I** | code field + plain italic | ✅ | ✅ | ✅ **same in both** | C's equivalent for payloads; **italic value — ruled out** |
+| **L** | bold mono schema, plain mono instance | | | | **live** — §6, no italic |
+| **M** | bold mono schema, standard instance | | | | **live** — §6, no italic |
+| **N** | protocol's own caps + bold field | | | | **live** — §6, cheapest |
 | — | §4 table cell, with `&#10;<br>` | ✅ | ✅ | — | **breaks survive — hazard cleared** |
 
 ---
