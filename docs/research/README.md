@@ -6,6 +6,7 @@ Primary-source research behind FnEmail's event model.
 
 | File | What it is |
 |---|---|
+| [`../HANDOFF.md`](../HANDOFF.md) | **Continuing in a new session?** Setup, settled decisions, open items, and working conventions. |
 | [`METHOD-REFERENCE.md`](METHOD-REFERENCE.md) | **Start here.** The method as its authors define it, with the places the sources contradict each other named rather than smoothed over. |
 | [`../event-model.md`](../event-model.md) | The model itself — RFC 5321 inbound, HELO only, v0.3. |
 | [`../paths/`](../paths/) | Worked paths through the model, with example data. 2 walked, 11 of 12 slices covered. |
