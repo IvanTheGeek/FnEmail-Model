@@ -213,19 +213,19 @@ Compare against the current form:
 > | **C** — `C: HELO` *bar.com* | one pill, then italic text — **two units** | mono, then italic serif — **two units** |
 > | **D** — control | one pill — one unit | one run — one unit |
 >
-> Scheme **B** is the one that looked most promising and it is the one that diverges. Splitting a
-> line into three code spans reads as one line where spans are unstyled and as three chips where
-> they are pilled. The technique that best expresses *one line with two parts* in the app is the
-> technique that most destroys it on GitHub.
+> Scheme **B** splits the line into three code spans, which reads as one line where spans are
+> unstyled and as three chips where they are pilled.
 >
-> Scheme **C** degrades identically in both, because it never relies on adjacent spans looking
-> continuous — it uses a font change rather than a span boundary to mark the split.
+> ⚠️ **Downgraded on review 2026-08-06 — this is a note, not a disqualifier.** An earlier version of
+> this block treated the pill divergence as fatal to B. The reviewer's position is that the
+> background difference is an acceptable cost, so **B stays live** and the pill is recorded as a
+> characteristic rather than a failure. Scheme **C** still has the property that it never relies on
+> adjacent spans looking continuous, which is worth knowing — it just is not the deciding factor it
+> was written up as.
 >
 > **Incidental:** in scheme K, with the HTML stripped, `<Smith@bar.com>` was **auto-linked as a
 > mailto address** in the app. Losing markup does not merely lose formatting; it can hand the
 > content to a different parser.
-
----
 
 ---
 
@@ -353,31 +353,111 @@ distinguish:
 
 ---
 
+---
+
+## 7. Every working variant, side by side
+
+Nothing below is ruled out. All of it renders in both renderers; the only exclusions are the three
+dead techniques named in the Verdicts. Pick by eye.
+
+**Two parts to style** — the part the protocol fixes, and the part that is ours or the walk's.
+
+### Wire line — `220` is fixed, the greeting text is config
+
+| | fixed part | variable part | rendered |
+|:--|:--|:--|:--|
+| **V1** | mono | mono | `220 foo.com Simple Mail Transfer Service Ready` |
+| **V2** | mono **bold** | mono | **`220`**` foo.com Simple Mail Transfer Service Ready` |
+| **V3** | mono **bold** | mono *italic* | **`220`** *`foo.com Simple Mail Transfer Service Ready`* |
+| **V4** | mono | mono *italic* | `220` *`foo.com Simple Mail Transfer Service Ready`* |
+| **V5** | mono **bold** | standard | **`220`** foo.com Simple Mail Transfer Service Ready |
+| **V6** | mono | standard | `220` foo.com Simple Mail Transfer Service Ready |
+| **V7** | mono | standard *italic* | `220` *foo.com Simple Mail Transfer Service Ready* |
+| **V8** | mono **bold** | standard *italic* | **`220`** *foo.com Simple Mail Transfer Service Ready* |
+| **V9** | mono | standard **bold** | `220` **foo.com Simple Mail Transfer Service Ready** |
+| **V10** | mono *italic* | mono | *`220`* `foo.com Simple Mail Transfer Service Ready` |
+| **V11** | mono ***bold italic*** | mono | ***`220`*** `foo.com Simple Mail Transfer Service Ready` |
+
+`V1` = D · `V2` = L · `V3` = B · `V5` = M · `V7` = C
+
+### Payload field — the name is schema, the value is an instance
+
+| | field | value | rendered |
+|:--|:--|:--|:--|
+| **F1** | mono | mono | `claimed_domain: "bar.com"` |
+| **F2** | mono **bold** | mono | **`claimed_domain`**`: "bar.com"` |
+| **F3** | mono **bold** | mono *italic* | **`claimed_domain`**: *`"bar.com"`* |
+| **F4** | mono | mono *italic* | `claimed_domain`: *`"bar.com"`* |
+| **F5** | mono **bold** | standard | **`claimed_domain`**: "bar.com" |
+| **F6** | mono | standard | `claimed_domain`: "bar.com" |
+| **F7** | mono | standard *italic* | `claimed_domain`: *"bar.com"* |
+| **F8** | mono **bold** | standard *italic* | **`claimed_domain`**: *"bar.com"* |
+| **F9** | mono | standard **bold** | `claimed_domain`: **"bar.com"** |
+| **F10** | standard **bold** | mono | **claimed_domain**: `"bar.com"` |
+
+`F1` = J · `F2` = L · `F4` = H · `F5` = M · `F7` = I
+
+⚠️ **F10 inverts the assumption** every other row shares — that the *field name* is the monospace
+thing. If the value is the literal protocol byte-string and the name is our label for it, monospace
+arguably belongs on the value instead. Included because the option was never stated, not because it
+is recommended.
+
+### The realistic case — three fields at once
+
+Noise is only judgeable at length. Same three variants, applied to `MessageAccepted`:
+
+**V2/F2 style** — bold names, everything monospace:
+
+**`queue_id`**`: "f2C8D14"` · **`reverse_path`**`: "<Smith@bar.com>"` · **`received_at`**`: "1998-05-19T09:14:07-07:00"`
+
+**V5/F5 style** — bold monospace names, standard values:
+
+**`queue_id`**: "f2C8D14" · **`reverse_path`**: "<Smith@bar.com>" · **`received_at`**: "1998-05-19T09:14:07-07:00"
+
+**F4 style** — plain monospace names, italic monospace values:
+
+`queue_id`: *`"f2C8D14"`* · `reverse_path`: *`"<Smith@bar.com>"`* · `received_at`: *`"1998-05-19T09:14:07-07:00"`*
+
+**F1 control** — no distinction:
+
+`queue_id: "f2C8D14"` · `reverse_path: "<Smith@bar.com>"` · `received_at: "1998-05-19T09:14:07-07:00"`
+
+### In the cell, all four
+
+| | **`Helo`** — C |
+|:--|:--|
+| ⬛ **Actor** | **`250`**` foo.com` — V2&#10;<br>**`250`** foo.com — V5&#10;<br>`250` *foo.com* — V7&#10;<br>`250 foo.com` — V1 |
+| 🟧 **Event** | **`claimed_domain`**`: "bar.com"` — F2&#10;<br>**`claimed_domain`**: "bar.com" — F5&#10;<br>`claimed_domain`: *`"bar.com"`* — F4&#10;<br>`claimed_domain: "bar.com"` — F1 |
+
+---
+
 ## Verdicts
 
 Fill in from both. A scheme needs **two ✅** and must survive a table cell.
 
-| # | Scheme | GitHub | Claude Android | Reads as one line? | Notes |
+| # | Scheme | GitHub | Claude app | In a cell | Note |
 |:--|:--|:--|:--|:--|:--|
 | 1 | md nesting into code | ❌ | ❌ | — | mechanically impossible in both |
-| 2 | ``**`code`**`` | ✅ | ✅ | | **live** |
-| 3 | ``*`code`*`` | ✅ | ✅ | | **live** |
-| 4 | ``***`code`***`` | ✅ | ✅ | | **live** |
-| 5 | adjacent code spans | ✅ | ✅ | | **live** |
-| 6 | `<code><b>` | ✅ | ❌ | — | **DEAD — app strips `<code>`** |
-| A | HTML bold in one span | ✅ | ❌ | — | dead with 6 |
-| E | HTML, client line | ✅ | ❌ | — | dead with 6 |
-| F | HTML, all-mandated line | ✅ | ❌ | — | dead with 6 |
-| G | HTML bold field | ✅ | ❌ | — | dead with 6 |
-| K | HTML, many fields | ✅ | ❌ | — | dead with 6 |
-| **B** | bold code + italic code | ⚠️ **3 pills** | ✅ one line | ❌ **diverges** | best in the app, worst on GitHub; also **italic value — ruled out on review** |
-| **C** | code + plain italic | ✅ | ✅ | ✅ **same in both** | font change, not span boundary; **italic value — ruled out on review** |
-| **H** | code field + italic code value | ⚠️ 2 pills | ✅ | ⚠️ | same divergence, milder; **italic value — ruled out** |
-| **I** | code field + plain italic | ✅ | ✅ | ✅ **same in both** | C's equivalent for payloads; **italic value — ruled out** |
-| **L** | bold mono schema, plain mono instance | | | | **live** — §6, no italic |
-| **M** | bold mono schema, standard instance | | | | **live** — §6, no italic |
-| **N** | protocol's own caps + bold field | | | | ⚠️ **half dead** — verbs are *not* caps by protocol; only the reply-code half survives |
-| — | §4 table cell, with `&#10;<br>` | ✅ | ✅ | — | **breaks survive — hazard cleared** |
+| 6 | `<code><b>` | ✅ | ❌ | — | **DEAD** — app strips `<code>` |
+| A · E · F · G · K | all HTML schemes | ✅ | ❌ | — | **DEAD** with 6 |
+| 2 | ``**`code`**`` | ✅ | ✅ | ✅ | live primitive |
+| 3 | ``*`code`*`` | ✅ | ✅ | ✅ | live primitive |
+| 4 | ``***`code`***`` | ✅ | ✅ | ✅ | live primitive |
+| 5 | adjacent code spans | ✅ | ✅ | ✅ | live primitive · GitHub pills each one |
+| **B** | mono-bold + mono-italic | ✅ | ✅ | ✅ | **LIVE** · 3 pills on GitHub — *noted, not disqualifying* |
+| **C** | mono + standard-italic | ✅ | ✅ | ✅ | **LIVE** · same in both |
+| **D** | control, all mono | ✅ | ✅ | ✅ | **LIVE** · baseline |
+| **H** | mono field + mono-italic value | ✅ | ✅ | ✅ | **LIVE** · 2 pills on GitHub |
+| **I** | mono field + standard-italic value | ✅ | ✅ | ✅ | **LIVE** · same in both |
+| **J** | control, fields all mono | ✅ | ✅ | ✅ | **LIVE** · baseline |
+| **L** | mono-bold schema + mono instance | ✅ | ⚠️ | ✅ | **LIVE, but weak** — bold-in-mono is nearly invisible in the app; on GitHub the *pill boundary* separates more than the bold does |
+| **M** | mono-bold schema + standard instance | ✅ | ✅ | ✅ | **LIVE, strongest separation** — changes font family, not weight |
+| **N** | case carries the protocol | — | — | — | ❌ **DEAD on correctness**, not rendering — verbs are not uppercase by protocol |
+| — | §4 cell with `&#10;<br>` | ✅ | ✅ | ✅ | breaks survive alongside styling |
+
+**Only three things are actually dead**, and none died on taste: HTML (the app strips it), markdown
+nesting into a code span (mechanically impossible), and **N** (its premise about SMTP was false).
+Everything else renders in both and is a live choice.
 
 ---
 
