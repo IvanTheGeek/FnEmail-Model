@@ -37,7 +37,7 @@ the other half of that pair. See *What this walk tested*.
 
 ### 🟦C · Step 1 · `AcceptConnection`
 
-| | **`AcceptConnection`** — C |
+| | |
 |:--|:--|
 | ⬛ **Actor** | `S: 220` foo.com Simple Mail Transfer Service Ready |
 | 🟦 **Command** | **AcceptConnection** |
@@ -47,7 +47,7 @@ the other half of that pair. See *What this walk tested*.
 
 ### 🟦C · Step 2 · `Helo`
 
-| | **`Helo`** — C |
+| | |
 |:--|:--|
 | ⬛ **Actor** | `C: HELO` bar.com&#10;<br>`S: 250` foo.com |
 | 🟦 **Command** | **Helo** |
@@ -57,7 +57,7 @@ the other half of that pair. See *What this walk tested*.
 
 ### 🟩V · Step 3 · `SessionState`
 
-| | **`SessionState`** — V |
+| | |
 |:--|:--|
 | ⬜ **Consumed by** | `MailFrom` · `RcptTo` · `BeginData` |
 | 🟩 **Read Model** | **SessionState**&#10;<br>`identified`: true · `transaction_open`: false |
@@ -65,7 +65,7 @@ the other half of that pair. See *What this walk tested*.
 
 ### 🟦C · Step 4 · `MailFrom`
 
-| | **`MailFrom`** — C |
+| | |
 |:--|:--|
 | ⬛ **Actor** | `C: MAIL FROM:`<Smith@bar.com>&#10;<br>`S: 250 OK` |
 | 🟦 **Command** | **MailFrom** |
@@ -75,7 +75,7 @@ the other half of that pair. See *What this walk tested*.
 
 ### 🟩V · Step 5 · `RecipientDirectory` &nbsp;*(translation boundary — H3)*
 
-| | **`RecipientDirectory`** — V |
+| | |
 |:--|:--|
 | ⬜ **Consumed by** | `RcptTo` |
 | 🟩 **Read Model** | **RecipientDirectory**&#10;<br>`is_local`: true |
@@ -87,7 +87,7 @@ paths cross.
 
 ### 🟦C · Step 6 · `RcptTo`
 
-| | **`RcptTo`** — C |
+| | |
 |:--|:--|
 | ⬛ **Actor** | `C: RCPT TO:`<Jones@foo.com>&#10;<br>`S: 250 OK` |
 | 🟦 **Command** | **RcptTo** |
@@ -99,7 +99,7 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 
 ### 🟩V · Step 7 · `TransactionState`
 
-| | **`TransactionState`** — V |
+| | |
 |:--|:--|
 | ⬜ **Consumed by** | `RcptTo` · `BeginData` · `SubmitContent` |
 | 🟩 **Read Model** | **TransactionState**&#10;<br>`open`: true · `reverse_path`: <Smith@bar.com> · `recipient_count`: 1 |
@@ -107,7 +107,7 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 
 ### 🟦C · Step 8 · `BeginData` &nbsp;🟥 **H1**
 
-| | **`BeginData`** — C |
+| | |
 |:--|:--|
 | ⬛ **Actor** | `C: DATA`&#10;<br>`S: 354` Start mail input; end with `<CRLF>.<CRLF>` |
 | 🟦 **Command** | **BeginData** |
@@ -120,7 +120,7 @@ does not resolve it — it just shows the event firing with nothing downstream t
 
 ### 🟦C · Step 9 · `SubmitContent`
 
-| | **`SubmitContent`** — C |
+| | |
 |:--|:--|
 | ⬛ **Actor** | `C: Date: Tue, 19 May 1998 09:14:02 -0700`&#10;<br>`C: From: Smith <Smith@bar.com>`&#10;<br>`C: To: Jones@foo.com`&#10;<br>`C: Subject: Tuesday`&#10;<br>`C: (blank)`&#10;<br>`C: Blah blah blah...`&#10;<br>`C: .`&#10;<br>`S: 250 OK` |
 | 🟦 **Command** | **SubmitContent** |
@@ -133,7 +133,7 @@ delivering or reporting failure — RFC 5321 §2.1.
 
 ### 🟦C · Step 10 · `Quit`
 
-| | **`Quit`** — C |
+| | |
 |:--|:--|
 | ⬛ **Actor** | `C: QUIT`&#10;<br>`S: 221` foo.com Service closing transmission channel |
 | 🟦 **Command** | **Quit** |

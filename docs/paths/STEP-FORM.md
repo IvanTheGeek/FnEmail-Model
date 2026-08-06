@@ -13,19 +13,24 @@ moment, with the actual bytes that crossed the wire and the actual field values 
 A step is a heading, a slice table, and a contract.
 
 ```
-### Step N · `SliceName` — C
+### 🟦C · Step N · `SliceName`
 ```
 
+- **🟦C** or **🟩V** — Command Slice or View Slice. Same marker the model uses, with the chip
+  carrying the color so the type is visible before the name is read.
 - **N** is the position in *this walk*. Unlike slice numbers it is not arbitrary — a walk is one
   concrete conversation, and step 4 genuinely happened after step 3. See `../HANDOFF.md`
   convention 8 for why slices themselves are named rather than numbered.
 - **`SliceName`** matches the heading in `../event-model.md` exactly.
-- **C** or **V** — Command Slice or View Slice. Same marker the model uses.
 
 Then the slice, in the convention from [`../diagrams/README.md`](../diagrams/README.md): rows are
 element types, chips carry the type, `&#10;<br>` breaks a line.
 
-| | **`Helo`** — C |
+**The table's header row is empty.** The heading directly above it already gives the type and the
+name, and repeating them one line later is noise in a document that stacks ten of these. Markdown
+cannot omit a header row — the cells are left blank, which renders as a thin empty band.
+
+| | |
 |:--|:--|
 | ⬛ **Actor** | `C: HELO` bar.com&#10;<br>`S: 250` foo.com |
 | 🟦 **Command** | **Helo** |
@@ -54,7 +59,7 @@ which is why this project needs no sequence diagram (see `../diagrams/README.md`
 names the **consumer** instead, and its bottom row names the **source events** rather than an
 emitted one. A View Slice reads bottom to top.
 
-| | **`SessionState`** — V |
+| | |
 |:--|:--|
 | ⬜ **Consumed by** | `MailFrom` · `RcptTo` · `BeginData` |
 | 🟩 **Read Model** | **SessionState**&#10;<br>`identified: true` · `transaction_open: false` |
