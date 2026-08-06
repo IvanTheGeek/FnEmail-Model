@@ -398,39 +398,53 @@ standard text only.**
 > Angle brackets stay where the RFC uses them: `<Smith@bar.com>` is a reverse-path in RFC 5321's own
 > syntax, not a quoting convention of ours.
 
-### Wire line — `220` is fixed by the RFC, the greeting text is operator config
+### The complete cross — every live combination
 
-| | fixed | variable | rendered |
-|:--|:--|:--|:--|
-| **W1** | mono | mono | `220 foo.com Simple Mail Transfer Service Ready` |
-| **W2** | mono | standard | `220` foo.com Simple Mail Transfer Service Ready |
-| **W3** | mono | standard *italic* | `220` *foo.com Simple Mail Transfer Service Ready* |
-| **W4** | mono | standard **bold** | `220` **foo.com Simple Mail Transfer Service Ready** |
-| **W5** | mono | mono *italic* | `220` *`foo.com Simple Mail Transfer Service Ready`* |
-| **W6** | mono *italic* | mono | *`220`* `foo.com Simple Mail Transfer Service Ready` |
-| **W7** | standard **bold** | mono | **220** `foo.com Simple Mail Transfer Service Ready` |
+Both parts vary independently, so the map is a grid rather than a list. **Six live styles per part**
+— mono-bold is absent because the app drops it, which is the only exclusion here.
 
-W1 is the control, formerly D. W3 is formerly C. W5 is what B collapses to once its bold is dropped.
+Short example so the grid fits: fixed `220`, variable `Ready`. **Rows are the fixed part, columns
+the variable part.** The diagonal is where both sides match, so nothing is distinguished.
 
-### Payload field — the name is schema, the value is an instance
+| fixed \ variable → | mono | mono *ital* | std | std **bold** | std *ital* | std ***b+i*** |
+|:--|:--|:--|:--|:--|:--|:--|
+| **mono** | *— same —* | `220` *`Ready`* | `220` Ready | `220` **Ready** | `220` *Ready* | `220` ***Ready*** |
+| **mono *ital*** | *`220`* `Ready` | *— same —* | *`220`* Ready | *`220`* **Ready** | *`220`* *Ready* | *`220`* ***Ready*** |
+| **std** | 220 `Ready` | 220 *`Ready`* | *— same —* | 220 **Ready** | 220 *Ready* | 220 ***Ready*** |
+| **std **bold**** | **220** `Ready` | **220** *`Ready`* | **220** Ready | *— same —* | **220** *Ready* | **220** ***Ready*** |
+| **std *ital*** | *220* `Ready` | *220* *`Ready`* | *220* Ready | *220* **Ready** | *— same —* | *220* ***Ready*** |
+| **std ***b+i***** | ***220*** `Ready` | ***220*** *`Ready`* | ***220*** Ready | ***220*** **Ready** | ***220*** *Ready* | *— same —* |
 
-| | field | value | rendered |
-|:--|:--|:--|:--|
-| **P1** | mono | mono | `claimed_domain: bar.com` |
-| **P2** | mono | standard | `claimed_domain`: bar.com |
-| **P3** | mono | standard *italic* | `claimed_domain`: *bar.com* |
-| **P4** | mono | standard **bold** | `claimed_domain`: **bar.com** |
-| **P5** | mono | mono *italic* | `claimed_domain`: *`bar.com`* |
-| **P6** | mono *italic* | mono | *`claimed_domain`*: `bar.com` |
-| **P7** | standard **bold** | mono | **claimed_domain**: `bar.com` |
-| **P8** | standard | mono | claimed_domain: `bar.com` |
+**Thirty distinguishing combinations.** The earlier W-list sampled only the first two rows, which is
+what prompted this grid — the fixed part had never been varied outside monospace except in W7.
 
-P1 is the control, formerly J. P3 is formerly I. P5 is formerly H. P7 is formerly F10.
+⚠️ **The bottom four rows are the ones nobody had looked at.** Putting the *fixed* part in standard
+font and the *variable* part in monospace inverts the usual reading, and it is not obviously wrong:
+the value that came off the wire is the literal byte-string, and `220` is arguably a label for a
+meaning rather than bytes to be reproduced.
 
-⚠️ **P7 and P8 invert what the others assume.** Every row above them puts monospace on the *field
-name*. These put it on the **value** — on the grounds that the value is the literal byte-string that
-came off the wire, and the field name is our label for it. With quotes gone, this is the only
-remaining way to mark where a value starts and ends.
+### Wire line — the shortlist, at real length
+
+The grid above is exhaustive; these are the ones worth reading in full-length form.
+
+### Payload field — the complete cross
+
+Same grid, applied to a field. **Rows are the field name, columns the value.** No quotes.
+
+| name \ value → | mono | mono *ital* | std | std **bold** | std *ital* | std ***b+i*** |
+|:--|:--|:--|:--|:--|:--|:--|
+| **mono** | *— same —* | `claimed_domain`: *`bar.com`* | `claimed_domain`: bar.com | `claimed_domain`: **bar.com** | `claimed_domain`: *bar.com* | `claimed_domain`: ***bar.com*** |
+| **mono *ital*** | *`claimed_domain`*: `bar.com` | *— same —* | *`claimed_domain`*: bar.com | *`claimed_domain`*: **bar.com** | *`claimed_domain`*: *bar.com* | *`claimed_domain`*: ***bar.com*** |
+| **std** | claimed_domain: `bar.com` | claimed_domain: *`bar.com`* | *— same —* | claimed_domain: **bar.com** | claimed_domain: *bar.com* | claimed_domain: ***bar.com*** |
+| **std **bold**** | **claimed_domain**: `bar.com` | **claimed_domain**: *`bar.com`* | **claimed_domain**: bar.com | *— same —* | **claimed_domain**: *bar.com* | **claimed_domain**: ***bar.com*** |
+| **std *ital*** | *claimed_domain*: `bar.com` | *claimed_domain*: *`bar.com`* | *claimed_domain*: bar.com | *claimed_domain*: **bar.com** | *— same —* | *claimed_domain*: ***bar.com*** |
+| **std ***b+i***** | ***claimed_domain***: `bar.com` | ***claimed_domain***: *`bar.com`* | ***claimed_domain***: bar.com | ***claimed_domain***: **bar.com** | ***claimed_domain***: *bar.com* | *— same —* |
+
+⚠️ **The lower-left quadrant is the inversion.** Standard-font name with a monospace value says
+*the value is the literal thing and the name is our label* — which with quotes gone is also the only
+way left to show where a value begins and ends.
+
+### Payload field — the shortlist, in prose form
 
 ### The realistic case — three fields, no quotes
 
