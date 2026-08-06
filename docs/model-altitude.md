@@ -311,6 +311,9 @@ open question. It is not merely cosmetic: the whole argument for the vocabulary 
 no transcripts and video hosts are blocked by the egress policy. This is "absent from his canonical
 written work", **not** "absent from his vocabulary". He may use these terms freely in talks.
 
+> **Both ⚠️ blocks above have since been tested against spoken sources. One held; one failed.
+> They are kept exactly as written, because the scope block called its own shot. See §2.0d.**
+
 **What he uses instead:** *information system*, *the story*, *workflow step*, *user*, and
 *"empowering the user and informing the user."* His frame is **information and users**, not
 business and domain.
@@ -364,6 +367,100 @@ That also predicts where the boundary sits in practice: the point at which a swi
 own charter is the point at which it should become its own model.
 
 
+
+### 2.0d Result 1, retested against spoken sources
+
+Retested 2026-08-06 from a local session with unrestricted egress. The sources §2.0c's ⚠️ scope
+block named as unavailable are now readable, so the claim can be tested rather than hedged.
+
+Whole-word counts, case-insensitive:
+
+| Source | Form | `domain` | `DDD` | `bounded` | `aggregate` |
+|---|---|---|---|---|---|
+| Dymitruk, `what-is-event-modeling/index.md` | written | **0** | 0 | 0 | 0 |
+| SE Radio 539 (2022-11) | spoken, transcribed | 9 | 9 | 1 | 1 |
+| Semaphore Uncut (2022) | spoken, transcribed | 6 | 8 | 0 | 0 |
+
+Of SE Radio's twelve raw hits, four are the publisher's own furniture — episode show notes and a
+site-wide tag cloud — and are excluded. The remaining eight fall inside `Adam Dymitruk` speaker
+turns.
+
+The decisive passage, 00:45:57–00:46:44. **The transcript is machine-generated and is quoted
+verbatim**, irregularities included:
+
+> *"we couldn't really educate a lot of people, not only just on Conway's Law, we couldn't educate
+> people on, domain driven design or event sourcing or any sorts of things. So, one of the things
+> that Event Modeling does is it starts out with the goals of all those practices being shown as
+> the artifact. So, someone can do Event Modeling for a year and then say, hey wait a minute, I
+> have domain driven design. **These look like bounded contexts.** Wait a second, **this is an
+> aggregate**, I have transactional integrity on this. Wow. So, they can go backwards, kind of
+> stumble Kramer their way into it and fall backwards into domain-driven design. And that was kind
+> of out of necessity, like I said, the luxury to be able to say, Hey team, go study domain-driven
+> design, go study event sourcing. […] Go study CQRS, go study Conways Law, go study hexagonal
+> architecture. **That would take a long time to do and to understand.**"*
+
+Also at 00:28:18: *"a heavy process that we used in our company obviously is event sourcing, CQS,
+domain driven design"*; and, on what carried over from Event Storming, *"we're still using the
+ubiquitous language and other things that we discovered along the way in the storming part"*.
+
+#### Consequence 1 — the scope block is confirmed, and closed
+
+It predicted this outcome precisely: *"absent from his canonical written work", **not** "absent
+from his vocabulary". He may use these terms freely in talks.* He does. Zero in the written
+article, abundant in speech. The hedge was right and is no longer open.
+
+#### Consequence 2 — the *Simplicity* reading is now sourced rather than inferred
+
+§2.0c reads the generic *"a process called 'X' … requires one book and a workshop that takes a
+week"* as aimed at DDD, and calls the target *"unmistakable"*. That was an inference from a passage
+that never names DDD. SE Radio removes the inference: he names domain-driven design first in the
+list of things a team would otherwise have to go study.
+
+#### Consequence 3 — ⚠️ the consequence block is wrong, and this one changes a decision
+
+**§2.0c claims Dymitruk "avoids its vocabulary on purpose" and calls the finding "suppression of
+vocabulary, not absence of the concept." The second half is right; the first half is wrong.**
+
+He uses *bounded contexts* and *aggregate* himself, approvingly, describing what a year of Event
+Modeling hands a team. He is avoiding neither the words nor the concepts. What he refuses is making
+DDD a **prerequisite** — the cost he objects to is study time, not terminology.
+
+So the suppression is a property of **register**, not of vocabulary: absent from the canonical
+written introduction, where no reader may be assumed to have read Evans; present in conversation
+with practitioners. "Suppression of vocabulary" overstates it.
+
+That dissolves the argument built on top of it. §2.0c reasons that because EM is deliberately
+DDD-free, importing DDD terms *"works against the method's design intent."* It does not, because
+that is not the design intent. **Context may keep its name.** The vocabulary question in
+`HANDOFF.md` §5 is answered to that extent — though whether an EM-native name would be *clearer*
+is a separate question this evidence does not touch, and remains open.
+
+#### One nuance that cuts the other way
+
+In the Semaphore piece the phrase *"domain experts"* is the interviewer's prose, not Dymitruk's.
+His own quoted words there are *"use subject matter experts in each area properly so that the
+terminology keeps consistent within each one"* — **subject matter experts**, not domain experts.
+Consistent with the written record, and a reminder that the counts above include interviewer
+framing wherever the source is not a verbatim transcript.
+
+More importantly, §2.0c's *"What he uses instead"* paragraph is **corroborated, not weakened**, by
+the same transcript. Its claim is that his organizing frame is *information and users* rather than
+*business and domain*, and at 00:36:39 he states it outright:
+
+> *"Event Modeling is really a language of how to talk about an information system."*
+
+The distinction that survives all of this is therefore worth stating precisely: he reaches for DDD
+vocabulary to describe **what a finished Event Model turns out to contain**, and for information-
+and-user vocabulary to describe **what the method is**. Those are different jobs, and only the
+second is the frame.
+
+**Sources.** SE Radio 539 —
+<https://se-radio.net/2022/11/episode-539-adam-dymitruk-on-event-modeling/>, publisher's
+machine-generated transcript. Semaphore Uncut —
+<https://semaphore.io/blog/adam-dymitruk-event-modeling>. Both were unreachable when §2.0c was
+written; see `research/ACCESS-NOTES.md`.
+
+---
 
 ### 2.1 Rule zero: write the charter first
 

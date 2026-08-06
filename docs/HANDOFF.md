@@ -156,8 +156,12 @@ block
   runbook; **re-verify first**, it may already be fixed.
 - **D3 in `docs/research/UPSTREAM-DEFECTS.md`** — is `MD_STR` missing from Mermaid's `block`
   grammar deliberately or by omission? Read `block.jison` against the flowchart grammar.
-- **Vocabulary question** — "context" is Evans' *bounded context* under a shorter name, and
-  Dymitruk deliberately avoids DDD vocabulary. Should our axes get EM-native names?
+- **Vocabulary question** — ~~"context" is Evans' *bounded context* under a shorter name, and
+  Dymitruk deliberately avoids DDD vocabulary. Should our axes get EM-native names?~~
+  **Largely answered 2026-08-06** — the premise was false. Dymitruk does not avoid DDD vocabulary;
+  he avoids DDD as a *prerequisite*. See `model-altitude.md` §2.0d. **Context keeps its name.**
+  What remains open is the narrower question the evidence does not touch: whether an EM-native
+  name would be *clearer* on its own merits.
 - **The author's disagreements with Adam's method** — mentioned but never captured. Worth its own
   document; a disagreement is a different category from an extension.
 
@@ -175,6 +179,21 @@ A local devbox probably has none of that. If so:
   `youtube.com/@eventdrivenpodcast`, SE Radio 539 (Dymitruk) and 720 (Dilger). The one claim in
   `METHOD-REFERENCE.md` most likely to be overturned by new evidence is that Dymitruk avoids
   "domain" — that rests on his **written** work only.
+
+  > ⚠️ **Two corrections to the bullet above, 2026-08-06.**
+  >
+  > **The file pointer is wrong.** That claim is not in `METHOD-REFERENCE.md`, which contains the
+  > word "domain" zero times. It is in **`model-altitude.md` §2.0c, "Result 1"**.
+  >
+  > **The prediction was right — it was overturned.** SE Radio 539 and Semaphore Uncut were read on
+  > a local session; Dymitruk uses *domain driven design*, *bounded contexts*, *aggregate* and
+  > *ubiquitous language* freely in speech, while the canonical written article uses none of them.
+  > What he refuses is making DDD a prerequisite, not the vocabulary. Recorded in full at
+  > **`model-altitude.md` §2.0d**, which also closes the vocabulary question in §5 below.
+  >
+  > **Podcast transcripts do not exist to obtain** — see `research/BIBLIOGRAPHY.md`, Known gaps.
+  > The podcast would need speech-to-text. SE Radio 539 *does* have a machine transcript and has
+  > now been read in full; SE Radio 720 has not.
 - **`eventmodelers.ai`** and the live cheat sheet.
 - **`app.eventmodelers.ai`** — the platform the archived skills are written against.
 - **The Mermaid repo** for D3.

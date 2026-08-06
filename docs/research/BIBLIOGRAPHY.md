@@ -74,6 +74,20 @@ Compiled from a research sweep whose network access was limited to `github.com` 
 
 - [adymitruk/adymitruk.github.com](https://github.com/adymitruk/adymitruk.github.com) — 2012 era. Octopress source for dymitruk.com (CNAME = dymitruk.com). Fully mirrorable; contains no Event Modeling material.
 
+#### Added 2026-08-06 — GitHub sweep
+
+⚠️ **The original sweep enumerated no repositories beyond the two above.** It had `github.com` access throughout, so this was an omission rather than a block: the account was never listed. `adymitruk` has **132 public repositories**. Most are forks of unrelated tooling; the Event Modeling material below was missed entirely.
+
+- [adymitruk/event-modeling-canvas](https://github.com/adymitruk/event-modeling-canvas) — pushed 2024-04-19, 19 KB, **not a fork**. Described as "a canvas to create event models quickly". Four files: `index.html`, `eventmodel.excalidraw`, `LICENSE`, `.cursorignore`. A primary artifact authored by Dymitruk, and the only tool in this bibliography that is his own rather than a third party's.
+
+- [eventmodeling](https://github.com/eventmodeling) — **a second organization, distinct from `event-modeling`.** Three repos: `eventdriventhinking` (533 KB, pushed 2026-03-16), `workshop-warsaw` (995 KB), and a fork of `EventStore`. Both orgs are live; do not assume a citation to "the Event Modeling org" means either one.
+
+- [event-modeling](https://github.com/event-modeling) — beyond `eventmodeling.org` and `eventmodeling-toolkit`, already catalogued: `podcast` (62 MB, 2026-06-07), `open-spaces-comocamp` (672 KB, 2026-06-18), `slice-company` (52 KB), `EventModelingWorkshop` (1.1 MB, 2019, "Lyon hotel cleanup"), `workshop-nyc-feb-2020`, `time-tracking-dotnetcore`.
+
+- [adymitruk/ddd-starter-modelling-process](https://github.com/adymitruk/ddd-starter-modelling-process) — fork of [ddd-crew/ddd-starter-modelling-process](https://github.com/ddd-crew/ddd-starter-modelling-process), 2020-10-14. A fork is weak evidence of anything, but it is consistent with the spoken record on DDD — see `../model-altitude.md` §2.0d.
+
+- [dilgerma](https://github.com/dilgerma) — Martin Dilger's account, 100 public repos, roughly thirty Event Modeling or Event Sourcing related and **entirely uncatalogued here**. Most significant: `eventsourcing-book` (514 KB, pushed 2026-06-21 — the source of *Understanding Eventsourcing*), `event-modeling-spec`, `eventmodeling-samples` (754 KB), `nebulit-code-generators` (6.8 MB), `eventmodeling-workshop` (6.2 MB), `eventmodelers.de` (146 MB), `miro-event-modeling-docs`. Worth a dedicated pass; licensing must be checked per repo before any of it is mirrored under `archive/`.
+
 ### Tools
 
 - [Implementation gist — fish-shell Trello example](https://gist.github.com/adymitruk/7fc2adb8598ad861d4b3dae114afd4c9) — Dymitruk's own worked implementation example, linked from the Resources page. URL confirmed reachable (HTTP 200).
@@ -141,15 +155,21 @@ These entries have public source on `github.com` / `raw.githubusercontent.com` a
 
 **The 2018 Medium article — no URL located.** Dymitruk has said in interviews (SE Radio 539, Semaphore) that Event Modeling began as a Medium post he wrote in 2018 which reached the Hacker News front page in October 2018, and that he then created eventmodeling.org and moved a cleaned-up version there — becoming "Event Modeling: What is it?" (dated 2019-06-23). Targeted searches on `medium.com/@adymitruk`, `adymitruk.medium.com` and the HN submission returned nothing; the post appears to have been deleted after migration. **No Medium URL should be cited for this without independent confirmation.** It is recorded here as a known-missing item rather than given a guessed link.
 
+> **Partly upgraded 2026-08-06.** The *account* is no longer second-hand — it is now confirmed verbatim from the SE Radio 539 transcript, in Dymitruk's own words: *"when I wrote the article initially it was 2018, it really took off, it was a medium article … it ended up being on Hacker News … and it made it to the first page and the top story, I think it was October 2018."* Then at 00:23:34: *"So, Event Modeling.org started and I just put that medium article in there, cleaned it up a little bit."* Note he dates the site's launch to **2019** in the same passage — *"The website didn't really go live until 2019"* — which corroborates the 2019-06-23 front matter. **The URL is still not located**; only the provenance is now primary-sourced rather than summarized.
+
 **The CACM interview URL is probably not canonical.** Search consistently returns `cacmb4.acm.org`, which looks like an ACM staging or backup host. Explicit searches of `acm.org` domains surfaced no `cacm.acm.org` equivalent, and neither host was fetchable. The year (likely 2022) is inferred from surrounding material, not confirmed.
 
 **Hosts unreachable from the research container.** Egress was restricted to `github.com` and `raw.githubusercontent.com`. Everything on linkedin.com, infoq.com, acm.org, leanpub.com, semaphore.io, se-radio.net, podcast.eventmodeling.org, youtube.com, nebulit.de, adaptechgroup.com, yowcon.com, hanselminutes.com, dotnetrocks.com, linux.com, podbean.com and newsletter.nerdnoir.com was established from web-search titles, URLs and content summaries only. Quotes attributed to those sources should be spot-checked against the pages before being reproduced verbatim.
+
+> **✅ No longer a constraint, 2026-08-06.** Work moved to a local machine with unrestricted egress; every host listed above was probed and is reachable. Two notes for whoever walks the rest of the list: `medium.com` returns 403 to `curl` even with a browser user-agent — that is Cloudflare bot protection, not an egress block, and `WebFetch` or a real browser gets through. The `eventmodelers.ai` apex fails TLS; use `www.eventmodelers.ai`.
+>
+> **Only two entries have actually been read since.** SE Radio 539 and Semaphore Uncut, both for `../model-altitude.md` §2.0d. **The spot-check this gap asks for is still owed on every other previously-unreachable source** — the block is lifted, the work is not done. `ACCESS-NOTES.md` describes the old policy and should be read as history.
 
 **Building-block count is genuinely inconsistent across sources.** Dymitruk's "What is it?" says three ("we will only use 3 types of building blocks as well as traditional wireframes or mockups"; "3 moving pieces and 4 patterns based on 2 ideas"), and Maciag's post independently uses three. The Bortz cheat sheet says four, promoting the wireframe/trigger to a first-class block. Any document asserting a count should say which source it follows.
 
 **The four patterns are unnamed in Dymitruk's own writing.** He writes prose sections (Commands, Views, Integration, Translation, Automation) and marks the count only with "We just covered the first 2 patterns of the 4 that are needed to describe most systems." The labels *Command Pattern / View Pattern / Automation Pattern / Translation Pattern* originate in the cheat sheet.
 
-**Adam's hedge on the seven steps is unverified.** A search summary of the SE Radio interview reports him saying the seven steps "are really a guideline"; the page could not be fetched, so this phrasing is not confirmed.
+**Adam's hedge on the seven steps — ✅ verified 2026-08-06.** Previously recorded as a search summary that could not be checked. The SE Radio 539 transcript confirms the phrasing verbatim, at 00:36:39: *"The seven steps are really a guideline. Event Modeling is really a language of how to talk about an information system, but if people don't know where to start, the seven steps are great to do that."* Quotable as his own words, with the caveat that the transcript is machine-generated.
 
 **Adaptech Group's own written material is uncatalogued.** The site could not be fetched, so any whitepapers, case studies or workshop material it hosts are unknown.
 
@@ -157,6 +177,6 @@ These entries have public source on `github.com` / `raw.githubusercontent.com` a
 
 **Recording availability unconfirmed for:** the YOW! Sydney 2023 masterclass (paid workshop, likely never recorded), the DDD TW 2021 talk, and both Event Modeling Conference keynotes (2025 and 2026).
 
-**Transcripts:** the Event Modeling and Event Sourcing Podcast episode pages carry summaries and timestamped chapter markers; whether full transcripts are published was not confirmed. SE Radio 539's transcript is auto-generated by the publisher's own admission.
+**Transcripts — ✅ resolved 2026-08-06, negatively.** The Event Modeling and Event Sourcing Podcast **does not publish transcripts.** Its source repo [event-modeling/podcast](https://github.com/event-modeling/podcast) is a 22-file Hugo skeleton — the 62 MB is a single `.mp3`, only `content/episodes/episode-1.md` exists in source, and `scripts/fetch-episodes.sh` generates the rest. The RSS feed at `podcast.eventmodeling.org/index.xml` carries episode descriptions and chapter markers only. **The largest body of recorded material from either author remains inaccessible as text**, and would need speech-to-text to use. SE Radio 539's transcript is auto-generated by the publisher's own admission, and was read in full for this pass.
 
 **Forthcoming work, not yet a citable source:** as of April 2026 Dymitruk was reported to be writing the definitive Event Modeling book, with a companion booklet due out first. Neither has been located as a published artifact.

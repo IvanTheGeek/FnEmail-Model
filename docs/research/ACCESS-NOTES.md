@@ -4,6 +4,18 @@ Why this archive is an **index rather than a mirror**, and how to change that.
 
 Probed 2026-08-04 from the Claude Code remote execution environment attached to this repo.
 
+> ⚠️ **This document is now history, not current state.** Read on 2026-08-06 from a local machine
+> with unrestricted egress: **every host listed below as blocked is reachable.** The §"How to
+> unblock" section is obsolete — the answer was not to widen the container's allowlist but to leave
+> the container.
+>
+> The **licensing boundary at the end still stands** and is independent of network access.
+>
+> Kept unedited because the probe results are a useful record of what that environment could and
+> could not do, and because `BIBLIOGRAPHY.md` flags entries whose confidence derives from these
+> limits. Current reachability, and what has actually been read since, is recorded in
+> `BIBLIOGRAPHY.md` → Known gaps → *"Hosts unreachable from the research container."*
+
 ---
 
 ## What happened

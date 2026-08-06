@@ -175,7 +175,7 @@ case where `521` would apply.
 ```
 Pre    ConnectionAccepted exists
 Post   ClientIdentified{claimed_domain, protocol:"SMTP"}
-       OR  reply 501 (bad syntax) / 500 (unrecognised)
+       OR  reply 501 (bad syntax) / 500 (unrecognized)
 ```
 
 ### 3 · `SessionState` — V
