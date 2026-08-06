@@ -35,7 +35,7 @@ the other half of that pair. See *What this walk tested*.
 
 ## The walk
 
-### Step 1 · `AcceptConnection` — C
+### 🟦C · Step 1 · `AcceptConnection`
 
 | | **`AcceptConnection`** — C |
 |:--|:--|
@@ -45,7 +45,7 @@ the other half of that pair. See *What this walk tested*.
 
 > **Pre** — none ✓ &nbsp;·&nbsp; **Post** — `ConnectionAccepted` emitted ✓
 
-### Step 2 · `Helo` — C
+### 🟦C · Step 2 · `Helo`
 
 | | **`Helo`** — C |
 |:--|:--|
@@ -55,7 +55,7 @@ the other half of that pair. See *What this walk tested*.
 
 > **Pre** — `ConnectionAccepted` exists ✓ &nbsp;·&nbsp; **Post** — `ClientIdentified` emitted ✓
 
-### Step 3 · `SessionState` — V
+### 🟩V · Step 3 · `SessionState`
 
 | | **`SessionState`** — V |
 |:--|:--|
@@ -63,7 +63,7 @@ the other half of that pair. See *What this walk tested*.
 | 🟩 **Read Model** | **SessionState**&#10;<br>`identified: true` · `transaction_open: false` |
 | 🟧 **Sources** | **ConnectionAccepted** · **ClientIdentified** |
 
-### Step 4 · `MailFrom` — C
+### 🟦C · Step 4 · `MailFrom`
 
 | | **`MailFrom`** — C |
 |:--|:--|
@@ -73,7 +73,7 @@ the other half of that pair. See *What this walk tested*.
 
 > **Pre** — `SessionState.identified = true` ✓ &nbsp;·&nbsp; **Post** — `MailTransactionStarted` emitted ✓
 
-### Step 5 · `RecipientDirectory` — V &nbsp;*(translation boundary — H3)*
+### 🟩V · Step 5 · `RecipientDirectory` &nbsp;*(translation boundary — H3)*
 
 | | **`RecipientDirectory`** — V |
 |:--|:--|
@@ -85,7 +85,7 @@ The 🟨 source is what makes this Translation rather than Automation: the event
 context. Deferred, so the value is asserted rather than derived — the same typed hole both other
 paths cross.
 
-### Step 6 · `RcptTo` — C
+### 🟦C · Step 6 · `RcptTo`
 
 | | **`RcptTo`** — C |
 |:--|:--|
@@ -97,7 +97,7 @@ paths cross.
 
 Traversed **once**. No `RecipientRejected` anywhere in this walk.
 
-### Step 7 · `TransactionState` — V
+### 🟩V · Step 7 · `TransactionState`
 
 | | **`TransactionState`** — V |
 |:--|:--|
@@ -105,7 +105,7 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 | 🟩 **Read Model** | **TransactionState**&#10;<br>`open: true` · `reverse_path: "<Smith@bar.com>"` · `recipient_count: 1` |
 | 🟧 **Sources** | **MailTransactionStarted** · **RecipientAccepted** |
 
-### Step 8 · `BeginData` — C &nbsp;🟥 **H1**
+### 🟦C · Step 8 · `BeginData` &nbsp;🟥 **H1**
 
 | | **`BeginData`** — C |
 |:--|:--|
@@ -118,7 +118,7 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 **H1 meets you here.** Its only candidate consumer is the transcript rendering `354`. This walk
 does not resolve it — it just shows the event firing with nothing downstream that needs it.
 
-### Step 9 · `SubmitContent` — C
+### 🟦C · Step 9 · `SubmitContent`
 
 | | **`SubmitContent`** — C |
 |:--|:--|
@@ -131,7 +131,7 @@ does not resolve it — it just shows the event firing with nothing downstream t
 Left of here, abandoning costs nothing. At `MessageAccepted` we have accepted responsibility for
 delivering or reporting failure — RFC 5321 §2.1.
 
-### Step 10 · `Quit` — C
+### 🟦C · Step 10 · `Quit`
 
 | | **`Quit`** — C |
 |:--|:--|
