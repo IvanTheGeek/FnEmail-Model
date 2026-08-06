@@ -39,9 +39,9 @@ the other half of that pair. See *What this walk tested*.
 
 | | **`AcceptConnection`** — C |
 |:--|:--|
-| ⬛ **Actor** | `S: 220 foo.com Simple Mail Transfer Service Ready` |
+| ⬛ **Actor** | `S: 220` foo.com Simple Mail Transfer Service Ready |
 | 🟦 **Command** | **AcceptConnection** |
-| 🟧 **Event** | **ConnectionAccepted**&#10;<br>`peer_address: "203.0.113.20"` · `local_address: "192.0.2.10:25"` |
+| 🟧 **Event** | **ConnectionAccepted**&#10;<br>`peer_address`: 203.0.113.20 · `local_address`: 192.0.2.10:25 |
 
 > **Pre** — none ✓ &nbsp;·&nbsp; **Post** — `ConnectionAccepted` emitted ✓
 
@@ -49,9 +49,9 @@ the other half of that pair. See *What this walk tested*.
 
 | | **`Helo`** — C |
 |:--|:--|
-| ⬛ **Actor** | `C: HELO bar.com`&#10;<br>`S: 250 foo.com` |
+| ⬛ **Actor** | `C: HELO` bar.com&#10;<br>`S: 250` foo.com |
 | 🟦 **Command** | **Helo** |
-| 🟧 **Event** | **ClientIdentified**&#10;<br>`claimed_domain: "bar.com"` · `protocol: "SMTP"` |
+| 🟧 **Event** | **ClientIdentified**&#10;<br>`claimed_domain`: bar.com · `protocol`: SMTP |
 
 > **Pre** — `ConnectionAccepted` exists ✓ &nbsp;·&nbsp; **Post** — `ClientIdentified` emitted ✓
 
@@ -60,16 +60,16 @@ the other half of that pair. See *What this walk tested*.
 | | **`SessionState`** — V |
 |:--|:--|
 | ⬜ **Consumed by** | `MailFrom` · `RcptTo` · `BeginData` |
-| 🟩 **Read Model** | **SessionState**&#10;<br>`identified: true` · `transaction_open: false` |
+| 🟩 **Read Model** | **SessionState**&#10;<br>`identified`: true · `transaction_open`: false |
 | 🟧 **Sources** | **ConnectionAccepted** · **ClientIdentified** |
 
 ### 🟦C · Step 4 · `MailFrom`
 
 | | **`MailFrom`** — C |
 |:--|:--|
-| ⬛ **Actor** | `C: MAIL FROM:<Smith@bar.com>`&#10;<br>`S: 250 OK` |
+| ⬛ **Actor** | `C: MAIL FROM:`<Smith@bar.com>&#10;<br>`S: 250 OK` |
 | 🟦 **Command** | **MailFrom** |
-| 🟧 **Event** | **MailTransactionStarted**&#10;<br>`reverse_path: "<Smith@bar.com>"` |
+| 🟧 **Event** | **MailTransactionStarted**&#10;<br>`reverse_path`: <Smith@bar.com> |
 
 > **Pre** — `SessionState.identified = true` ✓ &nbsp;·&nbsp; **Post** — `MailTransactionStarted` emitted ✓
 
@@ -78,7 +78,7 @@ the other half of that pair. See *What this walk tested*.
 | | **`RecipientDirectory`** — V |
 |:--|:--|
 | ⬜ **Consumed by** | `RcptTo` |
-| 🟩 **Read Model** | **RecipientDirectory**&#10;<br>`is_local: true` |
+| 🟩 **Read Model** | **RecipientDirectory**&#10;<br>`is_local`: true |
 | 🟨 **Sources** | translated from the **Directory context** — external, deferred |
 
 The 🟨 source is what makes this Translation rather than Automation: the events belong to another
@@ -89,9 +89,9 @@ paths cross.
 
 | | **`RcptTo`** — C |
 |:--|:--|
-| ⬛ **Actor** | `C: RCPT TO:<Jones@foo.com>`&#10;<br>`S: 250 OK` |
+| ⬛ **Actor** | `C: RCPT TO:`<Jones@foo.com>&#10;<br>`S: 250 OK` |
 | 🟦 **Command** | **RcptTo** |
-| 🟧 **Event** | **RecipientAccepted**&#10;<br>`forward_path: "<Jones@foo.com>"` |
+| 🟧 **Event** | **RecipientAccepted**&#10;<br>`forward_path`: <Jones@foo.com> |
 
 > **Pre** — `MailTransactionStarted` ✓ · `RecipientDirectory.is_local` ✓ &nbsp;·&nbsp; **Post** — `RecipientAccepted` emitted ✓
 
@@ -102,14 +102,14 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 | | **`TransactionState`** — V |
 |:--|:--|
 | ⬜ **Consumed by** | `RcptTo` · `BeginData` · `SubmitContent` |
-| 🟩 **Read Model** | **TransactionState**&#10;<br>`open: true` · `reverse_path: "<Smith@bar.com>"` · `recipient_count: 1` |
+| 🟩 **Read Model** | **TransactionState**&#10;<br>`open`: true · `reverse_path`: <Smith@bar.com> · `recipient_count`: 1 |
 | 🟧 **Sources** | **MailTransactionStarted** · **RecipientAccepted** |
 
 ### 🟦C · Step 8 · `BeginData` &nbsp;🟥 **H1**
 
 | | **`BeginData`** — C |
 |:--|:--|
-| ⬛ **Actor** | `C: DATA`&#10;<br>`S: 354 Start mail input; end with <CRLF>.<CRLF>` |
+| ⬛ **Actor** | `C: DATA`&#10;<br>`S: 354` Start mail input; end with `<CRLF>.<CRLF>` |
 | 🟦 **Command** | **BeginData** |
 | 🟥 **Event** | **DataPhaseEntered**&#10;<br>*no payload — H1: does it earn its place?* |
 
@@ -124,7 +124,7 @@ does not resolve it — it just shows the event firing with nothing downstream t
 |:--|:--|
 | ⬛ **Actor** | `C: Date: Tue, 19 May 1998 09:14:02 -0700`&#10;<br>`C: From: Smith <Smith@bar.com>`&#10;<br>`C: To: Jones@foo.com`&#10;<br>`C: Subject: Tuesday`&#10;<br>`C: (blank)`&#10;<br>`C: Blah blah blah...`&#10;<br>`C: .`&#10;<br>`S: 250 OK` |
 | 🟦 **Command** | **SubmitContent** |
-| 🟧 **Event** | **MessageAccepted**&#10;<br>`queue_id: "f2C8D14"` · `reverse_path: "<Smith@bar.com>"`&#10;<br>`recipients: ["<Jones@foo.com>"]` · `content_ref: "blob:sha256:9c1e…"`&#10;<br>`actual_octets: 194` · `received_at: "1998-05-19T09:14:07-07:00"` |
+| 🟧 **Event** | **MessageAccepted**&#10;<br>`queue_id`: f2C8D14 · `reverse_path`: <Smith@bar.com>&#10;<br>`recipients: ["<Jones@foo.com>"]` · `content_ref`: blob:sha256:9c1e…&#10;<br>`actual_octets`: 194 · `received_at`: 1998-05-19T09:14:07-07:00 |
 
 > **Pre** — `DataPhaseEntered` ✓ &nbsp;·&nbsp; **Post** — `MessageAccepted` emitted ✓ — **the responsibility boundary**
 
@@ -135,9 +135,9 @@ delivering or reporting failure — RFC 5321 §2.1.
 
 | | **`Quit`** — C |
 |:--|:--|
-| ⬛ **Actor** | `C: QUIT`&#10;<br>`S: 221 foo.com Service closing transmission channel` |
+| ⬛ **Actor** | `C: QUIT`&#10;<br>`S: 221` foo.com Service closing transmission channel |
 | 🟦 **Command** | **Quit** |
-| 🟧 **Event** | **SessionClosed**&#10;<br>`cause: "quit"` |
+| 🟧 **Event** | **SessionClosed**&#10;<br>`cause`: quit |
 
 > **Pre** — `ConnectionAccepted` exists ✓ &nbsp;·&nbsp; **Post** — `SessionClosed` emitted ✓
 

@@ -27,9 +27,9 @@ element types, chips carry the type, `&#10;<br>` breaks a line.
 
 | | **`Helo`** — C |
 |:--|:--|
-| ⬜ **Actor** | `C: HELO bar.com`&#10;<br>`S: 250 foo.com` |
+| ⬛ **Actor** | `C: HELO` bar.com&#10;<br>`S: 250` foo.com |
 | 🟦 **Command** | **Helo** |
-| 🟧 **Event** | **ClientIdentified**&#10;<br>`claimed_domain: "bar.com"` · `protocol: "SMTP"` |
+| 🟧 **Event** | **ClientIdentified**&#10;<br>`claimed_domain`: bar.com · `protocol`: SMTP |
 
 Then the contract, which is what makes it a *walk* rather than a picture:
 
@@ -60,7 +60,13 @@ emitted one. A View Slice reads bottom to top.
 | 🟩 **Read Model** | **SessionState**&#10;<br>`identified: true` · `transaction_open: false` |
 | 🟧 **Sources** | **ConnectionAccepted** · **ClientIdentified** |
 
-**Every field carries a real value.** Not `<address>` but `"198.51.100.40"`. The value is the point
+**Monospace marks what the protocol fixes; standard font marks what varies.** On a wire line the
+reply code and the verb are monospace and the rest is not — `S: 220` foo.com Ready. In a payload the
+field name is monospace and the value is not — `peer_address`: 198.51.100.40. **Values carry no
+quotation marks.** One axis only, font family; never bold or italic. Settled in
+[`../diagrams/EXPERIMENT-inline-styling.md`](../diagrams/EXPERIMENT-inline-styling.md).
+
+**Every field carries a real value.** Not `<address>` but 198.51.100.40. The value is the point
 — walking with placeholders finds nothing, and both payload defects this project has found came
 from instantiating a field and seeing that nothing consumed it, or that its value could not survive
 replay.

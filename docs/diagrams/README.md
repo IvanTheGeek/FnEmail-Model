@@ -89,7 +89,7 @@ The `MailFrom` slice.
 
 | | **MailFrom** |
 |:--|:--|
-| ⬜ **Actor** | **Remote client**&#10;<br>`MAIL FROM:<Smith@bar.com>` |
+| ⬜ **Actor** | **Remote client**&#10;<br>`MAIL FROM:`<Smith@bar.com> |
 | 🟦 **Command** | **MailFrom**&#10;<br>`reverse_path` |
 | 🟧 **Event** | **MailTransactionStarted**&#10;<br>`reverse_path` |
 
@@ -162,7 +162,7 @@ Given-When-Thens rather than one.
 
 | | **AcceptConnection** | **Helo** | **SessionState** |
 |:--|:--|:--|:--|
-| ⬜ **Actor** | tcp connect | `HELO bar.com` | **consumed by**&#10;<br>MailFrom · RcptTo · BeginData |
+| ⬜ **Actor** | tcp connect | `HELO` bar.com | **consumed by**&#10;<br>MailFrom · RcptTo · BeginData |
 | **Cmd / View** | 🟦 **AcceptConnection** | 🟦 **Helo** | 🟩 **SessionState**&#10;<br>`identified` |
 | 🟧 **Event** | **ConnectionAccepted**&#10;<br>`peer_address` | **ClientIdentified**&#10;<br>`claimed_domain` | — |
 
