@@ -107,7 +107,7 @@ Not as far from orthodox as it looks. Three existing pieces, never joined up:
 ### Why RFC 5321 is an unusually good testbed
 
 **The RFC ships the paths.** ✅ Verified 2026-08-05 against the archived text
-(`research/archive/rfc/rfc5321.txt`). Appendix D contains four worked scenarios — D.1 typical
+(`rfc/rfc5321.txt`). Appendix D contains four worked scenarios — D.1 typical
 transaction, D.2 aborted transaction, D.3 relayed mail (two steps), D.4 verifying and sending —
 each a complete wire trace with concrete addresses, domains and reply codes.
 
@@ -284,7 +284,7 @@ Space for what emerges next.
 ## Method notes that are *not* extensions
 
 Recorded here because they were initially mistaken for extensions and turned out to be orthodox —
-they belong in `research/METHOD-REFERENCE.md`, not on this list:
+they belong in `event-modeling-research:research/METHOD-REFERENCE.md`, not on this list:
 
 - **Admin/operator actor swimlane** carrying verbose or technical output. Canonical: Dymitruk's
   step 3.1 permits swimlanes for *"different people (or sometimes systems)."*

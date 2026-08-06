@@ -5,7 +5,7 @@ through.
 
 Derived from **RFC 5321 Appendix D.3 step 2** — *Relayed Mail Scenario, relay host to destination
 host* — with `HELO` substituted for `EHLO`. Verified against
-[`../research/archive/rfc/rfc5321.txt`](../research/archive/rfc/rfc5321.txt).
+[`../rfc/rfc5321.txt`](../rfc/rfc5321.txt).
 
 This is the **cleanest inbound scenario the RFC contains.** It is a candidate for the golden
 designation, but **golden is not assigned** — see *Happy is not golden* in

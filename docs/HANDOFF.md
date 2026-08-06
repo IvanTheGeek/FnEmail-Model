@@ -1,99 +1,96 @@
 # Session Handoff
 
-Everything a fresh session needs to pick this up. Written 2026-08-05, from a Claude Code container
-session, for continuation on a local devbox.
+Everything a fresh session needs to pick this up. Written 2026-08-05 from a Claude Code container
+session; revised 2026-08-06 on a local devbox, when the Event Modeling research was split into a
+second repository.
 
 ---
 
 ## 1. What this project is
 
 **FnEmail** — an email system being designed with **Event Modeling** (Adam Dymitruk's method)
-before any code is written. The repo currently contains **no code**: it is the model, the research
-behind it, and the worked examples.
+before any code is written. The repo contains **no code**: it is the model, the worked examples,
+and the rules deciding what belongs in the model.
 
 Current scope: **inbound SMTP, `HELO` only** (no ESMTP, no relay, no outbound). Deliberately
 narrow, so the method is exercised properly before the surface grows.
 
 The author is building this for himself and intends to release it freely.
 
+### Two repositories, and why
+
+**FnEmail uses Event Modeling but is not about it.** As of 2026-08-06 the method research lives in
+a separate private repo, and this one keeps only email and RFC material.
+
+| | `FnEmail` (public-bound) | `event-modeling-research` (private) |
+|---|---|---|
+| Holds | the SMTP model, worked paths, diagrams, RFCs, the rules deciding model contents | the method as its authors define it, the source bibliography, the mirrored corpus, extracted book text and podcast transcripts |
+| Licensing | everything is the author's own work, plus IETF RFCs, which are freely redistributable | third-party material, most of it unlicensed or commercial — **never redistribute** |
+
+That split is what makes FnEmail safe to release. It was **not** the reason for it — the reason is
+scope — but it settles the licensing question that `NOTICE.md` had left open.
+
 ---
 
 ## 2. Get set up
 
-**Nothing is on disk yet.** Clone both repos from GitHub.
+**Nothing is on disk yet.** Clone both repos.
 
 ```bash
 # 1. The project. All work is on this branch — main is empty.
 cd /home/ivan/FnEmail            # existing empty directory
-git clone -b claude/github-access-v08b5c https://github.com/IvanTheGeek/FnEmail.git .
+git clone -b claude/github-access-v08b5c git@github.com:IvanTheGeek/FnEmail.git .
 
-# 2. The reference material — PRIVATE, needs auth
-git clone https://github.com/ivanthegeek/reference.git ~/reference
+# 2. The research — PRIVATE, needs auth
+git clone git@github.com:IvanTheGeek/event-modeling-research.git ~/event-modeling-research
 ```
 
-If the reference clone prompts or 404s, it is a private repo — authenticate first
-(`gh auth login`, or use SSH: `git@github.com:ivanthegeek/reference.git`). A 404 on a private repo
-means *not authenticated*, not *does not exist*.
+Both use SSH. If you get a 404 on the private repo that means **not authenticated**, not *does not
+exist* — it is the confusing failure mode. Generate a key with `ssh-keygen -t ed25519`, add the
+`.pub` half at <https://github.com/settings/keys>, and check with `ssh -T git@github.com`.
 
 Verify:
 
 ```bash
-git -C /home/ivan/FnEmail branch --show-current   # → claude/github-access-v08b5c
-ls /home/ivan/FnEmail/docs                        # → event-model.md, research/, paths/, diagrams/…
-ls ~/reference                                    # → 5 files, ~10 MB
+git -C /home/ivan/FnEmail branch --show-current      # → claude/github-access-v08b5c
+ls /home/ivan/FnEmail/docs                           # → event-model.md, paths/, diagrams/, rfc/
+ls ~/event-modeling-research                         # → research/, extracted/, 5 root files
 ```
 
-⚠️ **Never commit anything from `~/reference` into FnEmail.** It holds two commercial works.
+⚠️ **Never copy anything from `~/event-modeling-research` into FnEmail.** It holds two commercial
+works, a mirrored corpus that is mostly unlicensed, and machine transcripts of copyrighted speech.
+FnEmail cites and synthesizes; it never reproduces. See that repo's `extracted/README.md` and
+`research/archive/NOTICE.md`.
 
-| File | What it is |
-|---|---|
-| `eventmodeling-and-eventsourcing-compressed.pdf` | Martin Dilger, *Understanding Eventsourcing*, 650 pp — **commercial, do not commit** |
-| `event-modeling-cheat-sheet.pdf` | Dilger's 2026-07 cheat sheet, 2 pp — **do not commit** |
-| `RFC 5321_*.mht`, `RFC 7504_*.mht` | MHTML captures of the RFCs |
-| `Block Diagram Syntax _ Mermaid.mht` | Mermaid block-diagram docs |
+### The book text is already extracted
 
-### Extracting the reference material
+The per-chapter extraction that a previous session lost with its container is now durable, at
+`~/event-modeling-research/extracted/book/` — 57 chapters, 86,450 words, named so the research
+documents' citations resolve (`0152-domain-driven-design.txt` ll. 175–178, and so on). The
+reproduction recipe and its two Debian gotchas are in that repo's `extracted/README.md`.
 
-The book's text was previously extracted per chapter and used heavily. That extraction lived in a
-scratchpad that **did not survive** — redo it if needed:
-
-```bash
-pip install pymupdf
-python3 - <<'PY'
-import fitz, os, re
-d = fitz.open('/home/ivan/reference/eventmodeling-and-eventsourcing-compressed.pdf')
-os.makedirs('/tmp/book', exist_ok=True)
-marks = sorted((pg, t) for lvl, t, pg in d.get_toc())
-for i, (pg, title) in enumerate(marks):
-    end = marks[i+1][0]-1 if i+1 < len(marks) else d.page_count
-    slug = re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')[:60]
-    open(f'/tmp/book/{pg:04d}-{slug}.txt','w').write(
-        '\n'.join(d[p-1].get_text() for p in range(pg, end+1)))
-print('ok')
-PY
-```
-
-Diagrams are ~550 px raster — legible, but extract them individually if a figure matters:
-`fitz.Pixmap(doc, xref).save(...)`.
-
-MHTML files unpack with Python's `email` module — see the same pattern used for the RFCs.
+Podcast transcripts are alongside it: 46 episodes, 530,523 words. **Read the three caveats before
+quoting from them** — no speaker identity, machine transcription, and the rights position.
 
 ---
 
 ## 3. Read in this order
 
-| File | Why |
-|---|---|
-| `docs/research/METHOD-REFERENCE.md` | **Start here.** The method as its authors define it, with the places sources contradict each other named rather than smoothed over |
-| `docs/event-model.md` | The model — v0.3, 12 slices, contracts, 7 hotspots |
-| `docs/model-altitude.md` | What belongs in the model at all — gate sequence, four tiers |
-| `docs/paths/` | Two worked paths with real data |
-| `docs/diagrams/README.md` | Mermaid renderings |
-| `docs/event-model-extensions.md` | The author's extension ideas — **parked, deliberately not applied** |
-| `docs/research/CORRECTIONS-v0.1.md` | 20 ways the first draft misapplied the method |
+Start in the research repo, then come back here.
 
-`docs/research/archive/` mirrors the primary sources. **Read `archive/NOTICE.md` before
-redistributing anything** — three of five mirrored repos carry no license.
+| File | Repo | Why |
+|---|---|---|
+| `research/METHOD-REFERENCE.md` | research | **Start here.** The method as its authors define it, with the places sources contradict each other named rather than smoothed over |
+| `docs/event-model.md` | FnEmail | The model — v0.3, 12 slices, contracts, 7 hotspots |
+| `docs/model-altitude.md` | FnEmail | What belongs in this model at all — charter, gate sequence, four tiers |
+| `research/model-altitude-theory.md` | research | The corpus theory behind it, and the vocabulary investigation |
+| `docs/paths/` | FnEmail | Two worked paths with real data |
+| `docs/diagrams/README.md` | FnEmail | Mermaid renderings |
+| `docs/event-model-extensions.md` | FnEmail | The author's extension ideas — **parked, deliberately not applied** |
+| `research/CORRECTIONS-v0.1.md` | research | 20 ways the first draft misapplied the method |
+
+`research/archive/` mirrors the primary sources. **Read `archive/NOTICE.md` before redistributing
+anything** — three of five mirrored repos carry no license.
 
 ---
 
@@ -102,15 +99,16 @@ redistributing anything** — three of five mirrored repos carry no license.
 | Decision | Where |
 |---|---|
 | **Command Slice / View Slice** — not "write column / read column". *Slice*, not column | `event-model.md` conventions |
-| **Events are orange**, Command blue, Read Model green, Screen white, external yellow, hotspot red | `METHOD-REFERENCE.md` |
+| **Events are orange**, Command blue, Read Model green, Screen white, external yellow, hotspot red | research: `METHOD-REFERENCE.md` |
 | **No arrows** — meaning is row position and left-to-right time | `diagrams/README.md` |
 | **US spelling** throughout (color, modeling, centered, neighbor) | corrected twice; keep it |
 | **One event per command** is a design target, stronger than the corpus's "keep an eye on it" | `diagrams/README.md` §1 |
-| **Two slice types, not four patterns** — Automation and Translation are compositions | `METHOD-REFERENCE.md` |
-| **Context and concern** are the only independent axes; altitude falls out of the charter | `model-altitude.md` §2.0b–c |
+| **Two slice types, not four patterns** — Automation and Translation are compositions | research: `METHOD-REFERENCE.md` |
+| **Context and concern** are the only independent axes; altitude falls out of the charter | research: `model-altitude-theory.md` §2.0b–c |
 | **H3 resolved** — Directory is a separate context, joined by orthodox Translation | `event-model.md` |
 | **Golden path deliberately unassigned** — *happy* is descriptive, *golden* is a designation | `paths/helo-multi-recipient.md` |
 | **Mermaid label vocabulary** — settled empirically | `diagrams/EXPERIMENT-block-labels.md` |
+| **The method research is a separate repo** — FnEmail uses Event Modeling, is not about it | §1 above |
 
 ### The mermaid vocabulary in one block
 
@@ -147,58 +145,61 @@ block
 
 *(H3 is resolved.)*
 
+> The 530k-word podcast corpus was swept for H4 on 2026-08-06: `stream boundary` and
+> `stream design` return **zero hits**. That avenue is closed; H4 will have to be reasoned out.
+
 ### Other pending work
 
 - **Third path — D.2, aborted transaction.** `Reset` (slice 10) is the only slice no path has
   touched. Both existing paths are RFC-derived; D.2 covers the gap.
-- **`docs/research/PR-HANDOFF-eventmodelers-kit.md`** — ⏳ a two-line upstream fix to
+- **research: `PR-HANDOFF-eventmodelers-kit.md`** — ⏳ a two-line upstream fix to
   `Nebulit-GmbH/Eventmodelers-Build-Kits`, verified and ready, never submitted. Self-contained
   runbook; **re-verify first**, it may already be fixed.
-- **D3 in `docs/research/UPSTREAM-DEFECTS.md`** — is `MD_STR` missing from Mermaid's `block`
-  grammar deliberately or by omission? Read `block.jison` against the flowchart grammar.
+- **D3 in research: `UPSTREAM-DEFECTS.md`** — is `MD_STR` missing from Mermaid's `block` grammar
+  deliberately or by omission? Read `block.jison` against the flowchart grammar.
 - **Vocabulary question** — ~~"context" is Evans' *bounded context* under a shorter name, and
   Dymitruk deliberately avoids DDD vocabulary. Should our axes get EM-native names?~~
   **Largely answered 2026-08-06** — the premise was false. Dymitruk does not avoid DDD vocabulary;
-  he avoids DDD as a *prerequisite*. See `model-altitude.md` §2.0d. **Context keeps its name.**
-  What remains open is the narrower question the evidence does not touch: whether an EM-native
-  name would be *clearer* on its own merits.
+  he avoids DDD as a *prerequisite*. See research: `model-altitude-theory.md` §2.0d. **Context
+  keeps its name.** What remains open is the narrower question the evidence does not touch:
+  whether an EM-native name would be *clearer* on its own merits.
 - **The author's disagreements with Adam's method** — mentioned but never captured. Worth its own
   document; a disagreement is a different category from an extension.
+- **Written permission from Dilger.** He verbally told the author his LinkedIn posts — the 77
+  Markdown files in `dilgerma/dilgerma.github.io` under `docs/blog/`, which is the source of
+  `www.eventmodelers.ai` — are free to use. That repo carries **no LICENSE**, so the grant is
+  personal, undated and unlinked. Worth one line in writing before anything derived from them is
+  published.
 
 ---
 
-## 6. What a local session unblocks
+## 6. Egress — resolved, but the walk is not finished
 
-The container this was built in had a **restrictive egress policy** — only `github.com`,
-`raw.githubusercontent.com` and package registries. `eventmodeling.org`, `rfc-editor.org`,
-YouTube, Medium and Leanpub were all blocked. See `docs/research/ACCESS-NOTES.md`.
+The container this was built in had a **restrictive egress policy**: only `github.com`,
+`raw.githubusercontent.com` and package registries. That is history — see research:
+`ACCESS-NOTES.md`, which is marked as such.
 
-A local devbox probably has none of that. If so:
+**A local session has no such policy.** Every previously blocked host was probed on 2026-08-06 and
+is reachable. Two quirks: `medium.com` returns 403 to `curl` even with a browser user-agent, which
+is Cloudflare bot protection rather than an egress block; and the `eventmodelers.ai` apex fails
+TLS, so use `www.`.
 
-- **Talk and podcast transcripts** — never obtained. `podcast.eventmodeling.org`,
-  `youtube.com/@eventdrivenpodcast`, SE Radio 539 (Dymitruk) and 720 (Dilger). The one claim in
-  `METHOD-REFERENCE.md` most likely to be overturned by new evidence is that Dymitruk avoids
-  "domain" — that rests on his **written** work only.
+**What has been done since:**
 
-  > ⚠️ **Two corrections to the bullet above, 2026-08-06.**
-  >
-  > **The file pointer is wrong.** That claim is not in `METHOD-REFERENCE.md`, which contains the
-  > word "domain" zero times. It is in **`model-altitude.md` §2.0c, "Result 1"**.
-  >
-  > **The prediction was right — it was overturned.** SE Radio 539 and Semaphore Uncut were read on
-  > a local session; Dymitruk uses *domain driven design*, *bounded contexts*, *aggregate* and
-  > *ubiquitous language* freely in speech, while the canonical written article uses none of them.
-  > What he refuses is making DDD a prerequisite, not the vocabulary. Recorded in full at
-  > **`model-altitude.md` §2.0d**, which also closes the vocabulary question in §5 below.
-  >
-  > **Podcast transcripts do not exist to obtain** — see `research/BIBLIOGRAPHY.md`, Known gaps.
-  > The podcast would need speech-to-text. SE Radio 539 *does* have a machine transcript and has
-  > now been read in full; SE Radio 720 has not.
-- **`eventmodelers.ai`** and the live cheat sheet.
-- **`app.eventmodelers.ai`** — the platform the archived skills are written against.
-- **The Mermaid repo** for D3.
+- SE Radio 539 and Semaphore Uncut read in full. They overturned the DDD-vocabulary claim — see
+  research: `model-altitude-theory.md` §2.0d.
+- The podcast corpus retrieved: 46 episodes, 530,523 words, from YouTube auto-captions.
+- Dilger's 171 public repos cataloged, and `dilgerma.github.io` identified as `www.eventmodelers.ai`.
 
-`docs/research/BIBLIOGRAPHY.md` has 152 sources with live URLs — it was built as the walk-list for
+**What has not:**
+
+- ~150 of the bibliography's sources still carry *search-summary* confidence and have never been
+  read directly. The block is lifted; the reading is outstanding.
+- SE Radio 720 (Dilger). Not read.
+- `app.eventmodelers.ai` — the platform the archived skills are written against.
+- The Mermaid repo, for D3.
+
+research: `BIBLIOGRAPHY.md` has 152 sources with live URLs — it was built as the walk-list for
 exactly this.
 
 ---
@@ -220,6 +221,8 @@ Conventions that matter more than they look:
 6. **Walk paths with real data.** Two payload defects, an orphan field, and H3's resolution all
    came from instantiating the model, not reading it. A clean path confirms; a messy one discovers.
 7. **Commit messages carry the reasoning.** They are long here on purpose.
+8. **Nothing third-party enters this repo.** Cite it, quote it briefly with attribution, link it —
+   but the copy lives in the research repo. This is what keeps FnEmail releasable.
 
 ---
 
@@ -227,6 +230,8 @@ Conventions that matter more than they look:
 
 - **Model** — v0.3, 12 slices, contracts on each, 6 open hotspots
 - **Paths** — 2 walked, 11 of 12 slices covered
-- **Research** — method reference, 20 corrections, 152 sources, archived corpus
 - **Diagrams** — rebuilt on the settled mermaid vocabulary
+- **RFCs** — 5321 and 7504 under `docs/rfc/`
 - **Code** — none yet, by design
+- **Research** — moved out 2026-08-06 to `event-modeling-research`: method reference, 20
+  corrections, 152 sources, the mirrored corpus, the extracted book, and the podcast transcripts

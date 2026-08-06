@@ -6,7 +6,7 @@ Modeled on the RFC 5321 Appendix D.1 exchange with `HELO` substituted for `EHLO`
 
 ✅ **Verified against the RFC text** (2026-08-05). `rfc-editor.org` is blocked by the egress
 policy, but the specification is mirrored on GitHub, which is reachable — archived at
-[`../research/archive/rfc/rfc5321.txt`](../research/archive/rfc/rfc5321.txt). D.1's dialogue
+[`../rfc/rfc5321.txt`](../rfc/rfc5321.txt). D.1's dialogue
 matches this walk exactly: Jones `250`, Green `550 No such user here`, Brown `250`.
 
 ⚠️ **One substitution remains unjustified by the RFC.** D.1 uses `EHLO` and advertises

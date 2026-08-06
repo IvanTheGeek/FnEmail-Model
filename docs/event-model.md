@@ -3,7 +3,7 @@
 Status: **draft v0.3 — scoped down to the HELO path**
 Scope: **inbound SMTP, `HELO` only.** No ESMTP, no relay, no outbound.
 
-Method reference: `research/METHOD-REFERENCE.md`. Corrections from v0.1: `research/CORRECTIONS-v0.1.md`.
+Method reference: `event-modeling-research:research/METHOD-REFERENCE.md`. Corrections from v0.1: `event-modeling-research:research/CORRECTIONS-v0.1.md`.
 Altitude rules — what belongs in this model at all: `model-altitude.md`.
 Diagrams (mermaid, renders on GitHub): `diagrams/`.
 Extensions are parked in `event-model-extensions.md` and **not** applied here — this document is
@@ -31,7 +31,7 @@ extension).
 The hard-lined rules for this model are **RFC 5321 + RFC 7504**, and nothing else.
 
 RFC 7504 (*SMTP 521 and 556 Reply Codes*, June 2015) is the **sole** update to RFC 5321 — the RFC
-Editor's entry for 5321 lists exactly one. Both are archived under `research/archive/rfc/`.
+Editor's entry for 5321 lists exactly one. Both are archived under `rfc/`.
 
 The normative set is therefore a small, versioned graph rather than one document, and conformance
 claims must name the set. It can grow: a future update would change what "RFC-conformant" means
@@ -66,7 +66,7 @@ model). Never both — a feature needing each is two slices.
 
 Event **orange** · Command **blue** · Read Model **green** · Screen **white** · hotspot **red**.
 Command is blue and Read Model is green in every source; Event is orange here (see
-`research/UPSTREAM-DEFECTS.md` for the one file that disagrees).
+`event-modeling-research:research/UPSTREAM-DEFECTS.md` for the one file that disagrees).
 
 **Arrows are not used.** Meaning comes from lane position, left-to-right time, and which pattern a
 slice matches. Legal adjacency still binds: `command → event → view → trigger/processor →
