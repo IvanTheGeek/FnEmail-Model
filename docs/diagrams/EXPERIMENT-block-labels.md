@@ -375,38 +375,94 @@ block
   style h7 fill:#f5a04f,stroke:#444,stroke-width:2px,color:#000
 ```
 
+### F3 · Span, corrected
+
+F2 was mis-constructed: `f2a:1` + `f2b:3` is **4 units in a 3-column grid**, so `f2b` took the two
+remaining columns and `f2c` wrapped to a second row. The span works; the arithmetic did not.
+
+This version keeps each row's total at 3.
+
+```mermaid
+block
+  columns 3
+  f3a["a"] f3b["b"] f3c["c"]
+  f3d["this one spans all three"]:3
+  f3e["d"] f3f["e"] f3g["f"]
+```
+
+---
+
+## H8 · Control — does alignment actually *do* anything?
+
+⚠️ **Read this before trusting H1–H7.** A diagram can render perfectly while the alignment
+declaration is silently ignored. "Renders ✅" only means *nothing broke*.
+
+This puts an aligned and an unaligned block **side by side with identical text**. If the two look
+the same, the alignment did nothing and the ✅ marks in H1–H7 mean only that the syntax was
+tolerated.
+
+```mermaid
+block
+  columns 2
+  ctl["<b>UNSTYLED control</b><br/>short<br/>a much longer second line"]
+  tst["<b>text-align via style</b><br/>short<br/>a much longer second line"]
+  style ctl fill:#eeeeee,stroke:#444,stroke-width:2px,color:#000
+  style tst fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000,text-align:left
+```
+
+And the same for the wrapper form, which is the likelier winner since it puts the CSS on an
+element that actually contains the text:
+
+```mermaid
+block
+  columns 2
+  ctl2["<b>UNSTYLED control</b><br/>short<br/>a much longer second line"]
+  tst2["<div style='text-align:left'><b>div wrapper</b><br/>short<br/>a much longer second line</div>"]
+  style ctl2 fill:#eeeeee,stroke:#444,stroke-width:2px,color:#000
+  style tst2 fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000
+```
+
+**What to look for:** in each pair the short line `short` should sit **flush left** in the green
+block and **centred** in the grey one. If both are centred, that approach failed.
+
 ---
 
 ## Results
 
 Fill in as observed. This table is the deliverable — `README.md` gets rebuilt from whatever wins.
 
-| Test | What it checks                  | Renders? | Notes |
-|:--:|---------------------------------|:--------:|-------|
-| A0 | `block-beta` still parses       |    ✅     | Old keyword still accepted — `README.md` wants renaming, not migrating |
-| A1 | `<br/>`                         |    ✅     |  |
-| A2 | `<br>` unclosed                 |          |  |
-| A3 | markdown string newline         |    ❌     | `Parse error … Expecting 'STR', got 'MD_STR'` — markdown strings are not in the `block` grammar |
-| A4 | literal `\n`                    |    ✅     | **Works** — simpler than `<br/>`, and no HTML needed for line breaks alone |
-| B1 | `**` plain string               |    ❌     | Renders the asterisks literally — markdown is not parsed in a plain `STR` |
-| B2 | `**` markdown string            |    ❌     | same `MD_STR` cause as A3 |
-| B3 | `<b>`                           |    ✅     |  |
-| B4 | `<strong>`                      |    ✅     |  |
-| C1 | partial bold, markdown          |    ❌     | same `MD_STR` cause as A3 |
-| C2 | **partial bold, HTML**          |    ✅     | **The decisive one, and it passes.** Label design is unblocked |
-| C3 | italic + bold mixed             |    ❌     | same `MD_STR` cause as A3 |
-| D1 | bold + newline, markdown        |    ❌     | same `MD_STR` cause as A3 |
-| D2 | bold + newline, HTML            |    ✅      |  |
-| D3 | three lines                     |    ✅      |  |
-| E1 | real slice, HTML                |    ✅      | "MailFrom" is vertically centered |
-| E2 | real slice, markdown            |    ❌      | predicted ❌ — same `MD_STR` cause as A3 |
-| F1 | natural wrap                    |    ?      | no wrap - displays as one long single line  |
-| F2 | forced width via span           |     ?     |  |
-| G  | shapes                          |     ✅     |  |
-| H1 | `text-align` via `style`        |     ✅     |  |
-| H2 | `<div align='left'>`            |      ✅    |  |
-| H3 | `<div style='text-align:left'>` |       ✅   |  |
-| H4 | `text-align` via `classDef`     |        ✅  |  |
-| H5 | `<span>` inline style           |     ✅     | tests whether nested HTML survives at all |
-| H6 | `&nbsp;` padding hack           |     ✅     | always works if entities render |
-| H7 | leading spaces                  |     ✅     |  |
+| Test | What it checks                     | Result | Notes |
+|:--:|------------------------------------|:------:|-------|
+| A0 | `block-beta` still parses          |   ✅    | Old keyword still accepted — `README.md` wants renaming, not migrating |
+| A1 | `<br/>`                            |   ✅    |  |
+| A2 | `<br>` unclosed                    |        |  |
+| A3 | markdown string newline            |   ❌    | `Parse error … Expecting 'STR', got 'MD_STR'` |
+| A4 | literal `\n`                       |   ✅    | **Works** — simpler than `<br/>` where no other markup is needed |
+| B1 | `**` plain string                  |   ❌    | Asterisks render literally — markdown not parsed in a plain `STR` |
+| B2 | `**` markdown string               |   ❌    | same `MD_STR` cause as A3 |
+| B3 | `<b>`                              |   ✅    |  |
+| B4 | `<strong>`                         |   ✅    |  |
+| C1 | partial bold, markdown             |   ❌    | same `MD_STR` cause as A3 |
+| C2 | **partial bold, HTML**             |   ✅    | **Decisive, and it passes.** Label design unblocked |
+| C3 | italic + bold mixed                |   ❌    | same `MD_STR` cause as A3 |
+| D1 | bold + newline, markdown           |   ❌    | same `MD_STR` cause as A3 |
+| D2 | bold + newline, HTML               |   ✅    |  |
+| D3 | three lines                        |   ✅    |  |
+| E1 | real slice, HTML                   |   ✅    | `MailFrom` sits vertically centred — blocks centre on both axes |
+| E2 | real slice, markdown               |   ❌    | same `MD_STR` cause as A3 |
+| F1 | natural wrap                       |   ❌    | **No wrapping.** One long line; the box grows arbitrarily wide. Line breaks are mandatory, not optional |
+| F2 | forced width via span              |   ⚠️   | Test mis-built — 1+3 in a 3-column grid. Span works; see **F3** |
+| F3 | span, corrected                    |        | rows summing to 3 |
+| G  | shapes                             |   ✅    |  |
+| H1 | `text-align` via `style`           |   ✅ᵣ   |  |
+| H2 | `<div align='left'>`               |   ✅ᵣ   |  |
+| H3 | `<div style='text-align:left'>`    |   ✅ᵣ   |  |
+| H4 | `text-align` via `classDef`        |   ✅ᵣ   |  |
+| H5 | `<span>` inline style              |   ✅ᵣ   | **nested HTML survives** — not just `<b>`/`<br/>` |
+| H6 | `&nbsp;` padding hack              |   ✅ᵣ   | the guaranteed floor if CSS never reaches the text |
+| H7 | leading spaces                     |   ✅ᵣ   |  |
+| H8 | **control — aligned vs unaligned** |        | **answers whether H1–H7 actually align** |
+
+**✅ᵣ = rendered without error — *not* confirmation the alignment took effect.** H1–H7 all
+parse, but a silently-ignored CSS declaration also parses. **H8 is the control that tells them
+apart.** Until it is run, group H is unresolved.
