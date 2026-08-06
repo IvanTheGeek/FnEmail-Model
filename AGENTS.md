@@ -24,15 +24,18 @@ Check both:
 
 ```bash
 # files
-grep -rniE '\b(colour|behaviour|modelling|organis(e|ed|ing|ation)|analys(e|ed|ing)|centre|labelled|sanitis(e|ed|er)|honour|recognis(e|ed)|generalis(e|ed)|maths|whilst)\b' --include='*.md' .
+grep -rniE '(colour|behaviour|honour|centre|modelling|labell|maths|whilst)\w*|(organis|sanitis|recognis|generalis|prioritis|summaris|apologis)(e|es|ed|ing|ation|er)|(analyse|analysed|analysing)' --include='*.md' .
 
 # commit messages, before you write the next one
-git log -n 20 --format='%B' | grep -niE '\b(colour|behaviour|modelling|organis(e|ed|ing|ation)|analys(e|ed|ing)|centre|labelled|sanitis(e|ed|er)|honour|recognis(e|ed)|generalis(e|ed)|maths|whilst)\b'
+git log -n 20 --format='%B' | grep -niE '(colour|behaviour|honour|centre|modelling|labell|maths|whilst)\w*|(organis|sanitis|recognis|generalis|prioritis|summaris|apologis)(e|es|ed|ing|ation|er)|(analyse|analysed|analysing)'
 ```
 
-⚠️ **Match whole words.** An earlier version of this pattern used bare stems, and `analys` matches
-**analysis** — which is correct US spelling. A check that cries wolf gets ignored, which is worse
-than no check.
+⚠️ **The pattern is tested, not guessed.** Two earlier versions were wrong in opposite directions:
+bare stems matched **analysis** and **analyses**, which are correct US spellings, and the fix then
+missed **generalises** because it did not allow the third-person `-es`. It also must not fire on
+*advertise, surprise, exercise, compromise* — US English uses `-ise` for those. Verify any change
+against a list of both kinds before trusting it. **A check that cries wolf gets ignored, which is
+worse than no check.**
 
 **Existing commit messages are left as they are.** Rewriting thirty commits to fix spelling would
 destroy the history that records how the project actually went, for a cosmetic gain. Recorded here
