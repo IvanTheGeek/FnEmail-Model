@@ -556,8 +556,8 @@ Fill in as observed. This table is the deliverable — `README.md` gets rebuilt 
 | E1 | real slice, HTML                   |   ✅    | `MailFrom` sits vertically centred — blocks centre on both axes |
 | E2 | real slice, markdown               |   ❌    | same `MD_STR` cause as A3 |
 | F1 | natural wrap                       |   ❌    | **No wrapping.** One long line; the box grows arbitrarily wide. Line breaks are mandatory, not optional |
-| F2 | forced width via span              |   ⚠️   | Test mis-built — 1+3 in a 3-column grid. Span works; see **F3** |
-| F3 | span, corrected                    |        | rows summing to 3 |
+| F2 | forced width via span              |   ⚠️    | Test mis-built — 1+3 in a 3-column grid. Span works; see **F3** |
+| F3 | span, corrected                    |   ✅    | rows summing to 3 |
 | G  | shapes                             |   ✅    |  |
 | H1 | `text-align` via `style`           |   ✅ᵣ   |  |
 | H2 | `<div align='left'>`               |   ✅ᵣ   |  |
@@ -566,14 +566,14 @@ Fill in as observed. This table is the deliverable — `README.md` gets rebuilt 
 | H5 | `<span>` inline style              |   ✅ᵣ   | **nested HTML survives** — not just `<b>`/`<br/>` |
 | H6 | `&nbsp;` padding hack              |   ✅ᵣ   | the guaranteed floor if CSS never reaches the text |
 | H7 | leading spaces                     |   ✅ᵣ   |  |
-| H8 | **control — aligned vs unaligned** |        | **answers whether H1–H7 actually align** |
-| I0 | baseline — default vertical position | | establishes what I1–I5 are changing |
-| I1 | `vertical-align:top` via `style` | | |
-| I2 | `<div style='vertical-align:top'>` | | |
-| I3 | wrapper `height:100%` | | |
-| I4 | flex `align-self:flex-start` | | likeliest to be the real lever |
-| I5 | trailing `<br/>` padding | | guaranteed floor, needs tuning per row |
-| I6 | explicit `height` on `style` | | can a box be made tall without a neighbor? |
+| H8 | **control — aligned vs unaligned** |   ✅    | **answers whether H1–H7 actually align** |
+| I0 | baseline — default vertical position |✅ | establishes what I1–I5 are changing |
+| I1 | `vertical-align:top` via `style` | ❌|short sits vertically centred |
+| I2 | `<div style='vertical-align:top'>` | ❌|short sits vertically centred |
+| I3 | wrapper `height:100%` |❌ |short sits vertically centred |
+| I4 | flex `align-self:flex-start` |❌ | likeliest to be the real lever - short sits vertically centred|
+| I5 | trailing `<br/>` padding |✅ | guaranteed floor, needs tuning per row |
+| I6 | explicit `height` on `style` | ✅| can a box be made tall without a neighbor? |
 
 **✅ᵣ = rendered without error — *not* confirmation the alignment took effect.** H1–H7 all
 parse, but a silently-ignored CSS declaration also parses. **H8 is the control that tells them
