@@ -382,83 +382,80 @@ distinguish:
 
 ## 7. Every working variant, side by side
 
-Nothing below is ruled out. All of it renders in both renderers; the only exclusions are the three
-dead techniques named in the Verdicts. Pick by eye.
+Rebuilt 2026-08-06 after two findings: **bold does not apply to monospace in the Claude app**, and
+**values are not quoted** — see the note below. Everything here renders in both renderers. Nothing
+is ruled out on taste; pick by eye.
 
-**Two parts to style** — the part the protocol fixes, and the part that is ours or the walk's.
+**Three surviving axes:** font family (mono vs standard), *italic* on either, and **bold on
+standard text only.**
 
-### Wire line — `220` is fixed, the greeting text is config
+> ⚠️ **Values carry no quotation marks.** An earlier version wrote `bar.com` as `"bar.com"`, and the
+> quotes were even listed in §5 as a free delimiter that distinguishes without styling. Rejected on
+> review: quotes are not how this project writes a value, and there is no current case that needs
+> them. That removes a channel §5 was counting on, so the **styling has to do the work the quotes
+> were doing** — which raises the stakes on this section rather than lowering them.
+>
+> Angle brackets stay where the RFC uses them: `<Smith@bar.com>` is a reverse-path in RFC 5321's own
+> syntax, not a quoting convention of ours.
 
-| | fixed part | variable part | rendered |
+### Wire line — `220` is fixed by the RFC, the greeting text is operator config
+
+| | fixed | variable | rendered |
 |:--|:--|:--|:--|
-| **V1** | mono | mono | `220 foo.com Simple Mail Transfer Service Ready` |
-| ~~V2~~ | ~~mono bold~~ | mono | ❌ **DEAD** — app drops bold on mono · **`220`**` foo.com Simple Mail Transfer Service Ready` |
-| ~~V3~~ | ~~mono bold~~ | mono *italic* | ❌ **DEAD** · **`220`** *`foo.com Simple Mail Transfer Service Ready`* |
-| **V4** | mono | mono *italic* | `220` *`foo.com Simple Mail Transfer Service Ready`* |
-| ~~V5~~ | ~~mono bold~~ | standard | ❌ **DEAD** · **`220`** foo.com Simple Mail Transfer Service Ready |
-| **V6** | mono | standard | `220` foo.com Simple Mail Transfer Service Ready |
-| **V7** | mono | standard *italic* | `220` *foo.com Simple Mail Transfer Service Ready* |
-| ~~V8~~ | ~~mono bold~~ | standard *italic* | ❌ **DEAD** · **`220`** *foo.com Simple Mail Transfer Service Ready* |
-| **V9** | mono | standard **bold** | `220` **foo.com Simple Mail Transfer Service Ready** |
-| **V10** | mono *italic* | mono | *`220`* `foo.com Simple Mail Transfer Service Ready` |
-| ~~V11~~ | ~~mono bold italic~~ | mono | ❌ **DEAD**, renders as V10 · ***`220`*** `foo.com Simple Mail Transfer Service Ready` |
+| **W1** | mono | mono | `220 foo.com Simple Mail Transfer Service Ready` |
+| **W2** | mono | standard | `220` foo.com Simple Mail Transfer Service Ready |
+| **W3** | mono | standard *italic* | `220` *foo.com Simple Mail Transfer Service Ready* |
+| **W4** | mono | standard **bold** | `220` **foo.com Simple Mail Transfer Service Ready** |
+| **W5** | mono | mono *italic* | `220` *`foo.com Simple Mail Transfer Service Ready`* |
+| **W6** | mono *italic* | mono | *`220`* `foo.com Simple Mail Transfer Service Ready` |
+| **W7** | standard **bold** | mono | **220** `foo.com Simple Mail Transfer Service Ready` |
 
-`V1` = D · ~~`V2` = L~~ · ~~`V3` = B~~ · ~~`V5` = M~~ · `V7` = C
-
-🛑 **Five of eleven are dead** — every one that bolds monospace. **B, L and M all die with them**, and those were the three leading candidates.
+W1 is the control, formerly D. W3 is formerly C. W5 is what B collapses to once its bold is dropped.
 
 ### Payload field — the name is schema, the value is an instance
 
 | | field | value | rendered |
 |:--|:--|:--|:--|
-| **F1** | mono | mono | `claimed_domain: "bar.com"` |
-| ~~F2~~ | ~~mono bold~~ | mono | ❌ **DEAD** · **`claimed_domain`**`: "bar.com"` |
-| ~~F3~~ | ~~mono bold~~ | mono *italic* | ❌ **DEAD** · **`claimed_domain`**: *`"bar.com"`* |
-| **F4** | mono | mono *italic* | `claimed_domain`: *`"bar.com"`* |
-| ~~F5~~ | ~~mono bold~~ | standard | ❌ **DEAD** · **`claimed_domain`**: "bar.com" |
-| **F6** | mono | standard | `claimed_domain`: "bar.com" |
-| **F7** | mono | standard *italic* | `claimed_domain`: *"bar.com"* |
-| ~~F8~~ | ~~mono bold~~ | standard *italic* | ❌ **DEAD** · **`claimed_domain`**: *"bar.com"* |
-| **F9** | mono | standard **bold** | `claimed_domain`: **"bar.com"** |
-| **F10** | standard **bold** | mono | **claimed_domain**: `"bar.com"` |
+| **P1** | mono | mono | `claimed_domain: bar.com` |
+| **P2** | mono | standard | `claimed_domain`: bar.com |
+| **P3** | mono | standard *italic* | `claimed_domain`: *bar.com* |
+| **P4** | mono | standard **bold** | `claimed_domain`: **bar.com** |
+| **P5** | mono | mono *italic* | `claimed_domain`: *`bar.com`* |
+| **P6** | mono *italic* | mono | *`claimed_domain`*: `bar.com` |
+| **P7** | standard **bold** | mono | **claimed_domain**: `bar.com` |
+| **P8** | standard | mono | claimed_domain: `bar.com` |
 
-`F1` = J · ~~`F2` = L~~ · `F4` = H · ~~`F5` = M~~ · `F7` = I
+P1 is the control, formerly J. P3 is formerly I. P5 is formerly H. P7 is formerly F10.
 
-**F10 is now the only variant that carries bold at all**, because its bold sits on standard text. It was added as the option nobody had stated; it is now the only one of its kind.
+⚠️ **P7 and P8 invert what the others assume.** Every row above them puts monospace on the *field
+name*. These put it on the **value** — on the grounds that the value is the literal byte-string that
+came off the wire, and the field name is our label for it. With quotes gone, this is the only
+remaining way to mark where a value starts and ends.
 
-⚠️ **F10 inverts the assumption** every other row shares — that the *field name* is the monospace
-thing. If the value is the literal protocol byte-string and the name is our label for it, monospace
-arguably belongs on the value instead. Included because the option was never stated, not because it
-is recommended.
+### The realistic case — three fields, no quotes
 
-### The realistic case — three fields at once
+Noise is only judgeable at length.
 
-Noise is only judgeable at length. Same three variants, applied to `MessageAccepted`:
+**P2** — `queue_id`: f2C8D14 · `reverse_path`: <Smith@bar.com> · `received_at`: 1998-05-19T09:14:07-07:00
 
-**V2/F2 style** — bold names, everything monospace:
+**P4** — `queue_id`: **f2C8D14** · `reverse_path`: **<Smith@bar.com>** · `received_at`: **1998-05-19T09:14:07-07:00**
 
-**`queue_id`**`: "f2C8D14"` · **`reverse_path`**`: "<Smith@bar.com>"` · **`received_at`**`: "1998-05-19T09:14:07-07:00"`
+**P5** — `queue_id`: *`f2C8D14`* · `reverse_path`: *`<Smith@bar.com>`* · `received_at`: *`1998-05-19T09:14:07-07:00`*
 
-**V5/F5 style** — bold monospace names, standard values:
+**P7** — **queue_id**: `f2C8D14` · **reverse_path**: `<Smith@bar.com>` · **received_at**: `1998-05-19T09:14:07-07:00`
 
-**`queue_id`**: "f2C8D14" · **`reverse_path`**: "<Smith@bar.com>" · **`received_at`**: "1998-05-19T09:14:07-07:00"
+**P1 control** — `queue_id: f2C8D14` · `reverse_path: <Smith@bar.com>` · `received_at: 1998-05-19T09:14:07-07:00`
 
-**F4 style** — plain monospace names, italic monospace values:
+⚠️ **At three fields the control gets genuinely hard to scan**, which is the argument for doing
+anything at all. It is one undifferentiated monospace run where every boundary — between fields,
+and between each name and its value — is carried by punctuation alone.
 
-`queue_id`: *`"f2C8D14"`* · `reverse_path`: *`"<Smith@bar.com>"`* · `received_at`: *`"1998-05-19T09:14:07-07:00"`*
-
-**F1 control** — no distinction:
-
-`queue_id: "f2C8D14"` · `reverse_path: "<Smith@bar.com>"` · `received_at: "1998-05-19T09:14:07-07:00"`
-
-### In the cell — survivors only
-
-Rebuilt after the bold-on-monospace finding. Every variant here renders in both.
+### In a cell
 
 | | **`Helo`** — C |
 |:--|:--|
-| ⬛ **Actor** | `250` foo.com — V6&#10;<br>`250` *foo.com* — V7&#10;<br>`250` **foo.com** — V9&#10;<br>`250 foo.com` — V1 |
-| 🟧 **Event** | `claimed_domain`: "bar.com" — F6&#10;<br>`claimed_domain`: *`"bar.com"`* — F4&#10;<br>**claimed_domain**: `"bar.com"` — F10&#10;<br>`claimed_domain: "bar.com"` — F1 |
+| ⬛ **Actor** | `220 foo.com Ready` — W1&#10;<br>`220` foo.com Ready — W2&#10;<br>`220` *foo.com Ready* — W3&#10;<br>**220** `foo.com Ready` — W7 |
+| 🟧 **Event** | `claimed_domain: bar.com` — P1&#10;<br>`claimed_domain`: bar.com — P2&#10;<br>`claimed_domain`: *`bar.com`* — P5&#10;<br>**claimed_domain**: `bar.com` — P7 |
 
 ---
 
