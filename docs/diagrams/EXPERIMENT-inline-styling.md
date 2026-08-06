@@ -71,6 +71,26 @@ Live samples, for the second renderer:
 5. `220` `foo.com Ready`
 6. <code><b>220</b> foo.com Simple Mail Transfer Service Ready</code>
 
+> ⚠️ **Tested 2026-08-06 — sample 6 fails, and it takes the HTML approach with it.**
+>
+> | sample | GitHub | Claude app |
+> |:--|:--|:--|
+> | 1 `` `**bold** in code` `` | asterisks literal ✅ | asterisks literal ✅ |
+> | 2 ``**`code`**`` | ✅ | ✅ |
+> | 3 ``*`code`*`` | ✅ italic mono | ✅ italic mono |
+> | 4 ``***`code`***`` | ✅ | ✅ |
+> | 5 adjacent spans | ✅ two pills | ✅ |
+> | **6 `<code><b>`** | ✅ **monospace, bold inside** | ❌ **plain serif body text — `<code>` not honored at all** |
+>
+> **The app does not render raw `<code>` tags.** It strips them and prints the contents as prose,
+> so `<code><b>220</b> …</code>` gives monospace-with-bold on GitHub and undifferentiated body text
+> on a phone. Same asymmetry class as `\text{}` in the color experiment: correct where you author,
+> degraded where you read.
+>
+> **Consequence: you can distinguish parts of a wire line only by breaking the code span, never by
+> styling inside it.** Rule 6's escape hatch is closed, and every scheme below that used it is
+> dead.
+
 ---
 
 ## 2. Candidate schemes — wire lines
@@ -78,7 +98,7 @@ Live samples, for the second renderer:
 Each renders the same greeting. The question is which reads as *one line with two parts* rather
 than as two things stuck together.
 
-**A — HTML bold inside one code span.** Mandated part bold, config plain, whole line monospace.
+**A — ❌ DEAD. HTML bold inside one code span.** Renders as plain prose in the app.
 
 <code>S: <b>220</b> foo.com Simple Mail Transfer Service Ready</code>
 
@@ -94,11 +114,11 @@ than as two things stuck together.
 
 `S: 220 foo.com Simple Mail Transfer Service Ready`
 
-**E — a client line, for comparison.** Here the verb is mandated and the argument is the client's.
+**E — ❌ DEAD, same reason.** A client line, verb mandated, argument the client's.
 
 <code>C: <b>HELO</b> bar.com</code>
 
-**F — a reply where the whole thing is mandated.** Nothing should look configurable.
+**F — ❌ DEAD as written**, but the *question* it poses survives and still has to be answered by whatever scheme wins.
 
 <code>S: <b>354</b> Start mail input; end with &lt;CRLF&gt;.&lt;CRLF&gt;</code>
 
@@ -112,7 +132,7 @@ scheme cannot answer that, it is decoration rather than notation.
 
 `claimed_domain: "bar.com"` — schema name versus instance value.
 
-**G — bold field, plain value, one span.**
+**G — ❌ DEAD. Bold field, plain value, one span.**
 
 <code><b>claimed_domain</b>: "bar.com"</code>
 
@@ -128,7 +148,7 @@ scheme cannot answer that, it is decoration rather than notation.
 
 `claimed_domain: "bar.com"`
 
-**K — multiple fields, the realistic case.**
+**K — ❌ DEAD. Multiple fields, the realistic case.**
 
 <code><b>queue_id</b>: "f2C8D14" · <b>reverse_path</b>: "&lt;Smith@bar.com&gt;" · <b>received_at</b>: "1998-05-19T09:14:07-07:00"</code>
 
@@ -136,11 +156,22 @@ scheme cannot answer that, it is decoration rather than notation.
 
 ## 4. In a table cell, where it has to live
 
+❌ The HTML version that stood here is removed — it renders as prose in the app. Rebuilt on the
+surviving markdown-only syntax, scheme **B** for the wire and **H** for the payload:
+
 | | **`Helo`** — C |
 |:--|:--|
-| ⬛ **Actor** | <code>C: <b>HELO</b> bar.com</code>&#10;<br><code>S: <b>250</b> foo.com</code> |
+| ⬛ **Actor** | `C:` **`HELO`** *`bar.com`*&#10;<br>`S:` **`250`** *`foo.com`* |
 | 🟦 **Command** | **Helo** |
-| 🟧 **Event** | **ClientIdentified**&#10;<br><code><b>claimed_domain</b>: "bar.com"</code> |
+| 🟧 **Event** | **ClientIdentified**&#10;<br>`claimed_domain`: *`"bar.com"`* |
+
+And scheme **C**, which drops monospace for the non-mandated part entirely:
+
+| | **`Helo`** — C |
+|:--|:--|
+| ⬛ **Actor** | `C: HELO` *bar.com*&#10;<br>`S: 250` *foo.com* |
+| 🟦 **Command** | **Helo** |
+| 🟧 **Event** | **ClientIdentified**&#10;<br>`claimed_domain`: *"bar.com"* |
 
 Compare against the current form:
 
@@ -162,18 +193,21 @@ Fill in from both. A scheme needs **two ✅** and must survive a table cell.
 
 | # | Scheme | GitHub | Claude Android | Reads as one line? | Notes |
 |:--|:--|:--|:--|:--|:--|
-| 1 | md nesting into code | ❌ | | — | mechanically impossible |
-| 2 | `**\`code\`**` | ✅ | | | |
-| 3 | `*\`code\`*` | ✅ | | | |
-| 4 | `***\`code\`***` | ✅ | | | |
-| 5 | adjacent code spans | ✅ | | | |
-| 6 | `<code><b>` | ✅ | | | the only in-span option |
-| A | HTML bold in one span | | | | |
-| B | bold code + italic code | | | | |
-| C | code + plain italic | | | | |
-| G | HTML bold field | | | | |
-| H | code field + italic code value | | | | |
-| I | code field + plain italic | | | | |
+| 1 | md nesting into code | ❌ | ❌ | — | mechanically impossible in both |
+| 2 | `**\`code\`**` | ✅ | ✅ | | **live** |
+| 3 | `*\`code\`*` | ✅ | ✅ | | **live** |
+| 4 | `***\`code\`***` | ✅ | ✅ | | **live** |
+| 5 | adjacent code spans | ✅ | ✅ | | **live** |
+| 6 | `<code><b>` | ✅ | ❌ | — | **DEAD — app strips `<code>`** |
+| A | HTML bold in one span | ✅ | ❌ | — | dead with 6 |
+| E | HTML, client line | ✅ | ❌ | — | dead with 6 |
+| F | HTML, all-mandated line | ✅ | ❌ | — | dead with 6 |
+| G | HTML bold field | ✅ | ❌ | — | dead with 6 |
+| K | HTML, many fields | ✅ | ❌ | — | dead with 6 |
+| **B** | bold code + italic code | | | | **live candidate** |
+| **C** | code + plain italic | | | | **live candidate** |
+| **H** | code field + italic code value | | | | **live candidate** |
+| **I** | code field + plain italic | | | | **live candidate** |
 | — | §4 table cell, with `&#10;<br>` | | | | **the deciding test** |
 
 ---
