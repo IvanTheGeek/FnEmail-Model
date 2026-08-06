@@ -1,6 +1,6 @@
-# Experiment — can markdown colour text?
+# Experiment — can markdown color text?
 
-Testing whether coloured **text** is available as an alternative or supplement to the emoji chips
+Testing whether colored **text** is available as an alternative or supplement to the emoji chips
 used in [`README.md`](README.md). Same empirical method as
 [`EXPERIMENT-block-labels.md`](EXPERIMENT-block-labels.md): try every candidate, record what each
 renderer actually does, keep only what works in both.
@@ -21,17 +21,17 @@ Open this page in both and fill in the verdict table at the bottom.
 
 <div style="color:red">D. div with a style attribute</div>
 
-> ✅ **Tested 2026-08-06 — all four fail in *both* renderers.** No colour anywhere; every one is
-> plain black text on GitHub and in the Claude app alike. The feared asymmetry — colour in one
+> ✅ **Tested 2026-08-06 — all four fail in *both* renderers.** No color anywhere; every one is
+> plain black text on GitHub and in the Claude app alike. The feared asymmetry — color in one
 > renderer, silence in the other — **does not occur**, so there is no trap here to avoid.
 >
 > One incidental difference: `<div>` is a block element, and the two renderers disagree on the
 > break around it. GitHub runs the following paragraph straight on; the app leaves a gap. Neither
-> colours it, but it is a reason to avoid raw block-level HTML in these documents regardless.
+> colors it, but it is a reason to avoid raw block-level HTML in these documents regardless.
 
-**Expected: all four fail on GitHub.** Its sanitiser strips `style` and `class` attributes and
+**Expected: all four fail on GitHub.** Its sanitizer strips `style` and `class` attributes and
 removes `<font>` entirely — confirmed against the `/markdown` API. Included anyway because the
-Claude app may not sanitise, and a technique that works in only one renderer is worse than none:
+Claude app may not sanitize, and a technique that works in only one renderer is worse than none:
 it looks fine where you author it and silently degrades where the model is read.
 
 ---
@@ -48,23 +48,23 @@ A phrase: $\color{red}{\text{a phrase in red}}$
 
 Inside a table cell, which is where the chips live:
 
-| element | chip | coloured text |
+| element | chip | colored text |
 |:--|:--|:--|
 | Event | 🟧 | $\color{orange}{\text{Event}}$ |
 | Command | 🟦 | $\color{blue}{\text{Command}}$ |
 | Read Model | 🟩 | $\color{green}{\text{Read Model}}$ |
 | hotspot | 🟥 | $\color{red}{\text{hotspot}}$ |
 
-> ⚠️ **Tested 2026-08-06 — colour works in both, but `\text{}` is honoured by only one.**
+> ⚠️ **Tested 2026-08-06 — color works in both, but `\text{}` is honored by only one.**
 >
 > | | GitHub | Claude app |
 > |:--|:--|:--|
-> | colour appears | ✅ | ✅ |
+> | color appears | ✅ | ✅ |
 > | bare `$\color{}{}$` | italic serif, `-` → minus sign | italic serif, `-` → minus sign |
 > | **`$\color{}{\text{}}$`** | ✅ **normal body font, hyphens intact** | ❌ **still italic serif, still minus signs** |
-> | in a table cell | ✅ normal font, correctly coloured | ⚠️ coloured but serif |
+> | in a table cell | ✅ normal font, correctly colored | ⚠️ colored but serif |
 >
-> **This is the asymmetry section 1 was checking for**, in a milder form. Not colour-versus-nothing,
+> **This is the asymmetry section 1 was checking for**, in a milder form. Not color-versus-nothing,
 > but **clean-versus-mangled**: `$\color{red}{\text{math-color-red}}$` renders as `math-color-red`
 > on GitHub and as *math − color − red* in the app. You would author it, see it correct, and it
 > would degrade where the model is read on a phone.
@@ -75,7 +75,7 @@ Inside a table cell, which is where the chips live:
 
 ---
 
-## 3. Diff code blocks — colour via the syntax highlighter
+## 3. Diff code blocks — color via the syntax highlighter
 
 ```diff
 + a plus line renders green
@@ -86,7 +86,7 @@ Inside a table cell, which is where the chips live:
   an unmarked line is plain
 ```
 
-> ⚠️ **Tested 2026-08-06 — the two renderers give different numbers of colours.**
+> ⚠️ **Tested 2026-08-06 — the two renderers give different numbers of colors.**
 >
 > | line | GitHub | Claude app |
 > |:--|:--|:--|
@@ -100,17 +100,17 @@ Inside a table cell, which is where the chips live:
 > `!` line is actively misleading — orange on GitHub, green in the app, so the same source says
 > "warning" in one place and "added" in the other.
 >
-> Two usable colours, code-block-only, first character hijacked. Confirms the original assessment.
+> Two usable colors, code-block-only, first character hijacked. Confirms the original assessment.
 
 Works on GitHub — confirmed, the API emits `pl-mi1` and `pl-md` highlight classes. But it is only
-available **inside a code block**, offers roughly four colours whose meaning is fixed by diff
+available **inside a code block**, offers roughly four colors whose meaning is fixed by diff
 semantics, and hijacks the first character of every line. Useless for a table cell.
 
 ---
 
 ## 4. The control — what we use now
 
-Emoji chips are **characters, not markup**, so no sanitiser can touch them:
+Emoji chips are **characters, not markup**, so no sanitizer can touch them:
 
 🟧 Event · 🟦 Command · 🟩 Read Model · ⬜ rendered UI · ⬛ wire · 🟨 external · 🟥 hotspot
 
@@ -139,9 +139,9 @@ Fill in from both renderers. A technique needs **two ✅** to be usable.
 | 1B | `<font color>` | ❌ | ❌ | ❌ | plain text in both |
 | 1C | `<span class>` | ❌ | ❌ | ❌ | plain text in both |
 | 1D | `<div style>` | ❌ | ❌ | ❌ | plain text in both; also **breaks paragraph flow** — GitHub runs the next paragraph on, the app leaves a gap |
-| 2 | `$\color{}{}$` | ⚠️ | ⚠️ | ✅ | colours, but italic serif and `-` → minus in **both** |
-| 2 | `$\color{}{\text{}}$` | ✅ | ❌ | ✅ | **GitHub honours `\text{}`, the app ignores it** — clean vs mangled |
-| 3 | ` ```diff ` | ✅ 5 colours | ⚠️ 2 colours | ❌ code block only | `!` is **orange on GitHub, green in the app** |
+| 2 | `$\color{}{}$` | ⚠️ | ⚠️ | ✅ | colors, but italic serif and `-` → minus in **both** |
+| 2 | `$\color{}{\text{}}$` | ✅ | ❌ | ✅ | **GitHub honors `\text{}`, the app ignores it** — clean vs mangled |
+| 3 | ` ```diff ` | ✅ 5 colors | ⚠️ 2 colors | ❌ code block only | `!` is **orange on GitHub, green in the app** |
 | 4 | emoji chip | ✅ | ✅ | ✅ | **identical in both** — the only one |
 
 ---
@@ -153,8 +153,8 @@ Fill in from both renderers. A technique needs **two ✅** to be usable.
 | | outcome |
 |:--|:--|
 | **Inline HTML** | fails in both. Not a trap, just unavailable |
-| **LaTeX maths** | colours in both, but `\text{}` works on GitHub only — **clean on GitHub, mangled in the app** |
-| **Diff blocks** | five colours on GitHub, two in the app, and `!` means *warning* in one and *added* in the other |
+| **LaTeX maths** | colors in both, but `\text{}` works on GitHub only — **clean on GitHub, mangled in the app** |
+| **Diff blocks** | five colors on GitHub, two in the app, and `!` means *warning* in one and *added* in the other |
 | **Emoji chips** | identical in both |
 
 The prediction written below, before any of this was run, held up. What the testing added was a
@@ -174,8 +174,8 @@ the three, and it is the one a reader is least likely to catch.
 
 Written before the test, kept unedited.
 
-**The chip is a swatch, not a label.** Colour in Event Modeling *is* the element type, and a chip
-puts that colour beside the name without altering the name. Coloured text would have to recolour
+**The chip is a swatch, not a label.** Color in Event Modeling *is* the element type, and a chip
+puts that color beside the name without altering the name. Colored text would have to recolour
 the name itself, which is a different claim: it says the *word* is orange rather than that the
 *thing* is.
 
@@ -188,5 +188,5 @@ the same class of dependency Mermaid was — and shedding that dependency is the
 tables exist.
 
 So the likely outcome is that maths works and is still not adopted. Recording that is the point:
-the next person to ask *"can we just colour the text?"* gets an answer with evidence rather than an
+the next person to ask *"can we just color the text?"* gets an answer with evidence rather than an
 opinion.
