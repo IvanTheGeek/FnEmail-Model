@@ -145,8 +145,10 @@ block
 
 *(H3 is resolved.)*
 
-> The 530k-word podcast corpus was swept for H4 on 2026-08-06: `stream boundary` and
-> `stream design` return **zero hits**. That avenue is closed; H4 will have to be reasoned out.
+> **H4 gets no help from the spoken corpus.** Swept 2026-08-06 across both bodies of transcript —
+> 46 podcast episodes and 35 recorded talks, **982,637 words**. `stream boundary` and `stream
+> design` return **zero hits in either**. So does `SMTP`, in the talks. Two independent corpora,
+> nothing. That avenue is closed; H4 has to be reasoned out rather than looked up.
 
 ### Other pending work
 
@@ -165,11 +167,12 @@ block
   whether an EM-native name would be *clearer* on its own merits.
 - **The author's disagreements with Adam's method** — mentioned but never captured. Worth its own
   document; a disagreement is a different category from an extension.
-- **Written permission from Dilger.** He verbally told the author his LinkedIn posts — the 77
-  Markdown files in `dilgerma/dilgerma.github.io` under `docs/blog/`, which is the source of
-  `www.eventmodelers.ai` — are free to use. That repo carries **no LICENSE**, so the grant is
-  personal, undated and unlinked. Worth one line in writing before anything derived from them is
-  published.
+- ~~**Written permission from Dilger.**~~ **Settled 2026-08-06 — not needed.** His verbal grant
+  covering the posts at `www.eventmodelers.ai` stands, and the author's rule is **use, do not
+  republish**. The material is archived in the private research repo and may be read, quoted with
+  attribution, and reasoned from; it is never reproduced wholesale and never enters FnEmail.
+  Written permission was considered and consciously not pursued, because nothing derived from it
+  will be published in a form requiring one. Recorded in research: `archive/NOTICE.md`.
 
 ---
 
@@ -186,18 +189,32 @@ TLS, so use `www.`.
 
 **What has been done since:**
 
-- SE Radio 539 and Semaphore Uncut read in full. They overturned the DDD-vocabulary claim — see
-  research: `model-altitude-theory.md` §2.0d.
-- The podcast corpus retrieved: 46 episodes, 530,523 words, from YouTube auto-captions.
-- Dilger's 171 public repos cataloged, and `dilgerma.github.io` identified as `www.eventmodelers.ai`.
+- All 77 bibliography URLs probed. **72 return 200.** The five that don't are the known-suspect CACM
+  staging host, Medium's Cloudflare, one malformed URL, and `axoniq.io/podcasts/event-modeling`,
+  which is genuinely dead (404).
+- SE Radio 539 and Semaphore Uncut read in full. They overturned the DDD-vocabulary claim.
+- **The podcast corpus** — 46 episodes, 530,523 words.
+- **A talks corpus the bibliography did not know existed** — a YouTube sweep found **38 videos
+  naming either author, 49.7 hours**, where the bibliography had four. 35 transcribed, **452,114
+  words**. Includes a 3.7-hour workshop, a deep dive with **Vaughn Vernon**, three talks at DDD
+  meetups, a second YOW! talk, and **SE Radio 720**, which this section previously listed as unread.
+- **`www.eventmodelers.ai` archived** — 77 blog posts, 46 podcast pages, 21 modeling topics,
+  171,925 words. Dilger's posts, under **use-don't-republish**.
+- Dilger's 171 public repos cataloged.
+
+Spoken corpus now **982,637 words**. Findings in research: `model-altitude-theory.md` §2.0d and
+`METHOD-REFERENCE.md`.
 
 **What has not:**
 
-- ~150 of the bibliography's sources still carry *search-summary* confidence and have never been
-  read directly. The block is lifted; the reading is outstanding.
-- SE Radio 720 (Dilger). Not read.
+- ~150 of the bibliography's *text* sources still carry search-summary confidence and have never
+  been read directly — InfoQ, CACM, Hanselminutes, .NET Rocks, Loosely Coupled, Linux.com,
+  DDD TW 2021, the Vancouver Tech episodes. The block is lifted; the reading is outstanding.
+- The 452k-word talks corpus is **retrieved but barely read.** It has been term-swept, not studied.
+  A 3.7-hour workshop recording and a 2.5-hour Vernon conversation are sitting there unexamined.
 - `app.eventmodelers.ai` — the platform the archived skills are written against.
 - The Mermaid repo, for D3.
+- The 2018 Medium article. Still no URL.
 
 research: `BIBLIOGRAPHY.md` has 152 sources with live URLs — it was built as the walk-list for
 exactly this.
