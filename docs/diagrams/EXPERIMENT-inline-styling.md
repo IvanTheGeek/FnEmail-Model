@@ -200,9 +200,30 @@ Compare against the current form:
 | 🟦 **Command** | **Helo** |
 | 🟧 **Event** | **ClientIdentified**&#10;<br>`claimed_domain: "bar.com"` |
 
-⚠️ **Watch the interaction with `&#10;<br>`.** The line-break convention and raw `<code>` tags are
-both HTML in a table cell, and this is the first time they are combined. If breaks fail here, the
-scheme is dead regardless of how it reads.
+> ✅ **`&#10;<br>` survives alongside inline styling.** Breaks work in all three cell variants in
+> both renderers. That hazard is cleared.
+>
+> ⚠️ **But the renderers disagree about how a broken span *reads*, and this decides the experiment.**
+>
+> **GitHub draws a grey background pill around every code span. The app draws none.**
+>
+> | | GitHub | Claude app |
+> |:--|:--|:--|
+> | **B** — `C:` **`HELO`** *`bar.com`* | **three separate pills** — reads as three fragments | no pills — reads as **one continuous line** |
+> | **C** — `C: HELO` *bar.com* | one pill, then italic text — **two units** | mono, then italic serif — **two units** |
+> | **D** — control | one pill — one unit | one run — one unit |
+>
+> Scheme **B** is the one that looked most promising and it is the one that diverges. Splitting a
+> line into three code spans reads as one line where spans are unstyled and as three chips where
+> they are pilled. The technique that best expresses *one line with two parts* in the app is the
+> technique that most destroys it on GitHub.
+>
+> Scheme **C** degrades identically in both, because it never relies on adjacent spans looking
+> continuous — it uses a font change rather than a span boundary to mark the split.
+>
+> **Incidental:** in scheme K, with the HTML stripped, `<Smith@bar.com>` was **auto-linked as a
+> mailto address** in the app. Losing markup does not merely lose formatting; it can hand the
+> content to a different parser.
 
 ---
 
@@ -223,11 +244,11 @@ Fill in from both. A scheme needs **two ✅** and must survive a table cell.
 | F | HTML, all-mandated line | ✅ | ❌ | — | dead with 6 |
 | G | HTML bold field | ✅ | ❌ | — | dead with 6 |
 | K | HTML, many fields | ✅ | ❌ | — | dead with 6 |
-| **B** | bold code + italic code | | | | **live candidate** |
-| **C** | code + plain italic | | | | **live candidate** |
-| **H** | code field + italic code value | | | | **live candidate** |
-| **I** | code field + plain italic | | | | **live candidate** |
-| — | §4 table cell, with `&#10;<br>` | | | | **the deciding test** |
+| **B** | bold code + italic code | ⚠️ **3 pills** | ✅ one line | ❌ **diverges** | best in the app, worst on GitHub |
+| **C** | code + plain italic | ✅ | ✅ | ✅ **same in both** | font change, not span boundary |
+| **H** | code field + italic code value | ⚠️ 2 pills | ✅ | ⚠️ | same divergence, milder |
+| **I** | code field + plain italic | ✅ | ✅ | ✅ **same in both** | C's equivalent for payloads |
+| — | §4 table cell, with `&#10;<br>` | ✅ | ✅ | — | **breaks survive — hazard cleared** |
 
 ---
 
