@@ -12,14 +12,34 @@ when broken.
 
 Not colour, modelling, behaviour, organise, analyse, centre, labelled, sanitise, honour, recognise.
 
-This has been corrected more than twice and keeps recurring, which is why it is rule one. Before
-committing prose, grep for it:
+This has been corrected more than three times and keeps recurring, which is why it is rule one.
+
+**It applies to every word you write, not only to files** — chat replies and **commit messages**
+included. Commit messages here are long by design (rule 6), which makes them thousands of words of
+prose that a `--include='*.md'` grep never sees. On 2026-08-06 the files were clean and the last
+thirty commit messages held **27** British spellings, because the check had been run only against
+markdown.
+
+Check both:
 
 ```bash
-grep -rniE '\b(colour|behaviour|modelling|organis|analys|centre|labelled|sanitis|honour|recognis|whilst)\w*' --include='*.md' .
+# files
+grep -rniE '\b(colour|behaviour|modelling|organis(e|ed|ing|ation)|analys(e|ed|ing)|centre|labelled|sanitis(e|ed|er)|honour|recognis(e|ed)|generalis(e|ed)|maths|whilst)\b' --include='*.md' .
+
+# commit messages, before you write the next one
+git log -n 20 --format='%B' | grep -niE '\b(colour|behaviour|modelling|organis(e|ed|ing|ation)|analys(e|ed|ing)|centre|labelled|sanitis(e|ed|er)|honour|recognis(e|ed)|generalis(e|ed)|maths|whilst)\b'
 ```
 
-**The one exception is a quotation** — see rule 2. The corpus writes *colour*, and a quote keeps it.
+⚠️ **Match whole words.** An earlier version of this pattern used bare stems, and `analys` matches
+**analysis** — which is correct US spelling. A check that cries wolf gets ignored, which is worse
+than no check.
+
+**Existing commit messages are left as they are.** Rewriting thirty commits to fix spelling would
+destroy the history that records how the project actually went, for a cosmetic gain. Recorded here
+instead, per rule 4.
+
+**The one exception is a quotation** — see rule 2. The corpus uses the British spelling of *color*,
+and a quote keeps it. Prefer naming that fact over reproducing the word.
 
 ## 2. Quotations keep their own words
 
