@@ -103,6 +103,11 @@ because it is a font problem rather than a markup one — no markup change can f
 caution applies to the ellipsis, em dash and middot inside a block where columns must line up; they are fine in
 prose. Tested in [`docs/diagrams/EXPERIMENT-inline-styling.md`](docs/diagrams/EXPERIMENT-inline-styling.md).
 
+**To show a backtick inside a code span, use double backticks as the delimiter.** Backslash escapes
+**do not work inside a code span** — the backslash renders literally and the escaped backtick still
+closes the span, splitting the content in half. Write ``` ``**`code`**`` ``` and never
+`` `**\`code\`**` ``.
+
 **Refer to slices by name, never by number.** Numbering is an artifact of the current altitude and
 scope; change either and every cross-reference breaks silently. Counts are fine — "twelve slices"
 is a fact, "slice 4" is a handle that moves.

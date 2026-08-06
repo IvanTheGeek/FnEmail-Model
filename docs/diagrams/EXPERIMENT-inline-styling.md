@@ -213,9 +213,9 @@ Fill in from both. A scheme needs **two ✅** and must survive a table cell.
 | # | Scheme | GitHub | Claude Android | Reads as one line? | Notes |
 |:--|:--|:--|:--|:--|:--|
 | 1 | md nesting into code | ❌ | ❌ | — | mechanically impossible in both |
-| 2 | `**\`code\`**` | ✅ | ✅ | | **live** |
-| 3 | `*\`code\`*` | ✅ | ✅ | | **live** |
-| 4 | `***\`code\`***` | ✅ | ✅ | | **live** |
+| 2 | ``**`code`**`` | ✅ | ✅ | | **live** |
+| 3 | ``*`code`*`` | ✅ | ✅ | | **live** |
+| 4 | ``***`code`***`` | ✅ | ✅ | | **live** |
 | 5 | adjacent code spans | ✅ | ✅ | | **live** |
 | 6 | `<code><b>` | ✅ | ❌ | — | **DEAD — app strips `<code>`** |
 | A | HTML bold in one span | ✅ | ❌ | — | dead with 6 |
