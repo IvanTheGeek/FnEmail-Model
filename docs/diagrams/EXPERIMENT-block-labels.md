@@ -396,17 +396,17 @@ Fill in as observed. This table is the deliverable — `README.md` gets rebuilt 
 | C2 | **partial bold, HTML**          |    ✅     | **The decisive one, and it passes.** Label design is unblocked |
 | C3 | italic + bold mixed             |    ❌     | same `MD_STR` cause as A3 |
 | D1 | bold + newline, markdown        |    ❌     | same `MD_STR` cause as A3 |
-| D2 | bold + newline, HTML            |          |  |
-| D3 | three lines                     |          |  |
-| E1 | real slice, HTML                |          |  |
-| E2 | real slice, markdown            |          | predicted ❌ — same `MD_STR` cause as A3 |
-| F1 | natural wrap                    |          |  |
-| F2 | forced width via span           |          |  |
-| G  | shapes                          |          |  |
-| H1 | `text-align` via `style`        |          |  |
-| H2 | `<div align='left'>`            |          |  |
-| H3 | `<div style='text-align:left'>` |          |  |
-| H4 | `text-align` via `classDef`     |          |  |
-| H5 | `<span>` inline style           |          | tests whether nested HTML survives at all |
-| H6 | `&nbsp;` padding hack           |          | always works if entities render |
-| H7 | leading spaces                  |          |  |
+| D2 | bold + newline, HTML            |    ✅      |  |
+| D3 | three lines                     |    ✅      |  |
+| E1 | real slice, HTML                |    ✅      | "MailFrom" is vertically centered |
+| E2 | real slice, markdown            |    ❌      | predicted ❌ — same `MD_STR` cause as A3 |
+| F1 | natural wrap                    |    ?      | no wrap - displays as one long single line  |
+| F2 | forced width via span           |     ?     |  |
+| G  | shapes                          |     ✅     |  |
+| H1 | `text-align` via `style`        |     ✅     |  |
+| H2 | `<div align='left'>`            |      ✅    |  |
+| H3 | `<div style='text-align:left'>` |       ✅   |  |
+| H4 | `text-align` via `classDef`     |        ✅  |  |
+| H5 | `<span>` inline style           |     ✅     | tests whether nested HTML survives at all |
+| H6 | `&nbsp;` padding hack           |     ✅     | always works if entities render |
+| H7 | leading spaces                  |     ✅     |  |
