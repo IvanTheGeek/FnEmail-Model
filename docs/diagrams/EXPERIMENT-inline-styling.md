@@ -404,18 +404,19 @@ Both parts vary independently, so the map is a grid rather than a list. **Six li
 — mono-bold is absent because the app drops it, which is the only exclusion here.
 
 Short example so the grid fits: fixed `220`, variable `Ready`. **Rows are the fixed part, columns
-the variable part.** The diagonal is where both sides match, so nothing is distinguished.
+the variable part.** The diagonal is both parts in one style — a single continuous run, which is
+what the control looks like, so it is shown rather than blanked.
 
 | fixed \ variable → | mono | mono *ital* | std | std **bold** | std *ital* | std ***b+i*** |
 |:--|:--|:--|:--|:--|:--|:--|
-| **mono** | *— same —* | `220` *`Ready`* | `220` Ready | `220` **Ready** | `220` *Ready* | `220` ***Ready*** |
-| **mono *ital*** | *`220`* `Ready` | *— same —* | *`220`* Ready | *`220`* **Ready** | *`220`* *Ready* | *`220`* ***Ready*** |
-| **std** | 220 `Ready` | 220 *`Ready`* | *— same —* | 220 **Ready** | 220 *Ready* | 220 ***Ready*** |
-| **std **bold**** | **220** `Ready` | **220** *`Ready`* | **220** Ready | *— same —* | **220** *Ready* | **220** ***Ready*** |
-| **std *ital*** | *220* `Ready` | *220* *`Ready`* | *220* Ready | *220* **Ready** | *— same —* | *220* ***Ready*** |
-| **std ***b+i***** | ***220*** `Ready` | ***220*** *`Ready`* | ***220*** Ready | ***220*** **Ready** | ***220*** *Ready* | *— same —* |
+| **mono** | `220 Ready` | `220` *`Ready`* | `220` Ready | `220` **Ready** | `220` *Ready* | `220` ***Ready*** |
+| **mono *ital*** | *`220`* `Ready` | *`220 Ready`* | *`220`* Ready | *`220`* **Ready** | *`220`* *Ready* | *`220`* ***Ready*** |
+| **std** | 220 `Ready` | 220 *`Ready`* | 220 Ready | 220 **Ready** | 220 *Ready* | 220 ***Ready*** |
+| **std **bold**** | **220** `Ready` | **220** *`Ready`* | **220** Ready | **220 Ready** | **220** *Ready* | **220** ***Ready*** |
+| **std *ital*** | *220* `Ready` | *220* *`Ready`* | *220* Ready | *220* **Ready** | *220 Ready* | *220* ***Ready*** |
+| **std ***b+i***** | ***220*** `Ready` | ***220*** *`Ready`* | ***220*** Ready | ***220*** **Ready** | ***220*** *Ready* | ***220 Ready*** |
 
-**Thirty distinguishing combinations.** The earlier W-list sampled only the first two rows, which is
+**Thirty distinguishing combinations, plus six controls on the diagonal.** The earlier W-list sampled only the first two rows, which is
 what prompted this grid — the fixed part had never been varied outside monospace except in W7.
 
 ⚠️ **The bottom four rows are the ones nobody had looked at.** Putting the *fixed* part in standard
@@ -433,12 +434,12 @@ Same grid, applied to a field. **Rows are the field name, columns the value.** N
 
 | name \ value → | mono | mono *ital* | std | std **bold** | std *ital* | std ***b+i*** |
 |:--|:--|:--|:--|:--|:--|:--|
-| **mono** | *— same —* | `claimed_domain`: *`bar.com`* | `claimed_domain`: bar.com | `claimed_domain`: **bar.com** | `claimed_domain`: *bar.com* | `claimed_domain`: ***bar.com*** |
-| **mono *ital*** | *`claimed_domain`*: `bar.com` | *— same —* | *`claimed_domain`*: bar.com | *`claimed_domain`*: **bar.com** | *`claimed_domain`*: *bar.com* | *`claimed_domain`*: ***bar.com*** |
-| **std** | claimed_domain: `bar.com` | claimed_domain: *`bar.com`* | *— same —* | claimed_domain: **bar.com** | claimed_domain: *bar.com* | claimed_domain: ***bar.com*** |
-| **std **bold**** | **claimed_domain**: `bar.com` | **claimed_domain**: *`bar.com`* | **claimed_domain**: bar.com | *— same —* | **claimed_domain**: *bar.com* | **claimed_domain**: ***bar.com*** |
-| **std *ital*** | *claimed_domain*: `bar.com` | *claimed_domain*: *`bar.com`* | *claimed_domain*: bar.com | *claimed_domain*: **bar.com** | *— same —* | *claimed_domain*: ***bar.com*** |
-| **std ***b+i***** | ***claimed_domain***: `bar.com` | ***claimed_domain***: *`bar.com`* | ***claimed_domain***: bar.com | ***claimed_domain***: **bar.com** | ***claimed_domain***: *bar.com* | *— same —* |
+| **mono** | `claimed_domain: bar.com` | `claimed_domain`: *`bar.com`* | `claimed_domain`: bar.com | `claimed_domain`: **bar.com** | `claimed_domain`: *bar.com* | `claimed_domain`: ***bar.com*** |
+| **mono *ital*** | *`claimed_domain`*: `bar.com` | *`claimed_domain: bar.com`* | *`claimed_domain`*: bar.com | *`claimed_domain`*: **bar.com** | *`claimed_domain`*: *bar.com* | *`claimed_domain`*: ***bar.com*** |
+| **std** | claimed_domain: `bar.com` | claimed_domain: *`bar.com`* | claimed_domain: bar.com | claimed_domain: **bar.com** | claimed_domain: *bar.com* | claimed_domain: ***bar.com*** |
+| **std **bold**** | **claimed_domain**: `bar.com` | **claimed_domain**: *`bar.com`* | **claimed_domain**: bar.com | **claimed_domain: bar.com** | **claimed_domain**: *bar.com* | **claimed_domain**: ***bar.com*** |
+| **std *ital*** | *claimed_domain*: `bar.com` | *claimed_domain*: *`bar.com`* | *claimed_domain*: bar.com | *claimed_domain*: **bar.com** | *claimed_domain: bar.com* | *claimed_domain*: ***bar.com*** |
+| **std ***b+i***** | ***claimed_domain***: `bar.com` | ***claimed_domain***: *`bar.com`* | ***claimed_domain***: bar.com | ***claimed_domain***: **bar.com** | ***claimed_domain***: *bar.com* | ***claimed_domain: bar.com*** |
 
 ⚠️ **The lower-left quadrant is the inversion.** Standard-font name with a monospace value says
 *the value is the literal thing and the name is our label* — which with quotes gone is also the only
