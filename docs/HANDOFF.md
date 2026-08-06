@@ -84,7 +84,7 @@ Start in the research repo, then come back here.
 | `docs/event-model.md` | FnEmail | The model — v0.3, 12 slices, contracts, 7 hotspots |
 | `docs/model-altitude.md` | FnEmail | What belongs in this model at all — charter, gate sequence, four tiers |
 | `research/model-altitude-theory.md` | research | The corpus theory behind it, and the vocabulary investigation |
-| `docs/paths/` | FnEmail | Two worked paths with real data |
+| `docs/paths/` | FnEmail | Three worked paths with real data. `STEP-FORM.md` defines the step convention |
 | `docs/diagrams/README.md` | FnEmail | The model as tables — renders on GitHub *and* Android |
 | `docs/event-model-extensions.md` | FnEmail | The author's extension ideas — **parked, deliberately not applied** |
 | `research/CORRECTIONS-v0.1.md` | research | 20 ways the first draft misapplied the method |
@@ -305,7 +305,7 @@ Conventions that matter more than they look:
 ## 8. State
 
 - **Model** — v0.3, 12 slices, contracts on each, 6 open hotspots
-- **Paths** — 2 walked, 11 of 12 slices covered
+- **Paths** — 3 walked, 11 of 12 slices covered; `helo-direct-single-recipient.md` is the default illustration
 - **Diagrams** — rebuilt on the settled mermaid vocabulary
 - **RFCs** — 5321 and 7504 under `docs/rfc/`
 - **Code** — none yet, by design

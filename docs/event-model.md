@@ -319,8 +319,13 @@ identifier, and `queue_id` is what we put in it. These are one mechanism, not tw
 a second correlation scheme alongside the RFC's.
 
 ⚠️ Naming caution: Dilger's prose has correlation propagating across steps and causation
-identifying the current step, but Axon's Message Origin Provider uses "Correlation ID" for the
-origin message and "Trace ID" for the propagated one. Pick names deliberately.
+identifying the current step. Other frameworks invert this — the same two ideas ship under
+"Correlation ID" and "Trace ID" with the meanings swapped. **Pick names deliberately and define
+them here**, because the words alone will not tell a reader which convention is in force.
+
+For this model the RFC settles it: `Received:`'s **`ID` clause** is the trace identifier that
+propagates onto the message, and `queue_id` is what goes in it. Name the propagating one after the
+RFC rather than after any framework.
 
 ### Why `received_at` is payload, not metadata
 
