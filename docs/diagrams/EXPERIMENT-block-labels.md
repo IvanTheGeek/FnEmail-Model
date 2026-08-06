@@ -427,6 +427,112 @@ block and **centred** in the grey one. If both are centred, that approach failed
 
 ---
 
+## I · Vertical alignment — can text sit at the top of a tall box?
+
+Follows from **E1**: blocks centre on **both** axes. In a grid of slices with labels of differing
+height, nothing shares a baseline — a one-line slice floats in the middle of its row while its
+neighbour fills top to bottom. Top-aligning would fix that.
+
+**Prerequisite:** a box is sized by its content, so a "large box" has to come from somewhere. Two
+candidates, and the second may not work at all.
+
+### I0 · Baseline — where does text sit by default?
+
+A tall neighbour sets the row height. No styling. This establishes what we are trying to change.
+
+```mermaid
+block
+  columns 2
+  i0tall["<b>tall block</b><br/>line<br/>line<br/>line<br/>line<br/>line"]
+  i0short["<b>short</b>"]
+  style i0tall fill:#eeeeee,stroke:#444,stroke-width:2px,color:#000
+  style i0short fill:#eeeeee,stroke:#444,stroke-width:2px,color:#000
+```
+
+**Expect:** `short` sits vertically centred. If it is already at the top, group I is moot.
+
+### I1 · `vertical-align:top` via `style`
+
+```mermaid
+block
+  columns 2
+  i1tall["<b>tall block</b><br/>line<br/>line<br/>line<br/>line<br/>line"]
+  i1short["<b>short</b>"]
+  style i1tall fill:#eeeeee,stroke:#444,stroke-width:2px,color:#000
+  style i1short fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000,vertical-align:top
+```
+
+### I2 · `<div style='vertical-align:top'>` wrapper
+
+```mermaid
+block
+  columns 2
+  i2tall["<b>tall block</b><br/>line<br/>line<br/>line<br/>line<br/>line"]
+  i2short["<div style='vertical-align:top'><b>short</b></div>"]
+  style i2tall fill:#eeeeee,stroke:#444,stroke-width:2px,color:#000
+  style i2short fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000
+```
+
+### I3 · Wrapper forced to fill the box
+
+If the wrapper fills the height, its content starts at the wrapper's top.
+
+```mermaid
+block
+  columns 2
+  i3tall["<b>tall block</b><br/>line<br/>line<br/>line<br/>line<br/>line"]
+  i3short["<div style='height:100%;display:block'><b>short</b></div>"]
+  style i3tall fill:#eeeeee,stroke:#444,stroke-width:2px,color:#000
+  style i3short fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000
+```
+
+### I4 · Flexbox — `align-self` / `align-items`
+
+Labels are often laid out in a flex container. If so, this is the property that actually governs.
+
+```mermaid
+block
+  columns 2
+  i4tall["<b>tall block</b><br/>line<br/>line<br/>line<br/>line<br/>line"]
+  i4short["<b>short</b>"]
+  style i4tall fill:#eeeeee,stroke:#444,stroke-width:2px,color:#000
+  style i4short fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000,align-items:flex-start,align-self:flex-start
+```
+
+### I5 · Trailing `<br/>` padding — the guaranteed floor
+
+Pad the bottom so the centred content is pushed to the top. Works regardless of what CSS reaches
+the label, exactly like H6 does horizontally. Ugly, and it needs the padding count tuned per row.
+
+```mermaid
+block
+  columns 2
+  i5tall["<b>tall block</b><br/>line<br/>line<br/>line<br/>line<br/>line"]
+  i5short["<b>short</b><br/><br/><br/><br/><br/>"]
+  style i5tall fill:#eeeeee,stroke:#444,stroke-width:2px,color:#000
+  style i5short fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000
+```
+
+### I6 · Explicit `height` — can a box be made tall on its own?
+
+No tall neighbour. If this works, box height is controllable directly and I0's premise is not the
+only route.
+
+```mermaid
+block
+  columns 2
+  i6a["<b>height forced to 160px?</b>"]
+  i6b["<b>unstyled neighbour</b>"]
+  style i6a fill:#a8d98a,stroke:#444,stroke-width:2px,color:#000,height:160px
+  style i6b fill:#eeeeee,stroke:#444,stroke-width:2px,color:#000
+```
+
+**What to look for across I1–I5:** the green block's text should sit **flush with the top** of its
+box while the grey neighbour fills the row. If green and grey both centre, that approach did
+nothing.
+
+---
+
 ## Results
 
 Fill in as observed. This table is the deliverable — `README.md` gets rebuilt from whatever wins.
@@ -462,6 +568,13 @@ Fill in as observed. This table is the deliverable — `README.md` gets rebuilt 
 | H6 | `&nbsp;` padding hack              |   ✅ᵣ   | the guaranteed floor if CSS never reaches the text |
 | H7 | leading spaces                     |   ✅ᵣ   |  |
 | H8 | **control — aligned vs unaligned** |        | **answers whether H1–H7 actually align** |
+| I0 | baseline — default vertical position | | establishes what I1–I5 are changing |
+| I1 | `vertical-align:top` via `style` | | |
+| I2 | `<div style='vertical-align:top'>` | | |
+| I3 | wrapper `height:100%` | | |
+| I4 | flex `align-self:flex-start` | | likeliest to be the real lever |
+| I5 | trailing `<br/>` padding | | guaranteed floor, needs tuning per row |
+| I6 | explicit `height` on `style` | | can a box be made tall without a neighbour? |
 
 **✅ᵣ = rendered without error — *not* confirmation the alignment took effect.** H1–H7 all
 parse, but a silently-ignored CSS declaration also parses. **H8 is the control that tells them
