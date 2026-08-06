@@ -301,17 +301,41 @@ so the value stops claiming to be one.
 | Field and value | **`claimed_domain`**: "bar.com" |
 | Wire line | **`220`** foo.com Simple Mail Transfer Service Ready |
 
-**N — ALL CAPS carries the protocol, bold carries the schema.** No second font weight on the wire.
+**N — ⚠️ HALF DEAD. ALL CAPS carries the protocol, bold carries the schema.**
 
 | | |
 |:--|:--|
-| Wire line | `C: HELO bar.com` — verb already caps by protocol |
+| Wire line | `C: HELO bar.com` — ~~verb already caps by protocol~~ |
 | Reply | `S: 220 foo.com Simple Mail Transfer Service Ready` |
 | Field and value | **`claimed_domain`**`: "bar.com"` |
 
-⚠️ **N is nearly free** because SMTP verbs are already uppercase and reply codes are already
-digits — the protocol has done the differentiating for us. The open question is whether that is
-enough on its own, which is scheme **D**, the control, wearing a different justification.
+> ⚠️ **Corrected 2026-08-06 — the premise was half wrong, and the wrong half was the dangerous
+> kind.**
+>
+> This scheme was justified as *"nearly free, because SMTP verbs are already uppercase and reply
+> codes are already digits — the protocol has done the differentiating for us."* Only the second
+> clause is true.
+>
+> **Reply codes are genuinely self-differentiating.** RFC 5321 §4.2 requires a three-digit numeric
+> code, so `220` is structurally distinct from the free-form text after it with no styling at all.
+> That half stands.
+>
+> **Verbs are not uppercase by the protocol.** §2.4 says a command verb *"MAY be encoded in upper
+> case, lower case, or any mixture … with no impact on its meaning"*, and names servers that demand
+> uppercase as being **in violation**. `helo bar.com` is a valid greeting. See `../event-model.md`
+> → *Case sensitivity*.
+>
+> So the uppercase in every path here is the RFC's **example convention**, faithfully reproduced
+> per rule 2, and not a rule the protocol enforces.
+>
+> **This makes case worse than unavailable as notation — it makes it misleading.** Styling by case
+> would encode a distinction the specification explicitly says does not exist, and a reader who
+> learned the notation would have learned something false about SMTP. A scheme that is merely
+> unusable costs nothing; one that teaches a falsehood is a defect.
+>
+> **What survives:** the reply-code half. The digits already separate themselves from the text, so
+> a wire line may need *less* notation than assumed — but the argument now covers replies only, not
+> commands.
 
 ### Noise budget
 
@@ -352,7 +376,7 @@ Fill in from both. A scheme needs **two ✅** and must survive a table cell.
 | **I** | code field + plain italic | ✅ | ✅ | ✅ **same in both** | C's equivalent for payloads; **italic value — ruled out** |
 | **L** | bold mono schema, plain mono instance | | | | **live** — §6, no italic |
 | **M** | bold mono schema, standard instance | | | | **live** — §6, no italic |
-| **N** | protocol's own caps + bold field | | | | **live** — §6, cheapest |
+| **N** | protocol's own caps + bold field | | | | ⚠️ **half dead** — verbs are *not* caps by protocol; only the reply-code half survives |
 | — | §4 table cell, with `&#10;<br>` | ✅ | ✅ | — | **breaks survive — hazard cleared** |
 
 ---
