@@ -20,7 +20,7 @@ Steps follow [`STEP-FORM.md`](STEP-FORM.md).
 ## Scene
 
 | | |
-|---|---|
+|:--|:--|
 | Server (us) | `foo.com` at `192.0.2.10:25` |
 | Client | `bar.com` at `203.0.113.20` — **the originating host, contacting us directly** |
 | Sender | `<Smith@bar.com>` — **same domain as the client** |
@@ -35,109 +35,89 @@ the other half of that pair. See *What this walk tested*.
 
 ## The walk
 
-### 🟦C · Step 1 · `AcceptConnection`
-
-| | |
+| 🟦 C · Step 1 | `AcceptConnection` |
 |:--|:--|
-| ⬛ **Actor** | `S: 220` foo.com Simple Mail Transfer Service Ready |
-| 🟦 **Command** | **AcceptConnection** |
-| 🟧 **Event** | **ConnectionAccepted**&#10;<br>`peer_address`: 203.0.113.20 · `local_address`: 192.0.2.10:25 |
+| MTA Client | ⬛ `220` foo.com Simple Mail Transfer Service Ready |
+| | 🟦 **AcceptConnection** |
+| Event | 🟧 **ConnectionAccepted**&#10;<br>&nbsp;&nbsp;`peer_address`: 203.0.113.20&#10;<br>&nbsp;&nbsp;`local_address`: 192.0.2.10:25 |
 
 > **Pre** — none ✓ &nbsp;·&nbsp; **Post** — `ConnectionAccepted` emitted ✓
 
-### 🟦C · Step 2 · `Helo`
-
-| | |
+| 🟦 C · Step 2 | `Helo` |
 |:--|:--|
-| ⬛ **Actor** | `C: HELO` bar.com&#10;<br>`S: 250` foo.com |
-| 🟦 **Command** | **Helo** |
-| 🟧 **Event** | **ClientIdentified**&#10;<br>`claimed_domain`: bar.com · `protocol`: SMTP |
+| MTA Client | ⬛ `HELO` bar.com&#10;<br>`250` foo.com |
+| | 🟦 **Helo** |
+| Event | 🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP |
 
 > **Pre** — `ConnectionAccepted` exists ✓ &nbsp;·&nbsp; **Post** — `ClientIdentified` emitted ✓
 
-### 🟩V · Step 3 · `SessionState`
-
-| | |
+| 🟩 V · Step 3 | `SessionState` |
 |:--|:--|
-| ⬜ **Consumed by** | `MailFrom` · `RcptTo` · `BeginData` |
-| 🟩 **Read Model** | **SessionState**&#10;<br>`identified`: true · `transaction_open`: false |
-| 🟧 **Sources** | **ConnectionAccepted** · **ClientIdentified** |
+| Consumed by | ⬜ `MailFrom` · `RcptTo` · `BeginData` |
+| | 🟩 **SessionState**&#10;<br>&nbsp;&nbsp;`identified`: true&#10;<br>&nbsp;&nbsp;`transaction_open`: false |
+| Sources | 🟧 **ConnectionAccepted** · **ClientIdentified** |
 
-### 🟦C · Step 4 · `MailFrom`
-
-| | |
+| 🟦 C · Step 4 | `MailFrom` |
 |:--|:--|
-| ⬛ **Actor** | `C: MAIL FROM:`<Smith@bar.com>&#10;<br>`S: 250 OK` |
-| 🟦 **Command** | **MailFrom** |
-| 🟧 **Event** | **MailTransactionStarted**&#10;<br>`reverse_path`: <Smith@bar.com> |
+| MTA Client | ⬛ `MAIL FROM:`\<Smith@bar.com>&#10;<br>`250` OK |
+| | 🟦 **MailFrom** |
+| Event | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
 
 > **Pre** — `SessionState.identified = true` ✓ &nbsp;·&nbsp; **Post** — `MailTransactionStarted` emitted ✓
 
-### 🟩V · Step 5 · `RecipientDirectory` &nbsp;*(translation boundary — H3)*
-
-| | |
+| 🟩 V · Step 5 | `RecipientDirectory` &nbsp;*(translation boundary — H3)* |
 |:--|:--|
-| ⬜ **Consumed by** | `RcptTo` |
-| 🟩 **Read Model** | **RecipientDirectory**&#10;<br>`is_local`: true |
-| 🟨 **Sources** | translated from the **Directory context** — external, deferred |
+| Consumed by | ⬜ `RcptTo` |
+| | 🟩 **RecipientDirectory**&#10;<br>&nbsp;&nbsp;`is_local`: true |
+| Sources | 🟨 translated from the **Directory context** — external, deferred |
 
 The 🟨 source is what makes this Translation rather than Automation: the events belong to another
 context. Deferred, so the value is asserted rather than derived — the same typed hole both other
 paths cross.
 
-### 🟦C · Step 6 · `RcptTo`
-
-| | |
+| 🟦 C · Step 6 | `RcptTo` |
 |:--|:--|
-| ⬛ **Actor** | `C: RCPT TO:`<Jones@foo.com>&#10;<br>`S: 250 OK` |
-| 🟦 **Command** | **RcptTo** |
-| 🟧 **Event** | **RecipientAccepted**&#10;<br>`forward_path`: <Jones@foo.com> |
+| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com>&#10;<br>`250` OK |
+| | 🟦 **RcptTo** |
+| Event | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 
 > **Pre** — `MailTransactionStarted` ✓ · `RecipientDirectory.is_local` ✓ &nbsp;·&nbsp; **Post** — `RecipientAccepted` emitted ✓
 
 Traversed **once**. No `RecipientRejected` anywhere in this walk.
 
-### 🟩V · Step 7 · `TransactionState`
-
-| | |
+| 🟩 V · Step 7 | `TransactionState` |
 |:--|:--|
-| ⬜ **Consumed by** | `RcptTo` · `BeginData` · `SubmitContent` |
-| 🟩 **Read Model** | **TransactionState**&#10;<br>`open`: true · `reverse_path`: <Smith@bar.com> · `recipient_count`: 1 |
-| 🟧 **Sources** | **MailTransactionStarted** · **RecipientAccepted** |
+| Consumed by | ⬜ `RcptTo` · `BeginData` · `SubmitContent` |
+| | 🟩 **TransactionState**&#10;<br>&nbsp;&nbsp;`open`: true&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipient_count`: 1 |
+| Sources | 🟧 **MailTransactionStarted** · **RecipientAccepted** |
 
-### 🟦C · Step 8 · `BeginData` &nbsp;🟥 **H1**
-
-| | |
+| 🟦 C · Step 8 | `BeginData` &nbsp;🟥 **H1** |
 |:--|:--|
-| ⬛ **Actor** | `C: DATA`&#10;<br>`S: 354` Start mail input; end with `<CRLF>.<CRLF>` |
-| 🟦 **Command** | **BeginData** |
-| 🟥 **Event** | **DataPhaseEntered**&#10;<br>*no payload — H1: does it earn its place?* |
+| MTA Client | ⬛ `DATA`&#10;<br>`354` Start mail input; end with `<CRLF>.<CRLF>` |
+| | 🟦 **BeginData** |
+| Event | 🟥 **DataPhaseEntered**&#10;<br>&nbsp;&nbsp;*no payload — H1: does it earn its place?* |
 
 > **Pre** — `TransactionState.open` ✓ · `recipient_count >= 1` ✓ (= 1) &nbsp;·&nbsp; **Post** — `DataPhaseEntered` emitted ✓
 
 **H1 meets you here.** Its only candidate consumer is the transcript rendering `354`. This walk
 does not resolve it — it just shows the event firing with nothing downstream that needs it.
 
-### 🟦C · Step 9 · `SubmitContent`
-
-| | |
+| 🟦 C · Step 9 | `SubmitContent` |
 |:--|:--|
-| ⬛ **Actor** | `C: Date: Tue, 19 May 1998 09:14:02 -0700`&#10;<br>`C: From: Smith <Smith@bar.com>`&#10;<br>`C: To: Jones@foo.com`&#10;<br>`C: Subject: Tuesday`&#10;<br>`C: (blank)`&#10;<br>`C: Blah blah blah...`&#10;<br>`C: .`&#10;<br>`S: 250 OK` |
-| 🟦 **Command** | **SubmitContent** |
-| 🟧 **Event** | **MessageAccepted**&#10;<br>`queue_id`: f2C8D14 · `reverse_path`: <Smith@bar.com>&#10;<br>`recipients: ["<Jones@foo.com>"]` · `content_ref`: blob:sha256:9c1e…&#10;<br>`actual_octets`: 194 · `received_at`: 1998-05-19T09:14:07-07:00 |
+| MTA Client | ⬛ `Date:` Tue, 19 May 1998 09:14:02 -0700&#10;<br>`From:` Smith \<Smith@bar.com>&#10;<br>`To:` Jones@foo.com&#10;<br>`Subject:` Tuesday&#10;<br>(blank)&#10;<br>Blah blah blah...&#10;<br>`.`&#10;<br>`250` OK |
+| | 🟦 **SubmitContent** |
+| Event | 🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipients`: [\<Jones@foo.com>]&#10;<br>&nbsp;&nbsp;`content_ref`: blob:sha256:9c1e…&#10;<br>&nbsp;&nbsp;`actual_octets`: 194&#10;<br>&nbsp;&nbsp;`received_at`: 1998-05-19T09:14:07-07:00 |
 
 > **Pre** — `DataPhaseEntered` ✓ &nbsp;·&nbsp; **Post** — `MessageAccepted` emitted ✓ — **the responsibility boundary**
 
 Left of here, abandoning costs nothing. At `MessageAccepted` we have accepted responsibility for
 delivering or reporting failure — RFC 5321 §2.1.
 
-### 🟦C · Step 10 · `Quit`
-
-| | |
+| 🟦 C · Step 10 | `Quit` |
 |:--|:--|
-| ⬛ **Actor** | `C: QUIT`&#10;<br>`S: 221` foo.com Service closing transmission channel |
-| 🟦 **Command** | **Quit** |
-| 🟧 **Event** | **SessionClosed**&#10;<br>`cause`: quit |
+| MTA Client | ⬛ `QUIT`&#10;<br>`221` foo.com Service closing transmission channel |
+| | 🟦 **Quit** |
+| Event | 🟧 **SessionClosed**&#10;<br>&nbsp;&nbsp;`cause`: quit |
 
 > **Pre** — `ConnectionAccepted` exists ✓ &nbsp;·&nbsp; **Post** — `SessionClosed` emitted ✓
 
@@ -151,7 +131,7 @@ Every reply is 2xx or 3xx. No error branch is taken anywhere.
 other path, because nothing is traversed twice and nothing is rejected.
 
 | | This path | Direct, multi | Relay, single | Combined |
-|---|---|---|---|---|
+|:--|:--|:--|:--|:--|
 | Steps | **10** | 13 | 11 | — |
 | `RcptTo` traversals | 1 | 3 | 1 | — |
 | Client is | **originator** | originator | relay | — |
@@ -180,7 +160,7 @@ Received: from bar.com ([203.0.113.20])
 ```
 
 | Clause | Value | Source |
-|---|---|---|
+|:--|:--|:--|
 | `FROM` domain | `bar.com` | `ClientIdentified.claimed_domain` |
 | address literal | `203.0.113.20` | `ConnectionAccepted.peer_address` |
 | `BY` | `foo.com` | config — **H6** |
@@ -223,7 +203,7 @@ rule is now exercised in both topologies.
 **3. Happy for every actor.** No rejection, no partial outcome.
 
 | Actor | Direct, multi | Relay, single | This path |
-|---|---|---|---|
+|:--|:--|:--|:--|
 | Server | success | success | success |
 | Sender | **partial** — 2 of 3 | success | success |
 | Recipient | 2 of 3 | success | success |
@@ -257,6 +237,6 @@ Specifically not covered:
 ## Next paths
 
 | Path | Exercises | Source |
-|---|---|---|
+|:--|:--|:--|
 | **D.2 — aborted transaction** | `Reset`, the last uncovered slice | RFC, quotable |
 | **No `HELO`** | `503` sequencing errors | ours |

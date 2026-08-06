@@ -116,6 +116,16 @@ route, so **monospace text cannot be bolded** for a reader on the app. Italic on
 work. The three usable axes are font family, italic, and bold on standard text only. Tested in
 [`docs/diagrams/EXPERIMENT-inline-styling.md`](docs/diagrams/EXPERIMENT-inline-styling.md).
 
+**Angle brackets outside a code span are eaten.** `<CRLF>` in running text renders as *nothing at
+all* — the parser takes it for an unknown HTML tag and drops it silently. An address fares slightly
+better and still loses information: `<Smith@bar.com>` becomes a mailto link with **the angle
+brackets stripped**, and in SMTP those brackets are path syntax — `MAIL FROM:<>` is not
+`MAIL FROM:`. Escaping the opening bracket (`\<`) restores both, but GFM still autolinks a bare
+address; only a code span suppresses that. This bit on 2026-08-06, when moving values out of
+monospace to apply the mono-fixed/standard-variable rule silently deleted six angle-bracket pairs
+that had been safe inside their old code spans. **Any convention change that moves text out of a
+code span has to be re-rendered, not just re-read.**
+
 **To show a backtick inside a code span, use double backticks as the delimiter.** Backslash escapes
 **do not work inside a code span** — the backslash renders literally and the escaped backtick still
 closes the span, splitting the content in half. Write ``` ``**`code`**`` ``` and never
