@@ -21,6 +21,11 @@ project prefers them, with the corpus synonyms in parentheses:
 are element types, `—` marks a row a slice does not use. Cell line breaks are written `&#10;<br>`;
 both halves are required, for reasons recorded below.
 
+**Slices are not numbered here.** Position on the timeline already carries order, so a number adds
+nothing but fragility — slice numbering is an artifact of the current altitude and scope, and would
+renumber wholesale if either moved. Slices are referred to **by name**; counts like "twelve slices"
+are still fine, because a count is a fact about the model rather than a handle on one part of it.
+
 **No arrows.** Meaning is carried by row position and left-to-right time. Rows are fixed:
 
 ```
@@ -74,9 +79,9 @@ one or two slices at a time, and the wide timelines are zoomed-out overviews.
 
 *(aka state change, write column)*
 
-Slice 4, `MailFrom`.
+The `MailFrom` slice.
 
-| | **4 · MailFrom** |
+| | **MailFrom** |
 |:--|:--|
 | ⬜ **Screen** | **Remote client**&#10;<br>`MAIL FROM:<Smith@bar.com>` |
 | 🟦 **Command** | **MailFrom**&#10;<br>`reverse_path` |
@@ -111,17 +116,17 @@ event, leaving one command, one event — and the model got simpler, not poorer.
 
 *(aka state view, read model, query)*
 
-Slice 3, `SessionState`. Same three rows, read **bottom to top**.
+The `SessionState` slice. Same three rows, read **bottom to top**.
 
-| | **3 · SessionState** |
+| | **SessionState** |
 |:--|:--|
 | ⬜ **Consumed by** | **MailFrom · RcptTo · BeginData** |
 | 🟩 **Read Model** | **SessionState**&#10;<br>`identified`&#10;<br>`transaction_open` |
 | 🟧 **Events** | **ConnectionAccepted**&#10;<br>**ClientIdentified**&#10;<br>**SessionReset** |
 
 A View Slice may draw on events from **anywhere earlier** on the timeline. It is placed at its
-**consumer**, not next to its sources — which is why `SessionState` sits at slice 3 while its
-sources are slices 1 and 2.
+**consumer**, not next to its sources — which is why `SessionState` sits with its consumers
+while its sources are `AcceptConnection` and `ClientIdentified`, further left.
 
 Many events feeding one read model is the *"right chair"* shape. Expected for a view that
 accumulates; worth watching if it grows without a matching growth in the question it answers.
@@ -147,11 +152,11 @@ Given-When-Thens rather than one.
 
 ## 4. Inbound timeline — session establishment
 
-Slices 1–3. Columns are slices; rows are element types; `—` marks a row a slice does not use.
+`AcceptConnection` → `SessionState`. Columns are slices; rows are element types; `—` marks a row a slice does not use.
 
-| | **1 · AcceptConnection** | **2 · Helo** | **3 · SessionState** |
+| | **AcceptConnection** | **Helo** | **SessionState** |
 |:--|:--|:--|:--|
-| ⬜ **Screen** | tcp connect | `HELO bar.com` | **consumed by**&#10;<br>slices 4, 6, 8 |
+| ⬜ **Screen** | tcp connect | `HELO bar.com` | **consumed by**&#10;<br>MailFrom · RcptTo · BeginData |
 | **Cmd / View** | 🟦 **AcceptConnection** | 🟦 **Helo** | 🟩 **SessionState**&#10;<br>`identified` |
 | 🟧 **Event** | **ConnectionAccepted**&#10;<br>`peer_address` | **ClientIdentified**&#10;<br>`claimed_domain` | — |
 
@@ -159,12 +164,12 @@ Slices 1–3. Columns are slices; rows are element types; `—` marks a row a sl
 
 ## 5. Inbound timeline — the transaction
 
-Slices 4–7. `RecipientDirectory` is the Translation boundary onto the Directory context (H3
+`MailFrom` → `TransactionState`. `RecipientDirectory` is the Translation boundary onto the Directory context (H3
 resolved), so its source is outside this model — shown 🟨 **yellow**.
 
-| | **4 · MailFrom** | **5 · RecipientDirectory** | **6 · RcptTo** | **7 · TransactionState** |
+| | **MailFrom** | **RecipientDirectory** | **RcptTo** | **TransactionState** |
 |:--|:--|:--|:--|:--|
-| ⬜ **Screen** | `MAIL FROM` | **consumed by**&#10;<br>slice 6 | `RCPT TO` | **consumed by**&#10;<br>slices 6, 8, 9 |
+| ⬜ **Screen** | `MAIL FROM` | **consumed by**&#10;<br>RcptTo | `RCPT TO` | **consumed by**&#10;<br>RcptTo · BeginData · SubmitContent |
 | **Cmd / View** | 🟦 **MailFrom** | 🟩 **RecipientDirectory**&#10;<br>`is_local` | 🟦 **RcptTo** | 🟩 **TransactionState**&#10;<br>`recipient_count` |
 | **Event** | 🟧 **MailTransactionStarted**&#10;<br>`reverse_path` | 🟨 **Directory context**&#10;<br>translated — external | 🟧 **RecipientAccepted**&#10;<br>🟧 **RecipientRejected** `550` | — |
 
@@ -175,10 +180,10 @@ to another context.
 
 ## 6. Inbound timeline — content and close
 
-Slices 8–12. `DataPhaseEntered` is 🟥 **red**: hotspot **H1**, on trial because its only candidate
+`BeginData` → `SessionTranscript`. `DataPhaseEntered` is 🟥 **red**: hotspot **H1**, on trial because its only candidate
 consumer is the transcript.
 
-| | **8 · BeginData** | **9 · SubmitContent** | **10 · Reset** | **11 · Quit** | **12 · SessionTranscript** |
+| | **BeginData** | **SubmitContent** | **Reset** | **Quit** | **SessionTranscript** |
 |:--|:--|:--|:--|:--|:--|
 | ⬜ **Screen** | `DATA` | content · then dot | `RSET` | `QUIT` | **Operator**&#10;<br>reads transcript |
 | **Cmd / View** | 🟦 **BeginData** | 🟦 **SubmitContent** | 🟦 **Reset** | 🟦 **Quit** | 🟩 **SessionTranscript** |
@@ -189,54 +194,34 @@ Expected here; worth watching if it grows.
 
 ---
 
-## 7. Worked paths as sequences
+## 7. Worked paths
 
-A path is a conversation over time. Two parties, one turn per row, read top to bottom — the one
-place in this document where time runs **down** rather than across, because a protocol trace is a
-dialogue rather than a model.
+Two paths are walked with real data in [`../paths/`](../paths/). They are **not redrawn here as
+sequence diagrams**, for two reasons.
 
-**Path 1** — [`../paths/helo-multi-recipient.md`](../paths/helo-multi-recipient.md). Three
-recipients, one rejected mid-flow. 13 steps over 11 slices.
+**The top row already is the conversation.** Read the ⬜ Screen row of §4 → §5 → §6 left to right
+and you have the exchange: `tcp connect`, `HELO`, `MAIL FROM`, `RCPT TO`, `DATA`, content, `QUIT`.
+A separate sequence diagram restates what the timeline's first row carries, and restating it means
+two artifacts that can disagree.
 
-| # | `bar.com` → | ← `foo.com` (us) |
-|--:|:--|:--|
-| 1 | | `220 foo.com Service Ready` |
-| 2 | `HELO bar.com` | |
-| 3 | | `250 foo.com` |
-| 4 | `MAIL FROM:<Smith@bar.com>` | |
-| 5 | | `250 OK` |
-| 6 | `RCPT TO:<Jones@foo.com>` | |
-| 7 | | `250 OK` |
-| 8 | `RCPT TO:<Green@foo.com>` | |
-| 9 | | 🟥 `550 No such user here` |
-| 10 | `RCPT TO:<Brown@foo.com>` | |
-| 11 | | `250 OK` |
-| 12 | `DATA` | |
-| 13 | | `354 Start mail input` |
-| 14 | content · then dot | |
-| 15 | | `250 OK queued as q7F3A21` |
-| 16 | `QUIT` | |
-| 17 | | `221 closing channel` |
+**And a sequence diagram is the wrong notation to reach for here.** Dymitruk describes an event
+model as one — *"it kind of looks like a **sideways sequence diagram**, but it cuts out the how"*
+(`14KWuOH9nSk`), *"sort of like a sequence diagram but turned sideways"* (`8Uz4370F_KQ`) — but he is
+pointed about why the original will not do:
 
-**Path 2** — [`../paths/helo-single-recipient.md`](../paths/helo-single-recipient.md). One
-recipient, no errors. 11 steps over 11 slices.
+> *"it will not do branching. **Sequence diagrams have branching.** … the problem is the human mind
+> can't remember a graph"* — `14KWuOH9nSk`
 
-| # | `foo.com` (relay) → | ← `xyz.com` (us) |
-|--:|:--|:--|
-| 1 | | `220 xyz.com Service Ready` |
-| 2 | `HELO foo.com` | |
-| 3 | | `250 xyz.com is on the air` |
-| 4 | `MAIL FROM:<JQP@bar.com>` | |
-| 5 | | `250 OK` |
-| 6 | `RCPT TO:<Jones@XYZ.COM>` | |
-| 7 | | `250 OK` |
-| 8 | `DATA` | |
-| 9 | | `354 Start mail input` |
-| 10 | headers, body, then dot | |
-| 11 | | `250 OK queued as x91B4C7` |
-| 12 | `QUIT` | |
-| 13 | | `221 closing channel` |
+> *"sequence diagrams start to talk about your **implementation abstractions** which is very useless
+> for someone that's looking at the top level from the business perspective"* — `technologist8`
 
-Outcome is relative to the actor. Path 1 is a complete success for the server, **partial** for the
-sender, and a failure for `Green`. Path 2 succeeds for everyone. `Reset` — slice 10 — remains the
-only slice no path has touched.
+This document's own header says *no branching*. Importing the notation he rejects, for the
+properties he rejects it for, was inconsistent — so the sequence diagrams that stood here are gone
+rather than converted.
+
+| Path | Shape |
+|:--|:--|
+| [`helo-multi-recipient.md`](../paths/helo-multi-recipient.md) | Three recipients, one rejected mid-flow with 🟥 `550`. Complete success for the server, **partial** for the sender, failure for `Green` — outcome is relative to the actor. |
+| [`helo-single-recipient.md`](../paths/helo-single-recipient.md) | One recipient, no errors. Succeeds for everyone. |
+
+`Reset` is the only slice no path has touched — the gap a third path, D.2, would close.

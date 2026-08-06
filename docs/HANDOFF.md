@@ -194,8 +194,7 @@ block
 
 ### Other pending work
 
-- **Third path — D.2, aborted transaction.** `Reset` (slice 10) is the only slice no path has
-  touched. Both existing paths are RFC-derived; D.2 covers the gap.
+- **Third path — D.2, aborted transaction.** `Reset` is the only slice no path has touched. Both existing paths are RFC-derived; D.2 covers the gap.
 - **research: `PR-HANDOFF-eventmodelers-kit.md`** — ⏳ a two-line upstream fix to
   `Nebulit-GmbH/Eventmodelers-Build-Kits`, verified and ready, never submitted. Self-contained
   runbook; **re-verify first**, it may already be fixed.
@@ -293,7 +292,12 @@ Conventions that matter more than they look:
 6. **Walk paths with real data.** Two payload defects, an orphan field, and H3's resolution all
    came from instantiating the model, not reading it. A clean path confirms; a messy one discovers.
 7. **Commit messages carry the reasoning.** They are long here on purpose.
-8. **Nothing third-party enters this repo.** Cite it, quote it briefly with attribution, link it —
+8. **Refer to slices by name, not number.** Slice numbering is an artifact of the current altitude
+   and scope — change either and the whole sequence renumbers, silently breaking every
+   cross-reference. Position on the timeline already carries order, so the number adds fragility
+   without adding meaning. Counts are fine: "twelve slices" is a fact about the model, "slice 4" is
+   a handle that will move.
+9. **Nothing third-party enters this repo.** Cite it, quote it briefly with attribution, link it —
    but the copy lives in the research repo. This is what keeps FnEmail releasable.
 
 ---
