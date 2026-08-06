@@ -1,5 +1,30 @@
 # Experiment — inline styling to carry meaning inside a string
 
+> ## ✅ CLOSED 2026-08-06 — adopted: **mono for fixed, standard for variable**
+>
+> | | | |
+> |:--|:--|:--|
+> | **Wire line** | **W2** | `S: 220` foo.com Simple Mail Transfer Service Ready |
+> | **Payload field** | **P2** | `claimed_domain`: bar.com |
+>
+> **Monospace marks what the protocol fixes** — reply codes, verbs, field names. **Standard font
+> marks what varies** — operator config, client arguments, instance values.
+>
+> Three reasons it won, over twenty-nine other combinations:
+>
+> - **The required parts stay visible and distinguishable**, which is what monospace is for.
+> - **The variable parts become easier to read**, because a proportional font is easier to read, and
+>   those are the parts a reader actually scans.
+> - **Values are easy to select.** A value in standard font outside a code span is ordinary text to
+>   a reader and to a mouse.
+>
+> It uses **one axis** — font family — and never touches weight or slant, so it sits clear of the
+> two techniques that failed: bold does not apply to monospace in the app, and italic was unwanted
+> on values. **Values carry no quotation marks.**
+>
+> Everything below is the working that led here, kept per rule 4.
+
+
 Third in the series, after [`EXPERIMENT-block-labels.md`](EXPERIMENT-block-labels.md) (Mermaid
 label syntax, superseded) and [`EXPERIMENT-text-color.md`](EXPERIMENT-text-color.md) (color, closed
 — chips won). Same method: try every candidate, open it in **both** renderers, keep only what

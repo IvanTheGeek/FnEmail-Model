@@ -103,6 +103,13 @@ because it is a font problem rather than a markup one — no markup change can f
 caution applies to the ellipsis, em dash and middot inside a block where columns must line up; they are fine in
 prose. Tested in [`docs/diagrams/EXPERIMENT-inline-styling.md`](docs/diagrams/EXPERIMENT-inline-styling.md).
 
+**Monospace marks what the protocol fixes; standard font marks what varies.** `S: 220` foo.com
+Simple Mail Transfer Service Ready — the reply code is monospace, the operator-configurable text is
+not. `claimed_domain`: bar.com — the field name is monospace, the instance value is not. One axis,
+font family, never weight or slant. **Values carry no quotation marks.** Settled empirically in
+[`docs/diagrams/EXPERIMENT-inline-styling.md`](docs/diagrams/EXPERIMENT-inline-styling.md) against
+thirty alternatives.
+
 **Bold does not apply to monospace in the Claude app.** ``**`code`**`` renders at normal weight
 there and bold on GitHub; `<code><b>` fails too, because the app strips `<code>`. There is no third
 route, so **monospace text cannot be bolded** for a reader on the app. Italic on a code span *does*
