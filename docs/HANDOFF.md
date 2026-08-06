@@ -20,18 +20,30 @@ The author is building this for himself and intends to release it freely.
 
 ## 2. Get set up
 
-```bash
-cd /home/ivan/FnEmail
-git fetch origin
-git checkout claude/github-access-v08b5c     # ← all work is on this branch, not main
-git pull
-```
-
-**Reference repo** — private, holds material that must not be committed to FnEmail:
+**Nothing is on disk yet.** Clone both repos from GitHub.
 
 ```bash
-git clone https://github.com/ivanthegeek/reference ~/reference
+# 1. The project. All work is on this branch — main is empty.
+cd /home/ivan/FnEmail            # existing empty directory
+git clone -b claude/github-access-v08b5c https://github.com/IvanTheGeek/FnEmail.git .
+
+# 2. The reference material — PRIVATE, needs auth
+git clone https://github.com/ivanthegeek/reference.git ~/reference
 ```
+
+If the reference clone prompts or 404s, it is a private repo — authenticate first
+(`gh auth login`, or use SSH: `git@github.com:ivanthegeek/reference.git`). A 404 on a private repo
+means *not authenticated*, not *does not exist*.
+
+Verify:
+
+```bash
+git -C /home/ivan/FnEmail branch --show-current   # → claude/github-access-v08b5c
+ls /home/ivan/FnEmail/docs                        # → event-model.md, research/, paths/, diagrams/…
+ls ~/reference                                    # → 5 files, ~10 MB
+```
+
+⚠️ **Never commit anything from `~/reference` into FnEmail.** It holds two commercial works.
 
 | File | What it is |
 |---|---|
