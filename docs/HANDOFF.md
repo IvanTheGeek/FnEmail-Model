@@ -163,7 +163,7 @@ block
 | **H1** | Does `DataPhaseEntered` earn its place? Only candidate consumer is the transcript rendering `354` |
 | **H2** | Are protocol errors events? `RecipientRejected` is; a `503` is not |
 | **H4** | Stream boundaries — session, transaction, or message? **Most likely to force a restructure** |
-| **H5** | Is `AcceptConnection` a domain fact or infrastructure noise? |
+| **H5** | ~~Domain fact or infrastructure noise?~~ **Classification settled 2026-08-06** — *infrastructure in shape, admitted by consumer*, and **Product** tier, not domain: §4.4's address literal is SHOULD, not MUST. What remains is the product decision, which is H7's decision. See `event-model.md` → H5 |
 | **H6** | Is `Received:`'s `BY` from config or `local_address`? Decides whether `local_address` is an orphan |
 | **H7** | Does FnEmail ever refuse mail entirely (RFC 7504 `521`)? A product question |
 

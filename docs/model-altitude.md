@@ -202,7 +202,7 @@ transcript, `SessionState` / `TransactionState`, and the queue handoff at `Messa
 
 | Event | Tier | Decided by | Survives implementation swap? |
 |---|---|---|---|
-| `ConnectionAccepted` | **Domain** (fragile) | G1 via `peer_address` | Yes — one field only |
+| `ConnectionAccepted` | **Product** ⚠️ *was "Domain (fragile)"* | G1 via `peer_address`; **G3 → product**, §4.4's address literal is SHOULD | Yes — one field only |
 | `ClientIdentified` | **Domain** | G2, G4 | Yes |
 | `MailTransactionStarted` | **Domain** | G2, G4 | Yes |
 | `RecipientAccepted` | **Domain** | G2, G4 | Yes |
@@ -220,11 +220,31 @@ event in the operating system's sense. It is in the model for exactly one reason
 
 > "Exists to carry `peer_address`, which the `Received:` header requires and nothing else supplies."
 
-G1 passes because §4.4 mandates the `FROM` address literal, which is permanent output on the
-message. **This is the whole argument, and it should be written that way in the model.** It
-resolves H5: not "domain fact or infrastructure noise" as a matter of judgement, but *infrastructure
-in shape, domain by consumer*. If the `Received:` requirement vanished, the event would go the way
-of `ServiceGreetingSent`.
+G1 passes because the `Received:` FROM clause consumes the address literal, which is permanent
+output on the message. It resolves H5: not "domain fact or infrastructure noise" as a matter of
+judgement, but *infrastructure in shape, **admitted by consumer***. If the `Received:` requirement
+vanished, the event would go the way of `ServiceGreetingSent`.
+
+> ⚠️ **Corrected 2026-08-06 — "mandates" was wrong, and the tier moves.** This paragraph read
+> *"§4.4 mandates the FROM address literal"*, which would make `peer_address` domain by G3. The
+> clause does not say that:
+>
+> > *"The FROM clause, which **MUST** be supplied in an SMTP environment, **SHOULD** contain both
+> > (1) the name of the source host as presented in the EHLO command and (2) an address literal
+> > containing the IP address of the source, determined from the TCP connection."*
+>
+> **The clause is MUST; its contents are SHOULD.** A server supplying a FROM clause with only the
+> EHLO name is conformant. G3 is explicit — *MUST → domain, MAY/SHOULD → product* — so
+> `ConnectionAccepted` is **Product**, and the table above is corrected.
+>
+> **This is why it read as fragile.** It was not fragile domain; it was product misfiled as domain,
+> and product facts are expected to churn. The discomfort the "(fragile)" annotation recorded was
+> the misclassification itself.
+>
+> Note also where the RFC names TCP. It says *transmission channel* throughout and abstracts the
+> transport — except in this clause, *"determined from the **TCP connection**."* The one place the
+> specification names the transport is the one place this model admits a transport fact. The full
+> argument now lives in `event-model.md` under H5, which is what this paragraph asked for.
 
 `local_address` (H6) fails G1 today — infrastructure until multi-homing gives it a destination.
 Correctly flagged rather than kept on faith.

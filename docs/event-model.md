@@ -163,6 +163,8 @@ Post   ConnectionAccepted{peer_address, local_address}
        OR  reply 554, no event
 ```
 Exists to carry `peer_address`, which the `Received:` header requires and nothing else supplies.
+That one sentence is the whole justification for the slice, and it is worth spelling out, because
+the shape of the argument is not the shape of the answer — see **H5** below.
 
 **`554` here is correct, and must not be "upgraded" to `521`.** RFC 7504 §3 reserves `521` for a
 host that *"does not accept mail under any circumstances"* — a dummy server whose only job is to
@@ -465,8 +467,55 @@ Note the shape of the rule: RFC 7504 hard-lines *when* `521` is used, then leave
 the operator — after `521` the server **MAY** keep replying `521` or **MAY** just close the
 connection. A normative frame with an operator choice inside it.
 
-**H5 — `AcceptConnection` altitude.** Domain fact or infrastructure noise? It carries
-`peer_address`, which `Received:` needs — that is the argument, not an assumption.
+**H5 — `AcceptConnection` altitude.** *Domain fact or infrastructure noise?* The question is
+malformed, and answering it properly reclassifies the event.
+
+**A TCP accept is infrastructure by G4.** It survives no reimplementation as a *fact* — only as an
+event in the operating system's sense. Nothing about accepting a connection is about being a
+conformant mail server; it is about how we happen to run one. On shape alone it does not belong.
+
+**It is in the model for exactly one reason: `peer_address` has a destination.** RFC 5321 §4.4
+requires trace information, and its FROM clause is where the address literal goes. That is **G1**,
+destination — and G1 is unforgiving enough that it already deleted `ServiceGreetingSent`. **If the
+`Received:` requirement vanished, this event goes the same way.**
+
+So the answer is not a judgement call between two labels. It is:
+
+> **Infrastructure in shape, admitted by consumer.**
+
+⚠️ **Corrected 2026-08-06 — and the correction changes the tier.** An earlier reading had §4.4
+*mandating* the address literal, which would make `peer_address` domain by **G3**. It does not.
+Read the clause precisely:
+
+> *"The FROM clause, which **MUST** be supplied in an SMTP environment, **SHOULD** contain both
+> (1) the name of the source host as presented in the EHLO command and (2) an address literal
+> containing the IP address of the source, determined from the TCP connection."*
+
+**The clause is MUST; its contents are SHOULD.** A server that supplies a FROM clause carrying only
+the EHLO name is conformant. By G3 — *MUST → domain, MAY/SHOULD → product* — `peer_address` is
+therefore **product, not domain**, and `ConnectionAccepted` is a **Product-tier** event rather than
+the "Domain (fragile)" it is classified as in `model-altitude.md` §3.
+
+**That explains the fragility.** The model kept flagging this event as uncomfortable while calling
+it domain. It was not fragile domain; it was product misfiled as domain. Product facts are expected
+to churn, which is exactly the instability that kept being noticed.
+
+**One detail is not a coincidence.** RFC 5321 says *transmission channel* throughout and abstracts
+the transport — except here, where it says the address literal is *"determined from the **TCP
+connection**."* The single place the specification names the transport is the single place this
+model admits a transport fact. The RFC is marking where the layer boundary leaks, and the model
+followed it without knowing that was why.
+
+**What remains open.** Not the classification, which is now settled, but the consequence: as a
+product fact `peer_address` may be dropped by a conformant reimplementation, and if it were, this
+slice would carry nothing. Whether FnEmail *commits* to emitting the address literal is a product
+decision nobody has made — and it is the same decision as **H7**. If FnEmail ever refuses at
+connection level, that refusal is a product rule that needs `peer_address`, and both hotspots close
+together. If it never refuses, this event survives on a SHOULD alone.
+
+**Transport itself stays unmodeled.** Not black-boxed — there is no stream standing in for it —
+simply outside the charter. One fact is lifted across the boundary because something inside
+consumes it. `local_address` is the control: same origin, no consumer, orphaned (**H6**).
 
 ---
 
