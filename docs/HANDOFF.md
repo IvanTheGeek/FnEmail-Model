@@ -85,7 +85,7 @@ Start in the research repo, then come back here.
 | `docs/model-altitude.md` | FnEmail | What belongs in this model at all — charter, gate sequence, four tiers |
 | `research/model-altitude-theory.md` | research | The corpus theory behind it, and the vocabulary investigation |
 | `docs/paths/` | FnEmail | Two worked paths with real data |
-| `docs/diagrams/README.md` | FnEmail | Mermaid renderings |
+| `docs/diagrams/README.md` | FnEmail | The model as tables — renders on GitHub *and* Android |
 | `docs/event-model-extensions.md` | FnEmail | The author's extension ideas — **parked, deliberately not applied** |
 | `research/CORRECTIONS-v0.1.md` | research | 20 ways the first draft misapplied the method |
 
@@ -107,7 +107,7 @@ anything** — three of five mirrored repos carry no license.
 | **Context and concern** are the only independent axes; altitude falls out of the charter | research: `model-altitude-theory.md` §2.0b–c |
 | **H3 resolved** — Directory is a separate context, joined by orthodox Translation | `event-model.md` |
 | **Golden path deliberately unassigned** — *happy* is descriptive, *golden* is a designation | `paths/helo-multi-recipient.md` |
-| **Mermaid label vocabulary** — settled empirically | `diagrams/EXPERIMENT-block-labels.md` |
+| ~~**Mermaid label vocabulary**~~ — **superseded 2026-08-06**, diagrams are now tables | `diagrams/README.md` → *Why tables* |
 | **The method research is a separate repo** — FnEmail uses Event Modeling, is not about it | §1 above |
 
 > ⚠️ **The "no arrows" decision needs a caveat, added 2026-08-06.** It stands as a *diagramming*

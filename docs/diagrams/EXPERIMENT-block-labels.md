@@ -1,5 +1,11 @@
 # Experiment — what block labels can do
 
+> ⚠️ **Superseded 2026-08-06 — kept as the record, not as guidance.** The diagrams are markdown
+> tables now; Mermaid was dropped because it needs a diagram engine the Android app does not have,
+> and the blocks were already tabular. Everything below about Mermaid label syntax remains true of
+> Mermaid and is no longer used here. The replacement vocabulary, tested the same empirical way, is
+> in [`README.md`](README.md) → *Why tables*.
+
 Empirical tests of mermaid `block` label formatting, because **the official syntax page documents
 none of it.** Searched the Mermaid 11.16.1 *Block Diagram Syntax* page for `markdown`, `<br`,
 `newline`, `multiline`, `line break`, `backtick` — **zero hits.** It covers `columns`, widths,
