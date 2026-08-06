@@ -64,11 +64,11 @@ fails or diverges between renderers. 🟧 Event · 🟦 Command · 🟩 Read Mod
 
 **No Mermaid.** Diagrams are markdown tables — it needs a diagram engine the Android app lacks.
 
-**ASCII art uses printable ASCII only — `| - + / \ ^ _`.** Box-drawing characters (`\u2500`–`\u257F`)
+**ASCII art uses printable ASCII only — `| - + / \ ^ _`.** Box-drawing characters (**U+2500 to U+257F**)
 are **not in most monospace fonts**, so they fall back to a substitute at a different advance width
 and the alignment collapses. It aligns on a desktop and breaks on a phone in **both** renderers,
 because it is a font problem rather than a markup one — no markup change can fix it. The same
-caution applies to `\u2026`, `\u2014` and `\u00B7` inside a block where columns must line up; they are fine in
+caution applies to the ellipsis, em dash and middot inside a block where columns must line up; they are fine in
 prose. Tested in [`docs/diagrams/EXPERIMENT-inline-styling.md`](docs/diagrams/EXPERIMENT-inline-styling.md).
 
 **Refer to slices by name, never by number.** Numbering is an artifact of the current altitude and
