@@ -24,13 +24,22 @@ Check both:
 
 ```bash
 # files
-grep -rniE '(colour|behaviour|honour|centre|modelling|labell|maths|whilst)\w*|(organis|sanitis|recognis|generalis|prioritis|summaris|apologis)(e|es|ed|ing|ation|er)|(analyse|analysed|analysing)' --include='*.md' .
+grep -rniE '\b(colour|behaviour|honour|centre|modelling|labell|maths|whilst)\w*|\b(organis|sanitis|recognis|generalis|prioritis|summaris|apologis)(e|es|ed|ing|ation|er)\b|\b(analyse|analysed|analysing)\b' --include='*.md' .
 
 # commit messages, before you write the next one
-git log -n 20 --format='%B' | grep -niE '(colour|behaviour|honour|centre|modelling|labell|maths|whilst)\w*|(organis|sanitis|recognis|generalis|prioritis|summaris|apologis)(e|es|ed|ing|ation|er)|(analyse|analysed|analysing)'
+git log -n 20 --format='%B' | grep -niE '\b(colour|behaviour|honour|centre|modelling|labell|maths|whilst)\w*|\b(organis|sanitis|recognis|generalis|prioritis|summaris|apologis)(e|es|ed|ing|ation|er)\b|\b(analyse|analysed|analysing)\b'
 ```
 
-⚠️ **The pattern is tested, not guessed.** Two earlier versions were wrong in opposite directions:
+⚠️ **The pattern is tested by running it, not by reading it.** Three earlier versions were wrong,
+each in a different way, and the third was invisible: a script wrote `\b` through a non-raw Python
+string, so **literal backspace bytes (0x08)** landed in the file where the word boundaries should
+have been. The pattern then matched *nothing at all* — which reads as "no false positives" unless
+you also check that it still catches the true ones. `cat -A` was needed to see it.
+
+**Test both directions, always.** A pattern that catches nothing looks exactly like a pattern that
+is working, if you only test the negatives.
+
+The other two were wrong in opposite directions:
 bare stems matched **analysis** and **analyses**, which are correct US spellings, and the fix then
 missed **generalises** because it did not allow the third-person `-es`. It also must not fire on
 *advertise, surprise, exercise, compromise* — US English uses `-ise` for those. Verify any change
