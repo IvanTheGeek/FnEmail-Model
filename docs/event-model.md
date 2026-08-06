@@ -101,11 +101,11 @@ So the remote client is an ordinary **actor role**, and roles get screens. Each 
 a command screen: the prior reply as displayed context, and the line the actor sends.
 
 ```
-┌──────────────────────────┐   ┌──────────────────────────┐
-│ 250 foo.com              │   │ 250 OK                   │
-│ > MAIL FROM:<Smith@bar…> │   │ > RCPT TO:<Jones@foo.com>│
-└──────────────────────────┘   └──────────────────────────┘
-        MailFrom slice                 RcptTo slice
++-----------------------------+   +---------------------------+
+| 250 foo.com                 |   | 250 OK                    |
+| > MAIL FROM:<Smith@bar.com> |   | > RCPT TO:<Jones@foo.com> |
++-----------------------------+   +---------------------------+
+         MailFrom slice                    RcptTo slice
 ```
 
 Cheap to draw, which matters — *"Drawing a screen must not take longer than 2 minutes."* One screen

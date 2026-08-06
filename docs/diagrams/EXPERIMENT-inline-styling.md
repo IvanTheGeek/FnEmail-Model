@@ -23,14 +23,33 @@ A wire line is not one thing. It has parts, and they come from different places:
 
 ```
 220 foo.com Simple Mail Transfer Service Ready
-└┬┘ └──────────────────┬──────────────────────┘
- │                     │
- │                     └─ ours. An operator sets this in config and could set it
- │                        to anything. RFC 5321 §4.2 fixes the code, not the text.
- │
- └─ the protocol's. RFC 5321 mandates 220 for a service greeting. Change it and
-    the server stops being conformant.
+|   |
+|   +-- ours. An operator sets this in config and could set it to
+|       anything. RFC 5321 section 4.2 fixes the code, not the text.
+|
++-- the protocol's. RFC 5321 mandates 220 for a service greeting.
+    Change it and the server stops being conformant.
 ```
+
+> ⚠️ **The diagram above was redrawn in pure ASCII on 2026-08-06, and the reason is a finding.**
+>
+> It originally used box-drawing characters — `└ ┬ ┘ ─ │`. Those **are not in most monospace
+> fonts**, so they are substituted from a fallback font at a different advance width. The Latin
+> text stays monospace, the box glyphs do not match it, and the alignment collapses.
+>
+> | | box-drawing | pure ASCII |
+> |:--|:--|:--|
+> | GitHub, desktop | ✅ aligned | ✅ |
+> | GitHub, Android browser | ❌ **misaligned** | ✅ |
+> | Claude Android app | ❌ **misaligned** | ✅ |
+>
+> **This is a font problem, not a markdown one**, which is why it is device-dependent rather than
+> renderer-dependent — the same page aligns on a laptop and breaks on a phone in *both* renderers.
+> A markup fix cannot help; only changing the characters can.
+>
+> **Rule: ASCII art uses only `| - + / \ ^ _` and the printable ASCII range.** Nothing above U+007F
+> inside a block where columns have to line up. The same caution applies to `…`, `—` and `·` — fine
+> in prose, unsafe where alignment matters.
 
 Rendered as one undifferentiated `code` span, those two facts look identical — and they are not.
 **This is the domain/product split from `../model-altitude.md` §2.3 appearing inside a single
