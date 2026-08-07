@@ -14,7 +14,17 @@ label and the line it names are not level.
 | Renderer | Version |
 |:--|:--|
 | **Claude Android app** | fill in at time of test — the app updates independently of this repository |
+| **Claude Code desktop app** | fill in at time of test |
 | **GitHub** | web renderer, viewed in Chrome on Android and on desktop; predictions cross-checked against the `POST /markdown` API |
+
+⚠️ **There are three renderers, not two.** Every experiment in this directory before 2026-08-07 was
+recorded in two columns, GitHub and *the Claude app*, on the assumption that inlining something into
+chat tested one thing. Variant C below shows it tests **two**, and they disagree: the Android app
+**strips** raw HTML and runs the pieces together, while the Claude Code desktop app **prints the
+tags as literal text**. Both fail, so no earlier verdict is overturned — every technique adopted so
+far is pure markdown, which all three handle. But the earlier results were recorded against a
+renderer set that was one short, and *"tested in the app"* is from here on an ambiguous claim.
+**Say which app.**
 
 ---
 
@@ -156,16 +166,45 @@ Event
 
 Fill in from both renderers. A technique needs **two ✅** to be usable.
 
-| # | Technique | Renders as a table&#10;<br>GitHub / app | Top-aligned&#10;<br>GitHub / app | Monospace kept&#10;<br>GitHub / app | Usable? |
-|:--|:--|:--|:--|:--|:--|
-| A | markdown, no technique | ✅ / | ❌ *by design* / | ✅ / | control |
-| B | markdown + padding | ✅ / | ✅ *at one width* / | ✅ / | |
-| C | raw HTML, minimal | ✅ / | ❌ *none asked for* / | ✅ / | |
-| D | raw HTML + `valign` | ✅ / | ✅ / | ✅ / | |
-| E | raw HTML + `valign` + blank lines | ✅ / | ✅ / | ✅ / | |
+Three columns, because there are three renderers. A technique needs all three.
 
-The GitHub column is filled in from the `POST /markdown` API and should be confirmed by eye. **The
-app column is the one that decides**, and it is the column that was filled in wrongly last time.
+| # | Technique | GitHub | Claude Android | Claude Code desktop | Usable? |
+|:--|:--|:--|:--|:--|:--|
+| A | markdown, no technique | ✅ table | ✅ table | ✅ table | **control** — no top alignment |
+| B | markdown + padding | ✅ | | | |
+| C | raw HTML, minimal | ✅ table | ❌ **tags stripped, cells fused** | ❌ **tags printed literally** | ❌ |
+| D | raw HTML + `valign` | ✅ table, `valign` kept | ❌ *unreachable* | ❌ *unreachable* | ❌ |
+| E | raw HTML + `valign` + blank lines | ✅ table, markdown live | ❌ *unreachable* | ❌ *unreachable* | ❌ |
+
+**C settles D and E without their being run.** All three use the same table elements, and both Claude
+renderers refuse those elements — so no attribute or blank-line arrangement inside them can be
+reached. Marked unreachable rather than untested, because running them would only re-demonstrate C.
+
+### What C actually did, 2026-08-07
+
+**Android — the tags are consumed and the cell contents run together.** No grid, no rows. Every cell
+boundary closed up with **no separator at all**, fusing words across it: *Step 1AcceptConnection*,
+*MTA Client*⬛, *ReadyAcceptConnection*, *AcceptConnectionEvent*. This is the silent-fusion failure
+mode already on record for the lone `<br>`, and it is the worst kind — the output is plausible prose,
+so nothing announces that a table was lost.
+
+**Claude Code desktop — the opposite.** The markup is not interpreted and not stripped; it is
+**printed**, tags and all, so the reader sees `<tr><td>` in the body text. That fails loudly, which
+is much the better failure, but it fails.
+
+Two incidental results from the Android render, both worth keeping:
+
+- **`<b>` survives and `<code>` does not.** *AcceptConnection* and *ConnectionAccepted* came through
+  bold while `220` came through in the body font. That is consistent with the `<code>`-stripping
+  already recorded in rule 5, and it locates the behavior in an element allowlist rather than in
+  anything about tables.
+- **A bare `<br>` produced real line breaks here**, putting `peer_address` and `local_address` on
+  their own lines — inside a raw HTML block, with no `&#10;`. Rule 5 records the opposite for a
+  **markdown table cell**, and that rule is not overturned by this: the two are different contexts
+  and the rule was tested in its own. ⚠️ But it is now an open question rather than a settled one,
+  and it matters, because if the app honored `<br>` in both places then `&#10;<br>` would be
+  producing *two* breaks in every step table. It does not appear to. **Test both contexts directly
+  before touching rule 5.**
 
 ---
 
