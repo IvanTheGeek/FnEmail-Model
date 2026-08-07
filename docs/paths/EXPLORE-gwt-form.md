@@ -263,14 +263,32 @@ where the spec is visible below; in a scrolling document the jump is much longer
 | **V13** delta | none | **✓** | ✓ | ✓ | **witness account** |
 | **V14** legend | none | ✓ | ✓ | reader jumps | *"a big number one"* |
 
-**Three questions the choice actually turns on**, none of which is about looks:
+**Three questions the choice actually turns on**, none of which is about looks. Answered
+2026-08-07 — two settled, one open.
 
-1. **Does a step get one scenario or many?** Today each step shows the single scenario this walk
-   takes. If a step should carry all 5–20 of its handler's scenarios, V1–V5 are ruled out by size
-   alone and only V8, V12 or V13 survive.
-2. **Does the spec belong to the step or to the slice?** A slice appears in several paths. Its
-   scenarios are properties of the *slice*, so repeating them in every path duplicates them — which
-   argues for V14, or for specs living in `event-model.md` and paths citing them.
-3. **Is the walk itself already a timeline?** V12 is Dymitruk's form, but our ten steps *are* one
-   ordered walk. A per-step timeline would restate the walk inside itself. V13 avoids that by only
-   ever showing the delta.
+1. **Does a step get one scenario or many?** ⚠️ **Open, leaning few.** The inclination is that a step
+   carries only what is at hand for *that* walk — its own data, examples and specifications — rather
+   than the full set belonging to the handler. If that holds, the 5-to-20 figure never lands on a
+   step at all and V1–V5 are not ruled out by size.
+2. **Does the spec belong to the step or to the slice?** ✅ **Both, in one direction.** The step
+   carries its local set; those sets are then combined and deduplicated across every walk, and that
+   union *is* the slice. So a specification is authored at the step and **accumulates** at the slice.
+   Nothing is duplicated, because the slice's set is derived rather than copied — see
+   `../HANDOFF.md` §1, *Paths are the source; slices are derived*.
+3. **Is the walk itself already a timeline?** ✅ **Yes.** Which weakens V12: a per-step timeline
+   would restate inside one step the ordering the ten steps already express. V13 survives the
+   objection because it only ever writes the **delta**, never the accumulated history.
+
+⚠️ **A distinction not to lose here.** A walk being a timeline does *not* make it a workflow. They
+are held as different concepts — a walk is one traversal with real values, a workflow is a named
+region of the model, and one walk crosses several. Untested, and flagged rather than assumed.
+
+---
+
+## What this is really deciding
+
+**The markdown is a prototype of generated output.** The long-run intent is that these documents are
+emitted by a modeling tool rather than written by hand, so the question is not *which form is
+pleasant to type* but **which form is right to read** — the typing cost disappears when a generator
+does it. A form that is tedious by hand and correct on the page beats a form that is quick to write
+and ambiguous. See `../HANDOFF.md` §1.

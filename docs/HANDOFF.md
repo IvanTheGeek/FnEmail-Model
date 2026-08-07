@@ -17,6 +17,58 @@ narrow, so the method is exercised properly before the surface grows.
 
 The author is building this for himself and intends to release it freely.
 
+### It serves two purposes, and the second one explains the first
+
+**FnEmail is a real product, and simultaneously the test bed for a modeling tool the author intends
+to build.** Both are real; neither is a pretext. That is why the documents get worked to a degree a
+single SMTP server would never justify — the markdown is a **prototype of generated output**.
+
+**The long-run intent is that the markdown model and its diagrams are *generated*, not
+handcrafted.** Everything being settled by hand right now — the step form, the styling convention,
+where a specification attaches — is deciding **what the generator should emit**. A form that is
+merely tolerable to write by hand but wrong to read is the wrong answer; a form that is tedious by
+hand but right to read is the right one, because the tedium disappears when a tool emits it.
+
+The tool is also expected to be **more advanced in how it relates elements to each other** than
+markdown can express. So where a relationship cannot be represented here, the correct response is to
+record the relationship and accept the flat rendering — not to abandon the relationship.
+
+⚠️ **Do not read this as license to over-build.** The author's instruction on 2026-08-07 was to get
+the basics working first and refine placement later. The two purposes justify care about *form*;
+they do not justify inventing structure ahead of need.
+
+### Paths are the source; slices are derived
+
+Recorded 2026-08-07, and it inverts the obvious reading of this repository.
+
+`event-model.md` looks like the definition and the paths look like instances of it. **The intended
+flow of authority is the opposite.** A step in a path carries only what is at hand for that walk —
+its own concrete data, its own examples, its own specifications. Those per-step sets are then
+**combined and deduplicated across every walk**, and *that* union is the slice: the slice holds the
+composition of every step that traversed it, for which real data exists.
+
+Two consequences worth stating plainly:
+
+- **A slice's specification set is a result, not an input.** It cannot be complete until enough
+  paths have been walked, which is why `Reset` remains uncovered and why that matters — an untouched
+  slice has no evidence behind it at all.
+- **This is rule 8 as an architecture** rather than as advice. Walking with real data is not merely
+  how defects get found; it is how the model gets *populated*.
+
+### A walk is not a workflow
+
+They look alike and are different concepts, and conflating them would be easy.
+
+| | |
+|:--|:--|
+| **Walk** (a path document) | one concrete traversal, in time order, carrying real values |
+| **Workflow** (the bars across a model) | a named region of the model, grouping slices structurally |
+
+**A single walk crosses several workflows**, and a workflow contains slices a given walk never
+touches. The ten steps of `helo-direct-single-recipient.md` would sit across roughly four workflows;
+`Reset` sits inside one that no walk has entered. Held as *probably* distinct — the author flagged
+the possibility that they converge, and nothing has tested it.
+
 ### Two repositories, and why
 
 **FnEmail uses Event Modeling but is not about it.** As of 2026-08-06 the method research lives in
