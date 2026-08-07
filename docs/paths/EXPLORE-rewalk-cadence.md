@@ -276,6 +276,47 @@ render each reply, not because anything in the charter needs them. That is model
 and rule 10's whole point is that orthodoxy stays measurable only if extensions are not folded in
 quietly.
 
+> ### ⚠️ Withdrawn 2026-08-07 — the RFC says these are required
+>
+> **That objection is wrong, and the RFC overturns it in the strongest available terms.** Raised by
+> Ivan with a role-reversal argument: flip the roles, and as an SMTP *client* we **cannot issue the
+> next command until we have received and read the reply**. The reply is not decoration around a
+> command; it is a value the next step depends on.
+>
+> **RFC 5321 §4.3.1, *Sequencing Overview*** — read rather than recalled:
+>
+> > *"The communication between the sender and receiver is an **alternating dialogue**, controlled by
+> > the sender. As such, the sender issues a command and the receiver responds with a reply. Unless
+> > other arrangements are negotiated through service extensions, the sender **MUST wait for this
+> > response before sending further commands**."*
+>
+> Three things fall out, and the first is the one that matters most.
+>
+> **The specification calls SMTP an *alternating dialogue*.** The command/view cadence was not
+> imported from Event Modeling and imposed on this protocol — **it is the protocol's own
+> description of itself.** The section is titled *Sequencing of Commands and Replies*. A form that
+> alternates command and view is not a rhythm being imposed; it is the shape of the thing.
+>
+> **The reply is a MUST, not a courtesy.** A client that does not wait is non-conforming. So a
+> read model behind each reply is not a slice invented to fill a slot — it is the state that a
+> **mandatory** synchronization point publishes. Under the completeness check, an output the
+> protocol requires must have an origin, and four of ours had none.
+>
+> **And the escape clause does not apply to us.** *"Unless other arrangements are negotiated through
+> service extensions"* is `PIPELINING`, RFC 2920, referenced at line 443. FnEmail's charter is
+> `HELO`-only with **no ESMTP**, so nothing can ever be negotiated and **the MUST holds
+> unconditionally within this scope**.
+>
+> ⚠️ **One genuine asymmetry survives, and it weakens exactly one of the four.** The greeting is
+> a **SHOULD**: *"The sender SHOULD wait for this greeting message before sending any commands."*
+> Every other reply is a MUST. So `ServiceReady` rests on weaker ground than `DataPrompt`,
+> `MessageQueued` and `SessionClosing` — and this project has been caught once already treating a
+> SHOULD as a MUST, which reclassified a whole event when corrected.
+>
+> **What remains of the objection:** not that the four are invented, but that naming them here is
+> still premature. *That* they must exist is now established. *What they are called, and whether
+> some collapse into one lifecycle view, is not.*
+
 **Fifteen steps is a worse read than ten.** A walk is for showing someone the model for the first
 time. Half the steps now say *and then the server replied*, which is the least surprising thing in
 SMTP.
