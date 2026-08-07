@@ -241,7 +241,45 @@ model carries it.** It is configuration, which is **H6**, and the re-walk shows 
 of the `Received:` header but a value the protocol emits at the very first and very last thing the
 client ever sees.
 
-### 4. Cadence is per lane, not global
+### 4. ⚠️ The cadence is not doctrine — the corpus prescribes *dependency*, not *sequence*
+
+Asked for verification 2026-08-07 rather than taken on my assertion. **Nothing in the corpus requires
+command and view to alternate.** What it prescribes is narrower and different.
+
+**Slices split by type, and that rule is explicit.** The slicing kit, line 33:
+
+> *"A slice never mixes a COMMAND and a READMODEL — the platform models these as two distinct slice
+> types (`state-change` and `state-view`). If a 'feature' needs both a command and a read model …
+> that's **two slices**, not one."*
+
+**Two of the four patterns are *already* a view followed by a command.** Automation and Translation
+are both composed **read + write**, and Dymitruk specifies an automation as **two** specifications:
+
+> *"The specification for this is always done in 2 parts: The Given-When-Then for creating the
+> to-do list and the Given-When-Then for executing the command."*
+
+So **V → C is not merely allowed, it is a named composition.** Steps 7 and 8 of this walk —
+`RecipientDirectory` then `RcptTo` — are **one Translation**, which is *"an automation whose input
+events belong to someone else's system"*. Step 7 is not a stray view; it is the read half of a
+pattern that has a name.
+
+**And slices relate by dependency, not by position.** The kit's step 4 is *"Note Dependencies Between
+Slices"*, illustrated as *"`OrderDetailView` depends on `PlaceOrder`'s `OrderPlaced` event"*. That is
+a **graph**, not a sequence — and it is exactly what a `Given` row expresses.
+
+**So the V · V at steps 6 and 7 violates nothing.** It is the end of a State View meeting the start
+of a Translation: two patterns adjacent, which the corpus neither forbids nor discusses.
+
+⚠️ **Scope of this check.** Searched the method reference and the slicing kit — the two places an
+ordering rule would live. **Not an exhaustive sweep**, so this is *no rule found where a rule would
+be*, not *proven absent*.
+
+⚠️ **And the alternation is an observation of this protocol, not of the method.** RFC 5321 §4.3.1
+calls SMTP an *"alternating dialogue"*. That is why this walk alternates. **The regularity comes from
+SMTP, not from Event Modeling** — which is the opposite of what I implied when I first wrote the
+cadence up as though the method demanded it.
+
+### 4b. Cadence is per lane, not global
 
 Steps 6, 7 and 8 run **V · V · C**, which breaks a strict alternation. They do not break the rhythm,
 because the two views are in **different lanes**: step 6 renders to the MTA Client, step 7 is
