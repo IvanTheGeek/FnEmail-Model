@@ -186,6 +186,31 @@ Every payload field shown so far is business data; a query key is not. Three con
 - **It is the first row that reaches outside its own slice for a value.** That may be the strongest
   argument that a `Where` is genuinely a fifth kind of row rather than a variant of `Given`.
 
+> ## ⚠️ Corrected 2026-08-07 — two of those three bullets are wrong
+>
+> **First, the exposure above is the process working, not a defect it uncovered.** The `Where` row
+> forced the correlation key to be named, the model turned out to already carry it as ambient
+> metadata, and no path had ever instantiated one because nothing had needed to. That is a walk doing
+> its job — rule 8 finding the field nobody had instantiated.
+>
+> **"The rows above it" is the wrong frame.** It borrows Dymitruk's *"the given is the previous
+> rows"*, but in his model *rows* means the **progressing timeline** — events that occurred in
+> earlier slices, anywhere in the history — not the physical rows of one table. A `Given` is
+> satisfied by anything that has already happened, however far back.
+>
+> **"The first row that reaches outside its own slice" is backwards.** **Reaching outside the slice
+> is the default.** A `Given` is *by definition* events from previous slices; that is the entire
+> point of it. Every `Given` in every step already does this, so it distinguishes nothing.
+>
+> **And it *can* be answered from the `Given`.** `session_id` is ambient on **every** event, so the
+> events already listed carry it. It is not reaching somewhere unreachable — it reads the envelope
+> rather than the payload.
+>
+> **What a `Where` actually adds is a different *kind* of statement, not a different source.**
+> `Given` **enumerates** — these events happened. `Where` **selects** — of all the times they
+> happened, this session's. One lists, the other filters. That is a better argument for it being a
+> fifth kind of row than anything in the bullets above, and it survives the corrections.
+
 ⚠️ **`Consumed by` has disappeared and that is a loss.** The old form named the slices that read this
 view — `MailFrom`, `RcptTo`, `BeginData`. The new form names only the wire it renders to. Those are
 different facts and the second does not imply the first: `SessionState` renders a `250` reply *and*
