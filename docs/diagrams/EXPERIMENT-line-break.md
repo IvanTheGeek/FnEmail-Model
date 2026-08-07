@@ -121,30 +121,51 @@ Fill in from all three. A token needs **one break in every column** to be usable
 
 | | Token | GitHub | Claude Android | Claude Code desktop | Usable |
 |:--|:--|:--|:--|:--|:--|
-| A | `<br>` | ✅ one | ❌ **none — words FUSE** | | ❌ |
-| B | `&#10;` | ❌ none | ✅ one | | ❌ |
-| C | `&#10;<br>` | ✅ one | ✅ one | ⚠️ extra gap | **candidate** |
-| D | `<br/>` | ✅ one | ❌ **none — words FUSE** | | ❌ |
-| E | `<br>&#10;` | ✅ one | ✅ one | **untested** | **candidate** |
-| F | `&#xA;` | ❌ none | ✅ one | | ❌ |
-| G | `&NewLine;` | ❌ none | ✅ one | | ❌ |
-| J | separate rows | ✅ n/a | ✅ n/a | ✅ n/a | **cannot fail** |
+| A | `<br>` | ✅ one | ❌ **none — words FUSE** | ✅ one | ❌ |
+| B | `&#10;` | ❌ none | ✅ one | ✅ one | ❌ |
+| C | `&#10;<br>` | ✅ one | ✅ one | ⚠️ **two — extra gap** | ❌ |
+| D | `<br/>` | ✅ one | ❌ **none — words FUSE** | ✅ one | ❌ |
+| E | `<br>&#10;` | ✅ one | ✅ one | ⚠️ **two — extra gap** | ❌ |
+| F | `&#xA;` | ❌ none | ✅ one | ✅ one | ❌ |
+| G | `&NewLine;` | ❌ none | ✅ one | ✅ one | ❌ |
+| J | **separate rows** | ✅ | ✅ | ✅ | ✅ **the only one** |
 
-### The phone, tested 2026-08-07
+---
 
-**The 2026-08-06 rule is vindicated, not overturned.** The Android app strips `<br>` exactly as
-recorded, and test A reproduced the original silent failure verbatim: `ONE<br>TWO` rendered as
-**ONETWO**, fused, with no space and nothing to notice. Test I showed the real damage — a three-field
-payload with `<br>` only collapses into an unreadable run-on.
+# ✅ CLOSED 2026-08-07 — **no token works. Use rows.**
 
-Every entity form breaks correctly on the phone and every tag form fails. GitHub is the exact
-inverse. **There is no single token that works in both**, which is why the rule pairs them, and the
-pairing was right.
+**Every single-token candidate fails somewhere, and the failure is structural rather than a matter of
+picking a better token.** The three renderers demand mutually exclusive things:
 
-**Only C and E survive GitHub and the phone together.** They differ only in the order of the two
-halves, and **E has never been tested on the desktop** — if the gap comes from the entity being
-rendered before the tag rather than after, E may not produce it. That is the one cheap thing left to
-try before falling back to J.
+| Renderer | Needs | Ignores |
+|:--|:--|:--|
+| **GitHub** | a **tag** | entities — they emit a literal newline, which HTML collapses to a space |
+| **Claude Android** | an **entity** | tags — stripped, and the words **fuse silently** |
+| **Claude Code desktop** | **either** | nothing — it honors **both**, so any pairing renders **twice** |
+
+GitHub and the phone need opposite things, so a pairing is forced. The desktop honors both halves of
+that pairing, so the pairing is guaranteed to double there. **There is no arrangement of these two
+tokens that yields one break in all three** — and reversing the order does not help, because E gaps
+exactly as C does.
+
+⚠️ **The 2026-08-06 rule was not wrong. It was optimal for the two renderers it knew about**, and it
+remains the best *token* available. It is retired because a token is the wrong instrument, not
+because a better token was found.
+
+**The answer is J: one row per line.** It uses no token, so there is nothing for a renderer to
+interpret differently — this cannot break in any renderer, present or future, which no token-based
+answer can promise.
+
+### What this costs
+
+- **Every stacked payload becomes rows.** A three-field event is four rows, not one.
+- **Multi-line wire rows become rows.** `helo-direct-single-recipient.md` Step 9 has eight wire lines.
+- **Step tables stop being a fixed height**, which was V16's whole argument.
+- ⚠️ **V16 in [`../paths/EXPLORE-gwt-form.md`](../paths/EXPLORE-gwt-form.md) is dead.** It stacks given
+  events inside one cell. **V17 survives unchanged** — it was already one row per event, and it is now
+  the only one of the pair that can be rendered.
+
+The indent (`&nbsp;&nbsp;`) still works and still distinguishes a field line from its event name.
 
 ## Prediction, written before the phone was looked at — ❌ **WRONG**
 

@@ -92,10 +92,22 @@ This applies to your own work in the same session.
 
 ## 5. Markdown conventions
 
-**Line breaks inside a table cell are `&#10;<br>` — both halves, always.** GitHub uses the `<br>`
-and collapses the entity; the Claude Android app strips the `<br>` and uses the entity. A lone
-`<br>` fails **silently and only on a phone**, fusing two words. Tested in
-[`docs/diagrams/EXPERIMENT-text-color.md`](docs/diagrams/EXPERIMENT-text-color.md).
+**Do not break lines inside a table cell. Use one row per line.** No token works, so there is
+nothing to get right — a new row cannot be rendered differently by anything. The indent
+`&nbsp;&nbsp;` still marks a field line as belonging to the event named above it. Settled in
+[`docs/diagrams/EXPERIMENT-line-break.md`](docs/diagrams/EXPERIMENT-line-break.md).
+
+⚠️ **This replaces `&#10;<br>`, which stood from 2026-08-06 and was never wrong — only outvoted by a
+renderer it had not met.** The original rule read: *"Line breaks inside a table cell are `&#10;<br>`
+— both halves, always. GitHub uses the `<br>` and collapses the entity; the Claude Android app
+strips the `<br>` and uses the entity."* Both halves of that are confirmed. What changed is that
+there are **three** renderers, and the third takes both halves and renders **two** breaks.
+
+The three demand mutually exclusive things: GitHub needs a **tag** and ignores entities; the Android
+app needs an **entity** and strips tags, **fusing the words silently**; the desktop app honors
+**either**, so any pairing doubles. GitHub and the phone need opposites, which forces a pairing, and
+the pairing is what the desktop doubles. Reversing the order does not help. **A token is the wrong
+instrument, not the wrong choice of token** — which is why the replacement is structural.
 
 **Color is carried by emoji chips**, not by markup. Every text-coloring alternative was tested and
 fails or diverges between renderers. 🟧 Event · 🟦 Command · 🟩 Read Model · ⬜ rendered UI ·
