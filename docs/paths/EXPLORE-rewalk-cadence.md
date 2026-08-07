@@ -59,14 +59,14 @@ sense; that is exactly the amendment the rule 9 note flags, exercised deliberate
 | | 🟨 **ServiceConfigured** — *ours, before every session; name and shape open — see* Walking backwards *below*&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready |
 | | 🟨 **Directory translation** — *another context's events; H3, deferred*&#10;<br>&nbsp;&nbsp;`is_local`: true&#10;<br>&nbsp;&nbsp;`forward_path` = \<Jones@foo.com> |
 
-Three trial decisions, made so they can be judged:
+Three trial decisions, made so they can be judged — and a ruling that followed:
 
 **No forward pointers.** The block states what must exist and with which values — it does not say
 which steps consume what. That is the `Consumed by` kill applied at path level: consumers declare
 their own dependencies, and a consumption list here would go stale the same way. The first pass
-deliberately left steps 2, 4 and 15 rendering `server_domain` **without declaring it** — one
-change at a time; a second pass the same day added the 🟨 `Given` to all three, so the
-declarations now live where they belong, on the consumers.
+deliberately left steps 2, 4 and 16 rendering `server_domain` **without declaring it** — one
+change at a time; a second pass the same day added the `Given` to all three, so the declarations
+now live where they belong, on the consumers.
 
 **Both kinds of outside are in one block, told apart by annotation.** `ServiceConfigured` is ours
 and merely earlier; the Directory translation is another context's. One chip, two claims — the
@@ -78,6 +78,14 @@ seed** before step 1 can run — the same relationship at two altitudes, the way
 restates a contract's precondition without replacing it. If that reading is wrong, the entry is
 redundant and the block should hold only dependencies no walked step declares — `ServiceConfigured`
 alone. Left in so the trial tests the larger block.
+
+**Ruled by Ivan after the trial ran: the preamble seeds this path's event store, so steps cite
+🟧.** The widened 🟨 never leaves this block — it marks *not walked here*, a claim that exists only
+at path level. Once an event is declared here it is in the store and accessible, and a step's
+`Given` cites it exactly as it cites a walked event: 🟧, unannotated. Step-level 🟨 keeps its
+settled meaning untouched — it appears only where there is **no event of ours**, the Directory
+translation at steps 7 and 8 — which shrinks the rule 9 tension to one block per path instead of
+every step that reads configuration.
 
 ---
 
@@ -104,13 +112,14 @@ not declared.
 |:--|:--|
 | MTA Client | ⬛ `220` foo.com Simple Mail Transfer Service Ready |
 | | 🟩 **ServiceReady**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`accepting`: true |
-| Given | 🟨 **ServiceConfigured** — *preamble*&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready&#10;<br>🟧 **ConnectionAccepted** |
+| Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready&#10;<br>🟧 **ConnectionAccepted** |
 | Where | `session_id` = 01J8Z… |
 
 ⚠️ **No such read model exists.** `server_domain` is configuration, which is **H6**. The greeting
 was previously just text on a command's wire row; giving it a view forced the question of what
-state produced it — and the answer is now declared: the `Given` carries the preamble's
-🟨 **ServiceConfigured**, fields included, per the trial at the top.
+state produced it — and the answer is now declared: the `Given` carries the preamble-seeded
+**ServiceConfigured**, fields included — 🟧, because the preamble puts it in this path's event
+store, per the ruling in the trial block.
 
 | 🟦 C · Step 3 | `Helo` |
 |:--|:--|
@@ -123,7 +132,7 @@ state produced it — and the answer is now declared: the `Given` carries the pr
 |:--|:--|
 | MTA Client | ⬛ `250` foo.com |
 | | 🟩 **SessionState**&#10;<br>&nbsp;&nbsp;`identified`: true&#10;<br>&nbsp;&nbsp;`transaction_open`: false |
-| Given | 🟨 **ServiceConfigured** — *preamble*&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **ConnectionAccepted**&#10;<br>🟧 **ClientIdentified** |
+| Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **ConnectionAccepted**&#10;<br>🟧 **ClientIdentified** |
 | Where | `session_id` = 01J8Z… |
 
 ⚠️ **The reply renders `foo.com` and this view does not carry it.** Was *same gap as step 2*; the
@@ -188,7 +197,27 @@ trial deliberately does not choose.
 | Event | 🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipients`: [\<Jones@foo.com>]&#10;<br>&nbsp;&nbsp;`content_ref`: blob:sha256:9c1e…&#10;<br>&nbsp;&nbsp;`actual_octets`: 194&#10;<br>&nbsp;&nbsp;`received_at`: 1998-05-19T09:14:07-07:00 |
 | Given | 🟧 **DataPhaseEntered** |
 
-| 🟩 V · Step 13 | `MessageQueued` &nbsp;🟥 *not in the model* |
+| 🟩 V · Step 13 | `MessageTrace` &nbsp;🟥 *not in the model — the fifth output, worked in* |
+|:--|:--|
+| Stored message | ⬛ `Received: from` bar.com ([203.0.113.20])&#10;<br>&nbsp;&nbsp;`by` foo.com `with` SMTP&#10;<br>&nbsp;&nbsp;`id` f2C8D14&#10;<br>&nbsp;&nbsp;`for` \<Jones@foo.com>;&#10;<br>&nbsp;&nbsp;Tue, 19 May 1998 09:14:07 -0700 |
+| | 🟩 **MessageTrace**&#10;<br>&nbsp;&nbsp;`from_domain`: bar.com&#10;<br>&nbsp;&nbsp;`address_literal`: 203.0.113.20&#10;<br>&nbsp;&nbsp;`by`: foo.com&#10;<br>&nbsp;&nbsp;`with`: SMTP&#10;<br>&nbsp;&nbsp;`id`: f2C8D14&#10;<br>&nbsp;&nbsp;`for`: \<Jones@foo.com>&#10;<br>&nbsp;&nbsp;`at`: 1998-05-19T09:14:07-07:00 |
+| Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **ConnectionAccepted**&#10;<br>&nbsp;&nbsp;`peer_address`: 203.0.113.20&#10;<br>🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP&#10;<br>🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com>&#10;<br>🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`received_at`: 1998-05-19T09:14:07-07:00 |
+| Where | `queue_id` = f2C8D14 |
+
+**The fifth output, worked into the walk 2026-08-07** — see *The fifth hidden output* below. §4.4's
+MUST fires at receipt, so this sits between the content arriving and the `250` announcing
+acceptance. It takes the second of the two shapes recorded there: **a view whose wire row is the
+stored message, not the socket** — nothing here reaches the MTA Client. Two things are concrete at
+this step and nowhere else:
+
+- **The walk's only `Given` that needs values from a walked event, not existence** — five events,
+  fields stated, including the protocol's sole consumption of `peer_address`.
+- **H6 stops being abstract here.** The `by` clause renders foo.com from `ServiceConfigured` — the
+  config arm. On the multi-homed arm it would render from `ConnectionAccepted.local_address`
+  instead, which is that field's only candidate consumer in this walk. **`local_address` is
+  consumed by no step in this path**; it stays in step 1's payload only because H6 is open.
+
+| 🟩 V · Step 14 | `MessageQueued` &nbsp;🟥 *not in the model* |
 |:--|:--|
 | MTA Client | ⬛ `250` OK |
 | | 🟩 **MessageQueued**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`accepted`: true |
@@ -199,18 +228,18 @@ trial deliberately does not choose.
 we have accepted responsibility for delivering or reporting failure — RFC 5321 §2.1. **The `250` is
 the moment the client learns that**, which the original walk did not make a step of its own.
 
-| 🟦 C · Step 14 | `Quit` |
+| 🟦 C · Step 15 | `Quit` |
 |:--|:--|
 | MTA Client | ⬛ `QUIT` |
 | | 🟦 **Quit** |
 | Event | 🟧 **SessionClosed**&#10;<br>&nbsp;&nbsp;`cause`: quit |
 | Given | 🟧 **ConnectionAccepted** |
 
-| 🟩 V · Step 15 | `SessionClosing` &nbsp;🟥 *not in the model* |
+| 🟩 V · Step 16 | `SessionClosing` &nbsp;🟥 *not in the model* |
 |:--|:--|
 | MTA Client | ⬛ `221` foo.com Service closing transmission channel |
 | | 🟩 **SessionClosing**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`cause`: quit |
-| Given | 🟨 **ServiceConfigured** — *preamble*&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **SessionClosed** |
+| Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **SessionClosed** |
 | Where | `session_id` = 01J8Z… |
 
 ---
@@ -357,6 +386,12 @@ the alternation holds.** A flat step list cannot show that, and this document do
 
 The command steps are unchanged in number and nearly unchanged in content. **The entire growth is
 views** — which is the point: the original walk had been hiding read models inside wire rows.
+
+⚠️ **Count updated 2026-08-07.** The trace-header step — `MessageTrace`, step 13 — makes it
+**sixteen steps, nine of them views, twelve distinct slices touched, five of which do not exist in
+the model**. The table and the heading's fifteen are left as written; they were true of the re-walk
+this section describes, and the sixteenth step is not a reply but the output written into the
+stored message.
 
 ---
 
@@ -545,15 +580,15 @@ ours to make, and it is not made here.
 ### What the repaired chain looks like
 
 ⚠️ **Implemented later the same day.** The *Required first* trial at the top of this document is
-this table's repair in 🟨 form: steps 2, 4 and 15 now carry the declaration, and step 1 keeps 🟤
-exactly as the last row argues. The table is left as written — it is the reasoning that produced
-the preamble.
+this table's repair: the preamble declares the origin, and steps 2, 4 and 16 carry the declaration
+🟧 per the trial's ruling. Step 1 keeps 🟤 exactly as the last row argues. The table is left as
+written — it is the reasoning that produced the preamble.
 
 | Step | `Given` today | Under either shape |
 |:--|:--|:--|
 | `ServiceReady` (step 2) | 🟧 **ConnectionAccepted** | gains the origin — **required**; it renders `server_domain` and the text |
 | `SessionState` (step 4) | 🟧 two events | gains the origin — required **only while the walk renders** `250` foo.com; see the tier note below |
-| `SessionClosing` (step 15) | 🟧 **SessionClosed** | gains the origin — required; `221` is greeting-type |
+| `SessionClosing` (step 16) | 🟧 **SessionClosed** | gains the origin — required; `221` is greeting-type |
 | `AcceptConnection` (step 1) | 🟤 | **separable, and not forced.** A listener bound to `listen_address` is a real precondition, but the binding and the naming are different facts, and the binding has no consumer anywhere in this walk — under *admitted by consumer* it does not earn the dependency on its own |
 
 ⚠️ **The three renderings of foo.com sit on three different strengths, and the walk had them flat.**
@@ -604,8 +639,8 @@ Asked directly: does any step in this walk ever reference `ConnectionAccepted`'s
 and every one is the existence degree: the event happened, nothing about its contents.
 `peer_address` and `local_address` appear at step 1 and never again. Wider than that: **every
 `Given` in the fifteen steps is existence-only** — the whole walk runs without a single data-degree
-dependency. *(True when written. The preamble's second pass later added data-degree 🟨 entries to
-steps 2, 4 and 15; `ConnectionAccepted`'s fields remain unreferenced, so the finding stands.)*
+dependency. *(True when written. The preamble's later passes added data-degree entries to steps 2,
+4 and 16, and step 13 now consumes `peer_address` — the repair this section called for.)*
 
 The two fields sit in that position for two different reasons.
 
@@ -648,10 +683,15 @@ command step and `content_ref` covers trace plus content — or it is a view ren
 event stream, whose wire row is not the socket but the stored message. Both shapes carry the same
 `Given`; choosing is model work, not walk work.
 
+⚠️ **Picked for the walk later the same day — step 13, `MessageTrace`.** Ivan called it in. It
+takes the second shape, a view whose wire row is the stored message; the first shape remains
+arguable for the *model*. `MessageQueued`, `Quit` and `SessionClosing` renumbered to 14, 15 and 16
+behind it.
+
 **This is also H5 closing its loop in a walk for the first time.** `AcceptConnection` is admitted
 to the model for exactly one reason — `peer_address` has a destination. Fifteen steps never showed
 that destination, which made step 1 look like it feeds nothing. The fifth output is where the
-admission ticket gets punched.
+admission ticket gets punched — now on the page, as step 13.
 
 ---
 
@@ -673,6 +713,11 @@ surfaces a distinction the current form has no way to write:
 or splitting the second outside onto its own marker — is an amendment to record, not a quiet
 change. Flagged here so the tension is on the page: the two outsides are different claims, and the
 Directory translation must stay distinguishable from *merely earlier than this walk*.
+
+⚠️ **Ruled 2026-08-07, after the preamble trial ran.** The widened sense never leaves the preamble
+block. An event the preamble declares is thereafter in this path's event store, and steps cite it
+🟧 like any walked event — so step-level 🟨 keeps the settled external-only meaning, and the
+amendment this note flags is confined to one block per path.
 
 **The proposal: a path opens with the events it requires.** A predefined block before step 1 —
 🟨-marked events with the fields some step in the walk will need — so a path declares its
