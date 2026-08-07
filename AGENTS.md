@@ -127,18 +127,24 @@ work. The three usable axes are font family, italic, and bold on standard text o
 which GitHub emits as `align="left"`; there is no markdown equivalent for `valign`, and the only
 route to it is a raw `<table>` with `valign="top"` on every cell. That route survives GitHub's
 sanitizer and even keeps markdown working inside the cells if a blank line is left around their
-contents — and it **wrecks the page in the Claude app**, tested 2026-08-07. A short label therefore
-sits vertically centered against a tall neighboring cell, and that is accepted rather than fixed.
+contents — and **both Claude renderers refuse it**: the Android app strips the tags and runs the cell
+contents together with no separator, the desktop app prints the tags as literal text.
 
-⚠️ **The do-not-retry that stood here was withdrawn the same day. The verdict above is narrower
-than it looks.** What was tested was a raw table **pasted into a chat message**, and it did break
-the app. What it was then compared against was the *repository file*, which never contained the
-HTML at all — so the difference on GitHub was the difference between two unrelated sources, not
-evidence about the technique. One renderer was shown one thing and the other was shown another, and
-the mismatch got read as a finding. **A comparison is only evidence when both sides are the same
-input**, which is the actual lesson and the reason this block exists. What remains untested is the
-same markup committed to a file and opened on GitHub, and whether the breakage came from the table
-or from the blank lines inside its cells. See
+**Do not pad cells with trailing line breaks either.** It is pure markdown and nothing can reject
+it, which makes it the tempting one, and it buys nothing: **table cells already top-align in both
+Claude renderers**, so padding adds empty height and no alignment. It also does not survive contact
+with the real diagrams — the moment a grid holds more than one slice, every padded cell has to be
+re-counted against whichever neighbor happens to be tallest, and any edit to any cell re-opens all
+of them.
+
+⚠️ **The claim this block used to make — that a short label floats to the middle of a tall row — was
+never verified in any renderer.** It was taken from the HTML default for a table cell and asserted
+from memory, which is rule 3's failure in a place rule 3 did not think to look: the habit was built
+for RFCs and citations, and a remembered CSS default is the same kind of claim. Tested 2026-08-07,
+the control renders **top-aligned** in both Claude apps with no technique applied. The whole
+vertical-alignment question was therefore partly manufactured, and the fix for a symptom that was
+never confirmed cost two false verdicts before the control was finally looked at. **Check that the
+problem exists before testing solutions to it.** Settled in
 [`docs/diagrams/EXPERIMENT-vertical-align.md`](docs/diagrams/EXPERIMENT-vertical-align.md).
 
 **Angle brackets outside a code span are eaten.** `<CRLF>` in running text renders as *nothing at

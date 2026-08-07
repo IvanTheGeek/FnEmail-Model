@@ -1,5 +1,20 @@
 # Experiment — can a table cell be top-aligned?
 
+> ## ✅ CLOSED 2026-08-07 — nothing adopted, because **there was nothing wrong**
+>
+> Markdown table cells **already top-align** in both Claude renderers. Variant A, the control with
+> no technique at all, puts `MTA Client` level with the first wire line and `Event` level with
+> `ConnectionAccepted`. The symptom this document set out to fix was asserted from the HTML default
+> for a table cell and **never once looked at** before three variants were built against it.
+>
+> Raw HTML tables are dead in both Claude renderers. Padding is pure markdown and cannot be
+> rejected, and is rejected anyway: it changes no alignment, it adds empty height, and it collapses
+> as soon as a grid holds more than one slice — every padded cell then has to be re-counted against
+> the tallest neighbor, and any edit re-opens all of them. **That work is spent to reproduce what
+> the default already does.**
+>
+> **Use plain markdown tables. Set left alignment with `|:--|` and leave the vertical axis alone.**
+
 Left alignment is settled: `|:--|` in the delimiter row, which GitHub emits as `align="left"`.
 **Vertical alignment has no markdown syntax at all.** The delimiter row controls one axis and there
 is no second one.
@@ -170,8 +185,8 @@ Three columns, because there are three renderers. A technique needs all three.
 
 | # | Technique | GitHub | Claude Android | Claude Code desktop | Usable? |
 |:--|:--|:--|:--|:--|:--|
-| A | markdown, no technique | ✅ table | ✅ table | ✅ table | **control** — no top alignment |
-| B | markdown + padding | ✅ | | | |
+| A | markdown, no technique | ✅ table | ✅ **already top-aligned** | ✅ **already top-aligned** | ✅ **adopted** |
+| B | markdown + padding | ✅ | ⚠️ no change, taller cells | ⚠️ no change, **extra blank lines** | ❌ |
 | C | raw HTML, minimal | ✅ table | ❌ **tags stripped, cells fused** | ❌ **tags printed literally** | ❌ |
 | D | raw HTML + `valign` | ✅ table, `valign` kept | ❌ *unreachable* | ❌ *unreachable* | ❌ |
 | E | raw HTML + `valign` + blank lines | ✅ table, markdown live | ❌ *unreachable* | ❌ *unreachable* | ❌ |
@@ -231,3 +246,30 @@ looks right where it is authored and wrong where it is read is worse than no tec
 **So the likely outcome is that nothing is adopted and the middle alignment stays.** Recording that
 in advance is the point: if the result comes back the other way, it is a real finding rather than a
 rationalization.
+
+---
+
+## What the prediction got right, and the thing it never thought to doubt
+
+The outcome was called correctly. Nothing was adopted; the HTML variants died in the app; B survived
+into the last round and was rejected for fragility. Read against the verdict table, the prediction
+looks like a success.
+
+**It is not, and the way it fails is the point of keeping it.** Every line of it reasons about
+*which fix will work*. Not one line asks whether the problem is real. The control was in the
+document from the first draft, sitting directly above three increasingly elaborate variants, and it
+answered the question the whole time — the answer was simply never read, because reading it was not
+a step anybody had planned. A prediction written before the test protects against rationalizing the
+result. It offers nothing against a premise that neither the prediction nor the test ever put at
+risk.
+
+The cost was three variants, two withdrawn verdicts, and a rule 5 clause asserting a symptom nobody
+had seen. The fix is one line, and it belongs before the prediction rather than after it:
+**instantiate the control and look at it first.** That is rule 8 — walk it with real data — applied
+to the experiment itself rather than to the model.
+
+⚠️ **Related, and left open.** B's rejection rests partly on multi-slice grids being fragile to
+pad, which is a forecast about diagrams this repository has not drawn yet. It is a sound argument
+and it is *the same kind* of argument as the one that started this document: reasoning about
+something not yet in front of anyone. It happens to point at doing less rather than more, so it
+costs nothing if wrong. Noted so the asymmetry is deliberate rather than accidental.
