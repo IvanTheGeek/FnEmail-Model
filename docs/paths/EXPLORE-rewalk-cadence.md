@@ -18,6 +18,7 @@ model**. That is not a formatting difference, so it was walked again rather than
 | A consulted view has **no** top row — its readers declare it | `EXPLORE-view-slice.md` |
 | `Where` is a query predicate, written with `=` | `EXPLORE-view-slice.md` |
 | No `Consumed by` anywhere — dependencies point backward only | `EXPLORE-view-slice.md` |
+| A required-events preamble — the path-level `Given` | **trial**, 2026-08-07 — the 🟨 section at the end |
 
 ---
 
@@ -43,6 +44,40 @@ S: 221 foo.com Service closing transmission channel
 
 **Seven server replies.** The original walk absorbed all seven into command steps. This one gives
 each its own view.
+
+---
+
+## Required first &nbsp;*(trial, 2026-08-07)*
+
+**The path-level `Given`: events this walk assumes but does not walk**, each with the fields some
+step consumes. Trial of the preamble proposed in the 🟨 section at the end of this document. 🟨 here
+carries Ivan's **widened sense** — *outside this path definition* — not the settled external-only
+sense; that is exactly the amendment the rule 9 note flags, exercised deliberately.
+
+| 🟨 Required first | *before this walk's timeline* |
+|:--|:--|
+| | 🟨 **ServiceConfigured** — *ours, before every session; name and shape open — see* Walking backwards *below*&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready |
+| | 🟨 **Directory translation** — *another context's events; H3, deferred*&#10;<br>&nbsp;&nbsp;`is_local`: true&#10;<br>&nbsp;&nbsp;`forward_path` = \<Jones@foo.com> |
+
+Three trial decisions, made so they can be judged:
+
+**No forward pointers.** The block states what must exist and with which values — it does not say
+which steps consume what. That is the `Consumed by` kill applied at path level: consumers declare
+their own dependencies, and a consumption list here would go stale the same way. The cost is
+visible immediately: steps 2, 4 and 15 render `server_domain` **without declaring it**, and this
+trial deliberately does not edit their `Given` rows — one change at a time, and the mismatch is
+already tabulated in *What the repaired chain looks like* below.
+
+**Both kinds of outside are in one block, told apart by annotation.** `ServiceConfigured` is ours
+and merely earlier; the Directory translation is another context's. One chip, two claims — the
+italic notes carry the difference, which works at two entries and is worth doubting at ten.
+
+**The Directory entry duplicates step 7's `Given`, and that is accepted as a different claim.**
+Step 7 declares a *slice* dependency; this block declares what a **replay of the whole path must
+seed** before step 1 can run — the same relationship at two altitudes, the way a scenario's `Given`
+restates a contract's precondition without replacing it. If that reading is wrong, the entry is
+redundant and the block should hold only dependencies no walked step declares — `ServiceConfigured`
+alone. Left in so the trial tests the larger block.
 
 ---
 
