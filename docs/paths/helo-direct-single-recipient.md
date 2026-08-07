@@ -38,18 +38,16 @@ the other half of that pair. See *What this walk tested*.
 | 🟦 C · Step 1 | `AcceptConnection` |
 |:--|:--|
 | MTA Client | ⬛ `220` foo.com Simple Mail Transfer Service Ready |
-| | 🟦 **AcceptConnection** |
+| | 🟦 **AcceptConnection**&#10;<br>&nbsp;&nbsp;`peer_address`: 203.0.113.20&#10;<br>&nbsp;&nbsp;`local_address`: 192.0.2.10:25 |
 | Event | 🟧 **ConnectionAccepted**&#10;<br>&nbsp;&nbsp;`peer_address`: 203.0.113.20&#10;<br>&nbsp;&nbsp;`local_address`: 192.0.2.10:25 |
-
-> **Pre** — none ✓ &nbsp;·&nbsp; **Post** — `ConnectionAccepted` emitted ✓
+| Given | ⚪ |
 
 | 🟦 C · Step 2 | `Helo` |
 |:--|:--|
 | MTA Client | ⬛ `HELO` bar.com&#10;<br>`250` foo.com |
-| | 🟦 **Helo** |
+| | 🟦 **Helo**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP |
 | Event | 🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP |
-
-> **Pre** — `ConnectionAccepted` exists ✓ &nbsp;·&nbsp; **Post** — `ClientIdentified` emitted ✓
+| Given | 🟧 **ConnectionAccepted** |
 
 | 🟩 V · Step 3 | `SessionState` |
 |:--|:--|
@@ -60,10 +58,9 @@ the other half of that pair. See *What this walk tested*.
 | 🟦 C · Step 4 | `MailFrom` |
 |:--|:--|
 | MTA Client | ⬛ `MAIL FROM:`\<Smith@bar.com>&#10;<br>`250` OK |
-| | 🟦 **MailFrom** |
+| | 🟦 **MailFrom**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
 | Event | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
-
-> **Pre** — `SessionState.identified = true` ✓ &nbsp;·&nbsp; **Post** — `MailTransactionStarted` emitted ✓
+| Given | 🟧 **ClientIdentified** |
 
 | 🟩 V · Step 5 | `RecipientDirectory` &nbsp;*(translation boundary — H3)* |
 |:--|:--|
@@ -78,10 +75,10 @@ paths cross.
 | 🟦 C · Step 6 | `RcptTo` |
 |:--|:--|
 | MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com>&#10;<br>`250` OK |
-| | 🟦 **RcptTo** |
+| | 🟦 **RcptTo**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 | Event | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
-
-> **Pre** — `MailTransactionStarted` ✓ · `RecipientDirectory.is_local` ✓ &nbsp;·&nbsp; **Post** — `RecipientAccepted` emitted ✓
+| Given | 🟧 **MailTransactionStarted** |
+| | 🟨 **Directory translation** — *no event of ours* |
 
 Traversed **once**. No `RecipientRejected` anywhere in this walk.
 
@@ -94,10 +91,10 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 | 🟦 C · Step 8 | `BeginData` &nbsp;🟥 **H1** |
 |:--|:--|
 | MTA Client | ⬛ `DATA`&#10;<br>`354` Start mail input; end with `<CRLF>.<CRLF>` |
-| | 🟦 **BeginData** |
+| | 🟦 **BeginData**&#10;<br>&nbsp;&nbsp;⚪ *the verb carries no data* |
 | Event | 🟥 **DataPhaseEntered**&#10;<br>&nbsp;&nbsp;*no payload — H1: does it earn its place?* |
-
-> **Pre** — `TransactionState.open` ✓ · `recipient_count >= 1` ✓ (= 1) &nbsp;·&nbsp; **Post** — `DataPhaseEntered` emitted ✓
+| Given | 🟧 **MailTransactionStarted** |
+| | 🟧 **RecipientAccepted** |
 
 **H1 meets you here.** Its only candidate consumer is the transcript rendering `354`. This walk
 does not resolve it — it just shows the event firing with nothing downstream that needs it.
@@ -105,21 +102,19 @@ does not resolve it — it just shows the event firing with nothing downstream t
 | 🟦 C · Step 9 | `SubmitContent` |
 |:--|:--|
 | MTA Client | ⬛ `Date:` Tue, 19 May 1998 09:14:02 -0700&#10;<br>`From:` Smith \<Smith@bar.com>&#10;<br>`To:` Jones@foo.com&#10;<br>`Subject:` Tuesday&#10;<br>(blank)&#10;<br>Blah blah blah...&#10;<br>`.`&#10;<br>`250` OK |
-| | 🟦 **SubmitContent** |
+| | 🟦 **SubmitContent**&#10;<br>&nbsp;&nbsp;`content`: 194 octets, dot-unstuffed |
 | Event | 🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipients`: [\<Jones@foo.com>]&#10;<br>&nbsp;&nbsp;`content_ref`: blob:sha256:9c1e…&#10;<br>&nbsp;&nbsp;`actual_octets`: 194&#10;<br>&nbsp;&nbsp;`received_at`: 1998-05-19T09:14:07-07:00 |
-
-> **Pre** — `DataPhaseEntered` ✓ &nbsp;·&nbsp; **Post** — `MessageAccepted` emitted ✓ — **the responsibility boundary**
+| Given | 🟧 **DataPhaseEntered** |
 
 Left of here, abandoning costs nothing. At `MessageAccepted` we have accepted responsibility for
-delivering or reporting failure — RFC 5321 §2.1.
+delivering or reporting failure — RFC 5321 §2.1. **That is the responsibility boundary.**
 
 | 🟦 C · Step 10 | `Quit` |
 |:--|:--|
 | MTA Client | ⬛ `QUIT`&#10;<br>`221` foo.com Service closing transmission channel |
-| | 🟦 **Quit** |
+| | 🟦 **Quit**&#10;<br>&nbsp;&nbsp;⚪ *the verb carries no data* |
 | Event | 🟧 **SessionClosed**&#10;<br>&nbsp;&nbsp;`cause`: quit |
-
-> **Pre** — `ConnectionAccepted` exists ✓ &nbsp;·&nbsp; **Post** — `SessionClosed` emitted ✓
+| Given | 🟧 **ConnectionAccepted** |
 
 Every reply is 2xx or 3xx. No error branch is taken anywhere.
 

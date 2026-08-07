@@ -413,17 +413,34 @@ A dependency is not always the same strength, and the notation should show which
 **Degree 2 uses the Event row's own layout** — name, then indented `field`: value lines — so that a
 `Given` and the `Then` it will one day be matched against are visibly the same kind of thing.
 
-### ⚠️ The degree-0 glyph is undecided
+### ⚠️ The degree-0 marker — chips are the stronger option
 
-Three candidates, to be judged on the phone since that is where an uncommon glyph fails:
+Asked 2026-08-07 whether a **chip** would serve better than a glyph. It would, for a reason already
+proved rather than guessed: **emoji chips are the only technique in this project that rendered
+identically in every renderer** ([`../diagrams/EXPERIMENT-text-color.md`](../diagrams/EXPERIMENT-text-color.md)),
+because they are characters and no sanitizer can touch them. `∅` is a **math symbol**, and it carries
+the same font-fallback risk that made box-drawing characters unusable — it renders on a desktop and
+substitutes on a phone, which is a font problem no markup can fix.
 
-| | Rendered | Note |
-|:--|:--|:--|
-| **A** | ∅ | U+2205 empty set. Exact, one character, **untested in the Android app** |
-| **B** | *none* | italic word. Cannot fail anywhere |
-| **C** | — | em dash. Already used in prose here, so it is ambiguous |
+There is also a semantic argument. **Every element chip in this project is a square** — 🟧 🟦 🟩 ⬜
+⬛ 🟨 🟥 — and each names an element *type*. A degree-0 marker names the **absence** of one. A
+different **shape** says that; another square would imply it is an eighth element type.
 
-**B is the safe answer and A is the precise one.** Nothing is adopted.
+| | Candidate | Reads as | Note |
+|:--|:--|:--|:--|
+| **1** | ⚪ | *nothing here* | circle, so visibly not an element. Same weight as the squares |
+| **2** | ⭕ | *nothing here*, louder | heavier ring; may read as an error |
+| **3** | ➖ | *removed* | wrong meaning — suggests something was taken away |
+| **4** | ∅ | *empty set* | exact, and the only non-emoji — **font-fallback risk** |
+| **5** | *none* | *nothing here* | cannot fail anywhere; verbose in a narrow cell |
+
+**⚪ is the working choice** and is applied in
+[`helo-direct-single-recipient.md`](helo-direct-single-recipient.md) — provisionally, pending a look
+on the phone.
+
+**It does double duty.** A command that carries no fields has the same problem as a Given with no
+events — `BeginData` and `Quit` are bare verbs. Both now read ⚪, so one marker covers *nothing
+required* and *nothing supplied*.
 
 ---
 
