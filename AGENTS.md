@@ -92,22 +92,29 @@ This applies to your own work in the same session.
 
 ## 5. Markdown conventions
 
-**Do not break lines inside a table cell. Use one row per line.** No token works, so there is
-nothing to get right — a new row cannot be rendered differently by anything. The indent
-`&nbsp;&nbsp;` still marks a field line as belonging to the event named above it. Settled in
+**Line breaks inside a table cell are `&#10;<br>` — both halves, always.** GitHub uses the `<br>`
+and collapses the entity; the Claude Android app strips the `<br>` and uses the entity. A lone
+`<br>` fails **silently and only on a phone**, fusing two words. Confirmed across all three
+renderers 2026-08-07 in
 [`docs/diagrams/EXPERIMENT-line-break.md`](docs/diagrams/EXPERIMENT-line-break.md).
 
-⚠️ **This replaces `&#10;<br>`, which stood from 2026-08-06 and was never wrong — only outvoted by a
-renderer it had not met.** The original rule read: *"Line breaks inside a table cell are `&#10;<br>`
-— both halves, always. GitHub uses the `<br>` and collapses the entity; the Claude Android app
-strips the `<br>` and uses the entity."* Both halves of that are confirmed. What changed is that
-there are **three** renderers, and the third takes both halves and renders **two** breaks.
+⚠️ **Known cost, accepted deliberately: the Claude Code desktop app renders an extra gap.** It
+honors *both* halves, so it breaks twice. **Do not "fix" this by dropping a half.** Drop the `<br>`
+and GitHub stops breaking at all — the entity emits a newline character, which HTML collapses to a
+space. Drop the entity and the phone **fuses the words**. Both of those lose information; the gap
+only looks untidy, and it looks untidy in the one renderer where nothing is being read for the
+first time.
 
-The three demand mutually exclusive things: GitHub needs a **tag** and ignores entities; the Android
-app needs an **entity** and strips tags, **fusing the words silently**; the desktop app honors
-**either**, so any pairing doubles. GitHub and the phone need opposites, which forces a pairing, and
-the pairing is what the desktop doubles. Reversing the order does not help. **A token is the wrong
-instrument, not the wrong choice of token** — which is why the replacement is structural.
+The full matrix is in the experiment. No token gives one break in all three: GitHub needs a **tag**,
+the phone needs an **entity**, the desktop honors **either**. GitHub and the phone need opposites,
+so a pairing is forced, and the desktop doubles whatever is forced. Reversing the order does not
+help.
+
+**One row per line is the only technique that cannot fail, and it is rejected on cost.** A
+three-field event becomes four rows, a step's eight wire lines become eight rows, and step tables
+stop being a uniform height. That is too much structure to pay for a cosmetic gap. Rejected with the
+evidence attached rather than left unconsidered — if the row count ever stops mattering, it is the
+correct answer and it is written up ready to adopt.
 
 **Color is carried by emoji chips**, not by markup. Every text-coloring alternative was tested and
 fails or diverges between renderers. 🟧 Event · 🟦 Command · 🟩 Read Model · ⬜ rendered UI ·

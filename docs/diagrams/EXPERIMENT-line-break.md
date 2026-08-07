@@ -128,11 +128,23 @@ Fill in from all three. A token needs **one break in every column** to be usable
 | E | `<br>&#10;` | ✅ one | ✅ one | ⚠️ **two — extra gap** | ❌ |
 | F | `&#xA;` | ❌ none | ✅ one | ✅ one | ❌ |
 | G | `&NewLine;` | ❌ none | ✅ one | ✅ one | ❌ |
-| J | **separate rows** | ✅ | ✅ | ✅ | ✅ **the only one** |
+| J | **separate rows** | ✅ | ✅ | ✅ | ✅ works — **rejected on cost** |
 
 ---
 
-# ✅ CLOSED 2026-08-07 — **no token works. Use rows.**
+# ✅ CLOSED 2026-08-07 — **keep `&#10;<br>`; tolerate the desktop gap**
+
+**Adopted: C, the existing rule.** No token gives one break in all three, so the choice is *which
+renderer to disappoint*, and they are not equally costly:
+
+| Dropping | Breaks | Severity |
+|:--|:--|:--|
+| the `<br>` | GitHub stops breaking at all | ❌ data runs together |
+| the entity | the phone **fuses words silently** | ❌ information lost, unnoticeable |
+| neither | the desktop shows an **extra gap** | ⚠️ **cosmetic only** |
+
+**The gap is the only cost that loses nothing**, and it lands in the renderer where nothing is read
+for the first time. J is correct and is rejected on cost — see the end of this section.
 
 **Every single-token candidate fails somewhere, and the failure is structural rather than a matter of
 picking a better token.** The three renderers demand mutually exclusive things:
@@ -152,20 +164,20 @@ exactly as C does.
 remains the best *token* available. It is retired because a token is the wrong instrument, not
 because a better token was found.
 
-**The answer is J: one row per line.** It uses no token, so there is nothing for a renderer to
-interpret differently — this cannot break in any renderer, present or future, which no token-based
-answer can promise.
+**J — one row per line — is the only technique that cannot fail**, since it uses no token at all.
+**It is rejected**, on the cost below. Recorded rather than dismissed: if row count ever stops
+mattering, J is correct and is written up ready to adopt.
 
-### What this costs
+### What J would have cost, and why it was refused
 
 - **Every stacked payload becomes rows.** A three-field event is four rows, not one.
 - **Multi-line wire rows become rows.** `helo-direct-single-recipient.md` Step 9 has eight wire lines.
 - **Step tables stop being a fixed height**, which was V16's whole argument.
-- ⚠️ **V16 in [`../paths/EXPLORE-gwt-form.md`](../paths/EXPLORE-gwt-form.md) is dead.** It stacks given
-  events inside one cell. **V17 survives unchanged** — it was already one row per event, and it is now
-  the only one of the pair that can be rendered.
+- **V16 in [`../paths/EXPLORE-gwt-form.md`](../paths/EXPLORE-gwt-form.md) would have died**, since it
+  stacks given events inside a cell. It survives, because C survives.
 
-The indent (`&nbsp;&nbsp;`) still works and still distinguishes a field line from its event name.
+That is too much structure to buy a cosmetic improvement in one renderer. The indent
+(`&nbsp;&nbsp;`) is unaffected and still distinguishes a field line from its event name.
 
 ## Prediction, written before the phone was looked at — ❌ **WRONG**
 
