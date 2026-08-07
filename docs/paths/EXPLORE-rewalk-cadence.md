@@ -425,16 +425,22 @@ the RFC: is that chain actually closed, and if it is not, **what are the previou
 
 The identity is not decoration. Three RFC 5321 passages, read rather than recalled:
 
-**The grammar requires it** — §4.2, and (`Domain` / `address-literal`) carries no square brackets:
+**The grammar requires it** — §4.2, where an optional element is spelled with square brackets, and
+the identity group carries none. The `Greeting` rule's opening line:
 
 ```
 Greeting       = ( "220 " (Domain / address-literal)
-               [ SP textstring ] CRLF ) /
-               ( "220-" (Domain / address-literal)
-               [ SP textstring ] CRLF
-               *( "220-" [ textstring ] CRLF )
-               "220" [ SP textstring ] CRLF )
 ```
+
+The continuation under it brackets only the trailing human text — `[ SP textstring ] CRLF` — and
+the rule's multiline form repeats the shape: every alternative opens with the bare identity group,
+and `textstring` is the only element the rule ever brackets. A `220` line with no identity does not
+parse.
+
+The rule's own six-line layout is deliberately not reproduced. ABNF continuation lines hang at the
+`=` column, and lifted out of the RFC's page that layout reads as broken markdown — a dangling
+`) /`, bracket fragments floating mid-block. Quoted one line at a time instead, each byte-exact
+against [`../rfc/rfc5321.txt`](../rfc/rfc5321.txt) ll. 2588–2593.
 
 **Machines parse it** — §4.2: *"In particular, the 220, 221, 251, 421, and 551 reply codes are
 associated with message text that must be parsed and interpreted by machines."*
