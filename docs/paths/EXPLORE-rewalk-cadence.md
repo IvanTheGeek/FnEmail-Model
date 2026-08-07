@@ -573,3 +573,102 @@ closing either way — so `accepting` does **not** collapse to a constant merely
 precedes step 1 is established — by the greeting's grammar, the completeness check, and the corpus's
 own installer terminus. *What it is called, which lane holds it, and whether it is a slice of ours
 or a translation boundary* is a decision this document deliberately leaves open.
+
+---
+
+## The fifth hidden output — the trace header. Asked 2026-08-07
+
+Asked directly: does any step in this walk ever reference `ConnectionAccepted`'s **fields**?
+**No.** The event is named in four `Given` rows — `ServiceReady`, `Helo`, `SessionState`, `Quit` —
+and every one is the existence degree: the event happened, nothing about its contents.
+`peer_address` and `local_address` appear at step 1 and never again. Wider than that: **every
+`Given` in the fifteen steps is existence-only** — the whole walk runs without a single data-degree
+dependency.
+
+The two fields sit in that position for two different reasons.
+
+**`local_address` is the H6 orphan**, already flagged. The backward walk's address-literal escape
+hatch is only a candidate consumer, and this dialogue renders foo.com, so here it stays unconsumed.
+
+**`peer_address` has a real consumer, and this document lost it in the re-walk.** The original path
+carries a *Completeness, instantiated* section whose table sources `Received:`'s address literal
+from `ConnectionAccepted.peer_address`. This document dropped that section — and the completeness
+direction it ran against the seven wire replies, *what state produced this output?*, was never run
+against the one required output that is **not** a wire reply. RFC 5321 §4.4:
+
+> *"When an SMTP server receives a message for delivery or further processing, it MUST insert
+> trace ("time stamp" or "Received") information at the beginning of the message content"*
+
+Receipt is acceptance, so the MUST fires **inside this walk's timeline**, at `SubmitContent`. An
+output the protocol requires, produced by no step — the same class of finding as the four hidden
+reply views, and the fifth member. The seven-reply table under *What the re-walk exposed* was
+counting wire lines, and the protocol has an eighth output that never crosses the wire: it is
+written into the stored message.
+
+**What distinguishes the fifth from the four: its `Given` cannot be existence-only.** Rendering
+
+```
+Received: from bar.com ([203.0.113.20]) by foo.com with SMTP id f2C8D14
+```
+
+needs values, not existence — which would make it the walk's **first data-degree `Given`**,
+whatever element it turns out to live on:
+
+| Given | 🟧 **ConnectionAccepted**&#10;<br>&nbsp;&nbsp;`peer_address`: 203.0.113.20&#10;<br>🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP&#10;<br>🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com>&#10;<br>🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`received_at`: 1998-05-19T09:14:07-07:00 |
+|:--|:--|
+
+Plus the `BY` value — which is the backward walk's missing configuration origin, making the trace
+header that section's fourth consumer in whichever shape the origin lands.
+
+**The element's shape is deliberately not picked.** Two candidates, different timelines: the trace
+line is part of what `SubmitContent` stores — in which case the fields are consumed inside the
+command step and `content_ref` covers trace plus content — or it is a view rendered later from the
+event stream, whose wire row is not the socket but the stored message. Both shapes carry the same
+`Given`; choosing is model work, not walk work.
+
+**This is also H5 closing its loop in a walk for the first time.** `AcceptConnection` is admitted
+to the model for exactly one reason — `peer_address` has a destination. Fifteen steps never showed
+that destination, which made step 1 look like it feeds nothing. The fifth output is where the
+admission ticket gets punched.
+
+---
+
+## 🟨 as *outside this path*, and a path-level `Given` — raised by Ivan, 2026-08-07
+
+Recorded as direction, not decision — Ivan has his own plans for how the tool will represent
+Translation, and this section captures the reframing rather than adopting it.
+
+**The reading: 🟨 means *outside this path definition*.** Today the documents use 🟨 in the corpus
+sense — another system's events, the Translation boundary. The reframing widens it, and doing so
+surfaces a distinction the current form has no way to write:
+
+| Outside **what**? | Example | How the form shows it today |
+|:--|:--|:--|
+| the model — someone else's system | the Directory context | 🟨, the settled sense |
+| this path — ours, but not in this walk's timeline | the configuration origin; `ConnectionAccepted`, for a walk scoped narrower than a session | nothing — a walk either walks it or silently starts late |
+
+⚠️ **Rule 9 note.** *External yellow* is a settled convention. Widening 🟨 to carry both outsides —
+or splitting the second outside onto its own marker — is an amendment to record, not a quiet
+change. Flagged here so the tension is on the page: the two outsides are different claims, and the
+Directory translation must stay distinguishable from *merely earlier than this walk*.
+
+**The proposal: a path opens with the events it requires.** A predefined block before step 1 —
+🟨-marked events with the fields some step in the walk will need — so a path declares its
+prerequisites instead of inheriting them invisibly. That is the GWT `Given` lifted to path level.
+The corpus already runs its deployment half — Dymitruk ships production systems with *"assumed
+events that are there at the beginning"* (podcast episode 8, machine transcript, quoted in the
+backward walk above) — and it hands the backward walk's origin a home that costs nothing: the
+configuration fact lives in the preamble of every session-scoped path, fields stated, instead of
+every walk paying a step for it.
+
+**And it answers the question it arrived with.** Is `AcceptConnection` valid in this path, or is
+`ConnectionAccepted` preamble material? **For this walk: it stays a step.** This walk is a whole
+session, and the connection is the session's own first fact — inside the timeline, so it is walked,
+with `peer_address` as a needed field whose consuming element is the fifth output above. The 🟨
+conversion is the right shape **when a path's scope starts later** — a transaction-only walk would
+open by declaring 🟨 **ConnectionAccepted** and 🟨 **ClientIdentified** with exactly the fields its
+steps consume — and for the per-service-lifetime facts no session-scoped walk can ever contain.
+
+The rule that falls out, stated so it can be argued with:
+
+> **Walk what is inside the path's timeline; declare, with fields, what is before it.**
