@@ -129,8 +129,17 @@ route to it is a raw `<table>` with `valign="top"` on every cell. That route sur
 sanitizer and even keeps markdown working inside the cells if a blank line is left around their
 contents — and it **wrecks the page in the Claude app**, tested 2026-08-07. A short label therefore
 sits vertically centered against a tall neighboring cell, and that is accepted rather than fixed.
-**Do not retry this**; the pretty half of the result is the trap, because it is the half you see
-while authoring.
+
+⚠️ **The do-not-retry that stood here was withdrawn the same day. The verdict above is narrower
+than it looks.** What was tested was a raw table **pasted into a chat message**, and it did break
+the app. What it was then compared against was the *repository file*, which never contained the
+HTML at all — so the difference on GitHub was the difference between two unrelated sources, not
+evidence about the technique. One renderer was shown one thing and the other was shown another, and
+the mismatch got read as a finding. **A comparison is only evidence when both sides are the same
+input**, which is the actual lesson and the reason this block exists. What remains untested is the
+same markup committed to a file and opened on GitHub, and whether the breakage came from the table
+or from the blank lines inside its cells. See
+[`docs/diagrams/EXPERIMENT-vertical-align.md`](docs/diagrams/EXPERIMENT-vertical-align.md).
 
 **Angle brackets outside a code span are eaten.** `<CRLF>` in running text renders as *nothing at
 all* — the parser takes it for an unknown HTML tag and drops it silently. An address fares slightly
