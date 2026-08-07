@@ -16,7 +16,7 @@ a markdown table and that file mentions Mermaid zero times. It has always been a
 |:--|:--|
 | **Claude Android app** | fill in at time of test |
 | **Claude Code desktop app** | fill in at time of test |
-| **GitHub** | web renderer; the column below is from the `POST /markdown` API and is already known |
+| **GitHub** | web renderer. Column measured through the `POST /markdown` API **and confirmed by eye** 2026-08-07 — the API predicted all seven correctly |
 
 ---
 
