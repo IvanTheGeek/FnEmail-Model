@@ -69,6 +69,23 @@ touches. The ten steps of `helo-direct-single-recipient.md` would sit across rou
 `Reset` sits inside one that no walk has entered. Held as *probably* distinct — the author flagged
 the possibility that they converge, and nothing has tested it.
 
+### Aggregates and DCB are out of scope
+
+Recorded 2026-08-07 so it is not re-raised. **`Aggregate` is a DDD term with a real meaning in code**,
+and *Dynamic Consistency Boundary* is the newer replacement for it. Both appear in the tooling —
+EMSL lists `Aggregate` in its `Kind` enum, Dilger's toolkit README calls them *"domain entities
+enforcing business rules"*, and his channel carries *Aggregateless Event Sourcing with DCB*,
+*Aggregates in Miro Eventmodeling definieren* and *What is an Aggregate in Software?*.
+
+**None of it is an Event Modeling question.** The position both authors take is that whatever an
+aggregate is for, it falls out naturally from modeling the way the method already prescribes. The
+topic arrives from **technical DDD people**, not from the method, and it is not a difference between
+the two men worth tracking.
+
+⚠️ **Do not add it to the Adam-vs-Martin table** in `research/GWT-FINDINGS.md` §6. It looks like a
+divergence — two tooling artifacts treat the aggregate as a primitive while the podcast opens with
+two episodes titled *Destroying the Aggregate* — and it is not one.
+
 ### Two repositories, and why
 
 **FnEmail uses Event Modeling but is not about it.** As of 2026-08-06 the method research lives in
@@ -164,6 +181,7 @@ anything** — three of five mirrored repos carry no license.
 | **Workflow, never *chapter*** — for a named group of slices. Dymitruk's word 241× to 10×; *chapter* is Dilger's | research: `open-spaces-comocamp/_STRUCTURE.md` |
 | **Workflow nesting has no fixed depth** — as many levels as make sense | same |
 | **Learn the method before extending it** — rule 10's reason, stated | §7 below |
+| **Aggregates and DCB are out of scope** — a DDD import, not an Event Modeling question | below |
 
 > ⚠️ **The "no arrows" decision needs a caveat, added 2026-08-06.** It stands as a *diagramming*
 > choice, but the corpus shows arrows are working notation in 12+ independent talks, and they have a
