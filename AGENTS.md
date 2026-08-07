@@ -123,6 +123,15 @@ route, so **monospace text cannot be bolded** for a reader on the app. Italic on
 work. The three usable axes are font family, italic, and bold on standard text only. Tested in
 [`docs/diagrams/EXPERIMENT-inline-styling.md`](docs/diagrams/EXPERIMENT-inline-styling.md).
 
+**No raw HTML tables, and therefore no vertical alignment.** Cells are left-aligned with `|:--|`,
+which GitHub emits as `align="left"`; there is no markdown equivalent for `valign`, and the only
+route to it is a raw `<table>` with `valign="top"` on every cell. That route survives GitHub's
+sanitizer and even keeps markdown working inside the cells if a blank line is left around their
+contents — and it **wrecks the page in the Claude app**, tested 2026-08-07. A short label therefore
+sits vertically centered against a tall neighboring cell, and that is accepted rather than fixed.
+**Do not retry this**; the pretty half of the result is the trap, because it is the half you see
+while authoring.
+
 **Angle brackets outside a code span are eaten.** `<CRLF>` in running text renders as *nothing at
 all* — the parser takes it for an unknown HTML tag and drops it silently. An address fares slightly
 better and still loses information: `<Smith@bar.com>` becomes a mailto link with **the angle
