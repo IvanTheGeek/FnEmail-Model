@@ -65,9 +65,12 @@ two circle colors this project has not already assigned a meaning — the other 
 reads as too significant for an absence. It carries enough contrast to survive a skim, which white
 did not.
 
-It also marks a command that supplies no fields — `BeginData` and `Quit` are bare verbs — so **one
-marker covers both *nothing required* and *nothing supplied***. Candidates and the reasoning are in
-[`EXPLORE-gwt-form.md`](EXPLORE-gwt-form.md).
+⚠️ **🟤 belongs to the `Given` row only.** A command that supplies no fields — `BeginData` and
+`Quit` are bare verbs — simply carries no field lines. It needs no marker, because its emptiness is
+**corroborated by the wire row directly above it**: `QUIT` visibly takes no argument. A `Given` has
+no such corroboration anywhere in the table, and it is the one row that can be wrong, so it must say
+*deliberately nothing* rather than leave a reader to guess *not filled in yet*. Candidates and the
+reasoning are in [`EXPLORE-gwt-form.md`](EXPLORE-gwt-form.md).
 
 ---
 

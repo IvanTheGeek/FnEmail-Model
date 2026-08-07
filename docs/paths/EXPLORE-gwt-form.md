@@ -457,9 +457,11 @@ which white did not. Applied in
 [`helo-direct-single-recipient.md`](helo-direct-single-recipient.md) — provisionally, pending a look
 on the phone.
 
-**It does double duty.** A command that carries no fields has the same problem as a Given with no
-events — `BeginData` and `Quit` are bare verbs. Both now read 🟤, so one marker covers *nothing
-required* and *nothing supplied*.
+⚠️ **Scoped to the `Given` row only**, decided 2026-08-07. It was briefly applied to commands that
+supply no fields as well, on the assumption that both are the same absence. They are not. A bare
+verb's emptiness is **corroborated by the wire row above it** — `QUIT` visibly takes no argument —
+so a reader can check it. A `Given` is corroborated by nothing and is the only row in a step that
+can be wrong, so it is the only one that needs an explicit *deliberately nothing*.
 
 ---
 

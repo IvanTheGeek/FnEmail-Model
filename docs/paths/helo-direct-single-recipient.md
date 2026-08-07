@@ -91,7 +91,7 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 | 🟦 C · Step 8 | `BeginData` &nbsp;🟥 **H1** |
 |:--|:--|
 | MTA Client | ⬛ `DATA`&#10;<br>`354` Start mail input; end with `<CRLF>.<CRLF>` |
-| | 🟦 **BeginData**&#10;<br>&nbsp;&nbsp;🟤 *the verb carries no data* |
+| | 🟦 **BeginData** |
 | Event | 🟥 **DataPhaseEntered**&#10;<br>&nbsp;&nbsp;*no payload — H1: does it earn its place?* |
 | Given | 🟧 **MailTransactionStarted** |
 | | 🟧 **RecipientAccepted** |
@@ -112,7 +112,7 @@ delivering or reporting failure — RFC 5321 §2.1. **That is the responsibility
 | 🟦 C · Step 10 | `Quit` |
 |:--|:--|
 | MTA Client | ⬛ `QUIT`&#10;<br>`221` foo.com Service closing transmission channel |
-| | 🟦 **Quit**&#10;<br>&nbsp;&nbsp;🟤 *the verb carries no data* |
+| | 🟦 **Quit** |
 | Event | 🟧 **SessionClosed**&#10;<br>&nbsp;&nbsp;`cause`: quit |
 | Given | 🟧 **ConnectionAccepted** |
 
