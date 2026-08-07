@@ -406,3 +406,164 @@ value and the fifteen-step form has to justify itself on readability alone.
 **Against all that:** the four missing read models were **invisible** for the entire life of the
 original document, and no amount of re-reading it surfaced them. It took changing the form to see
 them. That is worth something even if the form is then discarded.
+
+---
+
+## Walking backwards past Step 1 — asked 2026-08-07
+
+The walk's first view renders `220` foo.com Simple Mail Transfer Service Ready. Its `Given` is
+**ConnectionAccepted**, which step 1 satisfies — and step 1's `Given` is 🟤. Working backwards under
+the RFC: is that chain actually closed, and if it is not, **what are the previous steps?**
+
+### The greeting, value by value
+
+| On the wire | What fixes it | Origin in the `Given` chain |
+|:--|:--|:--|
+| `220` rather than `554` or `521` | §3.1 and RFC 7504 §3 — the acceptance posture is a genuine three-way decision | 🟧 **ConnectionAccepted** — under the current stance the event fires only on the accept path, so its **existence** folds to `accepting`: true, exactly as existence folds to `identified`: true in the walk's `SessionState` |
+| foo.com | the grammar — see below | ❌ **none** |
+| Simple Mail Transfer Service Ready | nothing — `textstring` is optional and operator-chosen; §3.1 lets it carry software and version | ❌ **none** — though omitting it is conformant, so it needs an origin only if rendered |
+
+The identity is not decoration. Three RFC 5321 passages, read rather than recalled:
+
+**The grammar requires it** — §4.2, and (`Domain` / `address-literal`) carries no square brackets:
+
+```
+Greeting       = ( "220 " (Domain / address-literal)
+               [ SP textstring ] CRLF ) /
+               ( "220-" (Domain / address-literal)
+               [ SP textstring ] CRLF
+               *( "220-" [ textstring ] CRLF )
+               "220" [ SP textstring ] CRLF )
+```
+
+**Machines parse it** — §4.2: *"In particular, the 220, 221, 251, 421, and 551 reply codes are
+associated with message text that must be parsed and interpreted by machines."*
+
+**It is the server's official name** — §4.3.1: *"all the greeting-type replies have the official
+name (the fully-qualified primary domain name) of the server host as the first word following the
+reply code."*
+
+And a fourth, smaller than the others: even the greeting's **timing** renders server state.
+§4.5.3.2.1: *"Many SMTP servers accept a TCP connection but delay delivery of the 220 message until
+their system load permits more mail to be processed."* The five-minute client timeout exists for
+exactly the gap between `ConnectionAccepted` and this view rendering.
+
+⚠️ **One escape hatch, and it is load-bearing for H6.** The identity slot admits an address literal
+— the RFC's own example is `220` [10.0.0.1] Clueless host service ready — and our literal would be
+[192.0.2.10], which **is** in the chain, as `ConnectionAccepted.local_address`. A nameless server
+can greet from what the walk already carries. So the grammar alone is satisfiable; **what is
+unsatisfiable is this walk's dialogue**, which renders foo.com, a configured name no event
+originates. That hands `local_address` a **second candidate consumer** — H6 had given it exactly
+one, the multi-homed `BY` clause.
+
+### No further Givens exist inside the timeline
+
+`ConnectionAccepted` is the walk's left edge: §3.1 — *"An SMTP session is initiated when a client
+opens a connection to a server and the server responds with an opening message."* Nothing in the
+protocol's session precedes it, and every one of the fifteen steps is **per-session**. The value
+with no origin is **per-service-lifetime**. So the missing step is not hiding between existing
+steps — the chain exits the walk entirely, into a lane that was configured before any client ever
+connected. That is also why three walked paths never met it: rule 8 walks sessions with real data,
+and this fact predates every session there is.
+
+### The corpus answers this exact question, by name
+
+Walking backwards is Dymitruk's own device, and he names its terminus. Copenhagen DDD talk, machine
+transcript:
+
+> *"you can keep going to in the left direction all the way until you specify the installer with
+> what the initial values are for your for your config fields"*
+
+The workshop recording, machine transcript, states it as practice: *"walking an event model
+backwards asking where does this come from where does this come from will continue to give you the
+motivation to keep specifying things to the to the logical start"* — and taken to the extreme,
+*"you can even make your project installer or setup scripts um with all the default values that you
+need"*. Podcast episode 8, machine transcript, is how his teams deploy: production systems ship with
+*"assumed events that are there at the beginning"* instead of setup screens. The canonical article
+does it on the page — its view specification opens *"**Given**: hotel is set up with 12 ocean view
+rooms"* — the setup is prior events in a `Given`. And his own open-spaces file models it: Eugene the
+Sysadmin's lane holds a provisioning workflow — `RequestUniqueID` through `ProvideID` carrying the
+real value 1111-2222-3333 — placed on the timeline **before** the participant's first slice, which
+consumes that value.
+
+The boundary is equally explicit. Asked what events a running system yields, he names *"started at
+the time it stayed up for a week"* and disqualifies them — *"those are non-business specific ones"*
+(machine transcript). So the split is: **provisioning that originates information the model
+consumes belongs on the timeline at the logical start; bare lifecycle facts do not.** The missing
+step here passes that test on the first half — it is named by what it originates, the configured
+identity, not by the lifecycle fact that a process started.
+
+### What the previous step would be — two shapes, neither chosen
+
+**Shape A — configuration is ours.** An operator-lane Command Slice, walked once per service
+lifetime, and the model's true origin:
+
+| 🟦 C · Step 0 | `ConfigureService` — *sketch, not in the model* |
+|:--|:--|
+| Operator | ⬛ *no SMTP bytes — the wire-row defect step 1 already carries* |
+| | 🟦 **ConfigureService**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`listen_address`: 192.0.2.10:25&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready |
+| Event | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`listen_address`: 192.0.2.10:25&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready |
+| Given | 🟤 |
+
+The 🟤 moves back one step and is finally carrying its full weight: this is the element with no
+inbound dependency, which the corpus calls the model's origin.
+
+**Shape B — configuration is someone else's.** The `RecipientDirectory` precedent: a 🟨 `Given`,
+translated from a **Configuration context**, external and deferred. No new slice of ours; a typed
+boundary instead.
+
+The corpus supports both and then collapses the distinction — the book, on a value arriving by
+notification or by hand: *"From the system perspective - it could as well be a simple API Call, a
+Webhook or a manual price configuration. From the process-perspective, it´s basically all the same
+operation."* It is also in verified conflict with itself about whether technical configuration
+belongs on the model at all — the installer passages above against *"it can be put into a side
+project called infrastructure"* (DDD Greece meetup, machine transcript) — so the choice is genuinely
+ours to make, and it is not made here.
+
+### What the repaired chain looks like
+
+| Step | `Given` today | Under either shape |
+|:--|:--|:--|
+| `ServiceReady` (step 2) | 🟧 **ConnectionAccepted** | gains the origin — **required**; it renders `server_domain` and the text |
+| `SessionState` (step 4) | 🟧 two events | gains the origin — required **only while the walk renders** `250` foo.com; see the tier note below |
+| `SessionClosing` (step 15) | 🟧 **SessionClosed** | gains the origin — required; `221` is greeting-type |
+| `AcceptConnection` (step 1) | 🟤 | **separable, and not forced.** A listener bound to `listen_address` is a real precondition, but the binding and the naming are different facts, and the binding has no consumer anywhere in this walk — under *admitted by consumer* it does not earn the dependency on its own |
+
+⚠️ **The three renderings of foo.com sit on three different strengths, and the walk had them flat.**
+The `220` is **grammar** — (`Domain` / `address-literal`), mandatory. The `221` is **greeting-type**
+— the §4.3.1 note plus §4.2.2's function group, where `220`, `221` and `421` are the only codes shown
+\<domain>-first. But the `250` after `HELO` rests on **prose alone**: the `ehlo-ok-rsp` ABNF is
+introduced for EHLO's reply and nothing defines a HELO reply syntax — it falls back to `Reply-line`,
+which requires no domain. What remains is §4.1.1.1: *"The SMTP server identifies itself to the SMTP
+client in the connection greeting reply and in the response to this command"* — descriptive, no
+MUST. Step 4's flagged gap is real, and it is the weakest of the three. (Appendix D corroborates
+nothing either way: all four of its scenarios open with `EHLO`; no HELO exchange appears anywhere in
+it. The original path's *the dialogue is ours* flag was already carrying that fact.)
+
+⚠️ **The refused-greeting renderings still need the session to exist.** §3.1 on the `554` opening:
+the server **MUST** *"still wait for the client to send a QUIT"* and **SHOULD** *"respond to any
+intervening commands with "503 bad sequence of commands""* — one MUST, one SHOULD, kept apart on
+purpose. A refused session therefore still runs to `Quit`, which means `ConnectionAccepted` still
+fires on that path — and that collides with the model's older contract, *reply 554, no event*. Not
+resolved here; if this form is adopted, that contract takes a rule 4 correction rather than a quiet
+edit. (RFC 7504 differs for `521`: after it, the server *"MAY either continue sending 521 reply
+codes or simply close the connection"* — the wait is not a MUST there.)
+
+### What this is adjacent to, and deliberately does not touch
+
+**H6, adjacent but not identical.** H6 as recorded chooses between two *sources* for one output —
+is `Received:`'s `BY` config or `local_address`. This finding is a different decision about the same
+topic: the *entry mechanism* for configuration itself. Either arm of H6 can close and the greeting
+still needs the configured name; either shape here can be picked and `BY`'s source is still open.
+What the backward walk adds to H6 is scope: the same missing origin feeds the `220`, the `221`, the
+`250` after `HELO` at prose strength, and — on H6's config arm — the `BY` clause.
+
+**H7, narrower than it looks from here.** H7 governs only the `521` rendering, the
+never-accepts-mail mode. The `554` blocklist branch is a separate product policy and survives H7
+closing either way — so `accepting` does **not** collapse to a constant merely because H7 closes as
+*never*.
+
+**And no slice is being proposed.** Same discipline as the four named views above: *that* a step
+precedes step 1 is established — by the greeting's grammar, the completeness check, and the corpus's
+own installer terminus. *What it is called, which lane holds it, and whether it is a slice of ours
+or a translation boundary* is a decision this document deliberately leaves open.
