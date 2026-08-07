@@ -121,20 +121,43 @@ Fill in from all three. A token needs **one break in every column** to be usable
 
 | | Token | GitHub | Claude Android | Claude Code desktop | Usable |
 |:--|:--|:--|:--|:--|:--|
-| A | `<br>` | ✅ one | | | |
-| B | `&#10;` | ❌ none | | | |
-| C | `&#10;<br>` | ✅ one | | ⚠️ extra gap reported | |
-| D | `<br/>` | ✅ one | | | |
-| E | `<br>&#10;` | ✅ one | | | |
-| F | `&#xA;` | ❌ none | | | |
-| G | `&NewLine;` | ❌ none | | | |
-| J | separate rows | ✅ n/a | | | **cannot fail** |
+| A | `<br>` | ✅ one | ❌ **none — words FUSE** | | ❌ |
+| B | `&#10;` | ❌ none | ✅ one | | ❌ |
+| C | `&#10;<br>` | ✅ one | ✅ one | ⚠️ extra gap | **candidate** |
+| D | `<br/>` | ✅ one | ❌ **none — words FUSE** | | ❌ |
+| E | `<br>&#10;` | ✅ one | ✅ one | **untested** | **candidate** |
+| F | `&#xA;` | ❌ none | ✅ one | | ❌ |
+| G | `&NewLine;` | ❌ none | ✅ one | | ❌ |
+| J | separate rows | ✅ n/a | ✅ n/a | ✅ n/a | **cannot fail** |
 
----
+### The phone, tested 2026-08-07
 
-## Prediction, written before the phone was looked at
+**The 2026-08-06 rule is vindicated, not overturned.** The Android app strips `<br>` exactly as
+recorded, and test A reproduced the original silent failure verbatim: `ONE<br>TWO` rendered as
+**ONETWO**, fused, with no space and nothing to notice. Test I showed the real damage — a three-field
+payload with `<br>` only collapses into an unreadable run-on.
 
-Kept unedited afterward, per the practice in [`EXPERIMENT-text-color.md`](EXPERIMENT-text-color.md).
+Every entity form breaks correctly on the phone and every tag form fails. GitHub is the exact
+inverse. **There is no single token that works in both**, which is why the rule pairs them, and the
+pairing was right.
+
+**Only C and E survive GitHub and the phone together.** They differ only in the order of the two
+halves, and **E has never been tested on the desktop** — if the gap comes from the entity being
+rendered before the tag rather than after, E may not produce it. That is the one cheap thing left to
+try before falling back to J.
+
+## Prediction, written before the phone was looked at — ❌ **WRONG**
+
+Kept unedited below, per the practice in [`EXPERIMENT-text-color.md`](EXPERIMENT-text-color.md).
+
+⚠️ **It predicted A would pass. A failed, and fused the words.** The evidence cited was real — the
+Android app *was* seen honoring a bare `<br>` on 2026-08-07 — but that sighting was inside a **raw
+HTML block**, and this test is a **markdown table cell**. The prediction names that difference in its
+own second sentence, calls it *"a different context, so it does not settle this"*, and then predicts
+as though it did.
+
+**Flagging a caveat is not the same as applying it.** The wrong half of the reasoning was written
+down, correctly labeled, and used anyway.
 
 **A will pass on the phone, and `<br>` alone will be the answer.** The reasoning is that the Android
 app was seen honoring a bare `<br>` on 2026-08-07, inside the raw HTML block of variant C in the
