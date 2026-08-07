@@ -63,10 +63,10 @@ Three trial decisions, made so they can be judged:
 
 **No forward pointers.** The block states what must exist and with which values — it does not say
 which steps consume what. That is the `Consumed by` kill applied at path level: consumers declare
-their own dependencies, and a consumption list here would go stale the same way. The cost is
-visible immediately: steps 2, 4 and 15 render `server_domain` **without declaring it**, and this
-trial deliberately does not edit their `Given` rows — one change at a time, and the mismatch is
-already tabulated in *What the repaired chain looks like* below.
+their own dependencies, and a consumption list here would go stale the same way. The first pass
+deliberately left steps 2, 4 and 15 rendering `server_domain` **without declaring it** — one
+change at a time; a second pass the same day added the 🟨 `Given` to all three, so the
+declarations now live where they belong, on the consumers.
 
 **Both kinds of outside are in one block, told apart by annotation.** `ServiceConfigured` is ours
 and merely earlier; the Directory translation is another context's. One chip, two claims — the
@@ -83,32 +83,34 @@ alone. Left in so the trial tests the larger block.
 
 ## The walk
 
-### 🟦 C · Step 1 · `AcceptConnection`
-
-⚠️ **Known wrong, deliberately not fixed here.** Flagged on 2026-08-07 and deferred. Carried
-forward unchanged so this document differs from the original in *one* dimension only.
-
 | 🟦 C · Step 1 | `AcceptConnection` |
 |:--|:--|
-| MTA Client | ⬛ *TCP connection accepted — no SMTP bytes yet* |
 | | 🟦 **AcceptConnection**&#10;<br>&nbsp;&nbsp;`peer_address`: 203.0.113.20&#10;<br>&nbsp;&nbsp;`local_address`: 192.0.2.10:25 |
 | Event | 🟧 **ConnectionAccepted**&#10;<br>&nbsp;&nbsp;`peer_address`: 203.0.113.20&#10;<br>&nbsp;&nbsp;`local_address`: 192.0.2.10:25 |
 | Given | 🟤 |
 
-### 🟩 V · Step 2 · `ServiceReady` &nbsp;🟥 **not in the model**
+⚠️ **Reworked 2026-08-07 — this step carried a *known wrong* disclaimer, resolved as follows.** Two
+things were wrong, both inherited from the original walk. The top row said **MTA Client**, and the
+client is not this command's actor — it sends no bytes; the fields are *"determined from the TCP
+connection"*, §4.4's words, in the one place the RFC names the transport. And the wire row held
+prose instead of wire, because there is no wire to hold. The fix is the same absence a consulted
+view already uses: **a step whose actor is outside the model gets no top row.** The transport stays
+unmodeled; its two facts are lifted across the boundary because the trace header — the fifth
+output, below — consumes `peer_address`. The `Given` stays 🟤: the listener this accept presupposes
+is real, but nothing in this walk consumes the binding fact, and a dependency nothing consumes is
+not declared.
 
-| 🟩 V · Step 2 | `ServiceReady` &nbsp;🟥 |
+| 🟩 V · Step 2 | `ServiceReady` &nbsp;🟥 *not in the model* |
 |:--|:--|
 | MTA Client | ⬛ `220` foo.com Simple Mail Transfer Service Ready |
 | | 🟩 **ServiceReady**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`accepting`: true |
-| Given | 🟧 **ConnectionAccepted** |
+| Given | 🟨 **ServiceConfigured** — *preamble*&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready&#10;<br>🟧 **ConnectionAccepted** |
 | Where | `session_id` = 01J8Z… |
 
-⚠️ **No such read model exists.** `server_domain` is configuration, which is **H6**. The greeting was
-previously just text on a command's wire row; giving it a view forces the question of what state
-produced it.
-
-### 🟦 C · Step 3 · `Helo`
+⚠️ **No such read model exists.** `server_domain` is configuration, which is **H6**. The greeting
+was previously just text on a command's wire row; giving it a view forced the question of what
+state produced it — and the answer is now declared: the `Given` carries the preamble's
+🟨 **ServiceConfigured**, fields included, per the trial at the top.
 
 | 🟦 C · Step 3 | `Helo` |
 |:--|:--|
@@ -117,18 +119,17 @@ produced it.
 | Event | 🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP |
 | Given | 🟧 **ConnectionAccepted** |
 
-### 🟩 V · Step 4 · `SessionState`
-
 | 🟩 V · Step 4 | `SessionState` |
 |:--|:--|
 | MTA Client | ⬛ `250` foo.com |
 | | 🟩 **SessionState**&#10;<br>&nbsp;&nbsp;`identified`: true&#10;<br>&nbsp;&nbsp;`transaction_open`: false |
-| Given | 🟧 **ConnectionAccepted**&#10;<br>🟧 **ClientIdentified** |
+| Given | 🟨 **ServiceConfigured** — *preamble*&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **ConnectionAccepted**&#10;<br>🟧 **ClientIdentified** |
 | Where | `session_id` = 01J8Z… |
 
-⚠️ **The reply renders `foo.com` and this view does not carry it.** Same gap as step 2.
-
-### 🟦 C · Step 5 · `MailFrom`
+⚠️ **The reply renders `foo.com` and this view does not carry it.** Was *same gap as step 2*; the
+`Given` now declares the origin, which narrows it. What remains: either `SessionState` gains a
+`server_domain` field, or the rendering draws the value straight from the folded 🟨 event. The
+trial deliberately does not choose.
 
 | 🟦 C · Step 5 | `MailFrom` |
 |:--|:--|
@@ -137,8 +138,6 @@ produced it.
 | Event | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
 | Given | 🟧 **ClientIdentified** |
 
-### 🟩 V · Step 6 · `TransactionState`
-
 | 🟩 V · Step 6 | `TransactionState` |
 |:--|:--|
 | MTA Client | ⬛ `250` OK |
@@ -146,17 +145,13 @@ produced it.
 | Given | 🟧 **MailTransactionStarted** |
 | Where | `session_id` = 01J8Z… |
 
-### 🟩 V · Step 7 · `RecipientDirectory` &nbsp;*(consulted — renders nothing)*
-
 **No top row.** Nothing is drawn to any actor; `RcptTo` declares this dependency in its own `Given`.
 
-| 🟩 V · Step 7 | `RecipientDirectory` &nbsp;*(translation boundary — H3)* |
+| 🟩 V · Step 7 | `RecipientDirectory` &nbsp;*(consulted · translation boundary — H3)* |
 |:--|:--|
 | | 🟩 **RecipientDirectory**&#10;<br>&nbsp;&nbsp;`is_local`: true |
 | Given | 🟨 translated from the **Directory context** — external, deferred |
 | Where | `forward_path` = \<Jones@foo.com> |
-
-### 🟦 C · Step 8 · `RcptTo`
 
 | 🟦 C · Step 8 | `RcptTo` |
 |:--|:--|
@@ -165,16 +160,12 @@ produced it.
 | Event | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 | Given | 🟧 **MailTransactionStarted**&#10;<br>🟨 **Directory translation** — *no event of ours* |
 
-### 🟩 V · Step 9 · `TransactionState` &nbsp;*(second traversal)*
-
-| 🟩 V · Step 9 | `TransactionState` |
+| 🟩 V · Step 9 | `TransactionState` &nbsp;*(second traversal)* |
 |:--|:--|
 | MTA Client | ⬛ `250` OK |
 | | 🟩 **TransactionState**&#10;<br>&nbsp;&nbsp;`open`: true&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipient_count`: 1 |
-| Given | 🟧 **MailTransactionStarted**&#10;🟧 **RecipientAccepted** |
+| Given | 🟧 **MailTransactionStarted**&#10;<br>🟧 **RecipientAccepted** |
 | Where | `session_id` = 01J8Z… |
-
-### 🟦 C · Step 10 · `BeginData` &nbsp;🟥 **H1**
 
 | 🟦 C · Step 10 | `BeginData` &nbsp;🟥 **H1** |
 |:--|:--|
@@ -183,16 +174,12 @@ produced it.
 | Event | 🟧 **DataPhaseEntered**&#10;<br>&nbsp;&nbsp;*no payload* |
 | Given | 🟧 **MailTransactionStarted**&#10;<br>🟧 **RecipientAccepted** |
 
-### 🟩 V · Step 11 · `DataPrompt` &nbsp;🟥 **not in the model — but see H1 below**
-
-| 🟩 V · Step 11 | `DataPrompt` &nbsp;🟥 |
+| 🟩 V · Step 11 | `DataPrompt` &nbsp;🟥 *not in the model — see H1 below* |
 |:--|:--|
 | MTA Client | ⬛ `354` Start mail input; end with `<CRLF>.<CRLF>` |
 | | 🟩 **DataPrompt**&#10;<br>&nbsp;&nbsp;`awaiting_content`: true |
 | Given | 🟧 **DataPhaseEntered** |
 | Where | `session_id` = 01J8Z… |
-
-### 🟦 C · Step 12 · `SubmitContent`
 
 | 🟦 C · Step 12 | `SubmitContent` |
 |:--|:--|
@@ -201,9 +188,7 @@ produced it.
 | Event | 🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipients`: [\<Jones@foo.com>]&#10;<br>&nbsp;&nbsp;`content_ref`: blob:sha256:9c1e…&#10;<br>&nbsp;&nbsp;`actual_octets`: 194&#10;<br>&nbsp;&nbsp;`received_at`: 1998-05-19T09:14:07-07:00 |
 | Given | 🟧 **DataPhaseEntered** |
 
-### 🟩 V · Step 13 · `MessageQueued` &nbsp;🟥 **not in the model**
-
-| 🟩 V · Step 13 | `MessageQueued` &nbsp;🟥 |
+| 🟩 V · Step 13 | `MessageQueued` &nbsp;🟥 *not in the model* |
 |:--|:--|
 | MTA Client | ⬛ `250` OK |
 | | 🟩 **MessageQueued**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`accepted`: true |
@@ -214,8 +199,6 @@ produced it.
 we have accepted responsibility for delivering or reporting failure — RFC 5321 §2.1. **The `250` is
 the moment the client learns that**, which the original walk did not make a step of its own.
 
-### 🟦 C · Step 14 · `Quit`
-
 | 🟦 C · Step 14 | `Quit` |
 |:--|:--|
 | MTA Client | ⬛ `QUIT` |
@@ -223,13 +206,11 @@ the moment the client learns that**, which the original walk did not make a step
 | Event | 🟧 **SessionClosed**&#10;<br>&nbsp;&nbsp;`cause`: quit |
 | Given | 🟧 **ConnectionAccepted** |
 
-### 🟩 V · Step 15 · `SessionClosing` &nbsp;🟥 **not in the model**
-
-| 🟩 V · Step 15 | `SessionClosing` &nbsp;🟥 |
+| 🟩 V · Step 15 | `SessionClosing` &nbsp;🟥 *not in the model* |
 |:--|:--|
 | MTA Client | ⬛ `221` foo.com Service closing transmission channel |
 | | 🟩 **SessionClosing**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`cause`: quit |
-| Given | 🟧 **SessionClosed** |
+| Given | 🟨 **ServiceConfigured** — *preamble*&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **SessionClosed** |
 | Where | `session_id` = 01J8Z… |
 
 ---
@@ -563,6 +544,11 @@ ours to make, and it is not made here.
 
 ### What the repaired chain looks like
 
+⚠️ **Implemented later the same day.** The *Required first* trial at the top of this document is
+this table's repair in 🟨 form: steps 2, 4 and 15 now carry the declaration, and step 1 keeps 🟤
+exactly as the last row argues. The table is left as written — it is the reasoning that produced
+the preamble.
+
 | Step | `Given` today | Under either shape |
 |:--|:--|:--|
 | `ServiceReady` (step 2) | 🟧 **ConnectionAccepted** | gains the origin — **required**; it renders `server_domain` and the text |
@@ -618,7 +604,8 @@ Asked directly: does any step in this walk ever reference `ConnectionAccepted`'s
 and every one is the existence degree: the event happened, nothing about its contents.
 `peer_address` and `local_address` appear at step 1 and never again. Wider than that: **every
 `Given` in the fifteen steps is existence-only** — the whole walk runs without a single data-degree
-dependency.
+dependency. *(True when written. The preamble's second pass later added data-degree 🟨 entries to
+steps 2, 4 and 15; `ConnectionAccepted`'s fields remain unreferenced, so the finding stands.)*
 
 The two fields sit in that position for two different reasons.
 
