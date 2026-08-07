@@ -191,11 +191,17 @@ They are long here on purpose. State what changed, **why**, and what was rejecte
 records a correction should say what the old claim was — the message is often the only place the
 superseded reasoning survives.
 
-End with:
+End with a `Co-Authored-By` trailer naming **the agent and model that actually wrote the commit**.
+The point of the rule is disclosure — that AI helped, and which agent and model it was — not any
+particular name. So the line varies with the author: Claude Opus 5, Claude Sonnet 5, Claude Fable 5,
+Codex, or any other agent, each under its own attribution address. For a Claude model:
 
 ```
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
 ```
+
+Do not copy the trailer from an earlier commit — earlier commits name earlier models. State what is
+true for *this* commit.
 
 ## 7. Nothing third-party enters this repository
 
