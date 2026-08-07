@@ -16,7 +16,7 @@ The slice as it stands today in
 
 | 🟦 C · Step 6 | `RcptTo` |
 |:--|:--|
-| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com>&#10;<br>`250` OK |
+| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com> |
 | | 🟦 **RcptTo** |
 | Event | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 
@@ -29,12 +29,18 @@ invented, and one of them is a MUST:
 
 | Scenario | Outcome | Source |
 |:--|:--|:--|
-| recipient is local | `250` OK → **RecipientAccepted** | D.1 |
+| recipient is local | **RecipientAccepted** | D.1 |
 | recipient is not local | `550` No such user here | §3.3 line 1072; the string is D.1's own |
 | no `MAIL FROM` yet | `503` Bad sequence of commands | §4.1.1.3 — *"the server MUST return a 503"* |
 
-Three scenarios, and they grow: each has one more event in its history than the last. That ordering
-is deliberate — see *increasing complexity* in
+**The `Given` holds events only.** Whether a recipient is local is a *read model*, derived from
+events rather than being one, so it never appears in a `Given`. The local and non-local scenarios
+therefore share an identical history and are told apart by **the address in the `When`** —
+\<Jones@foo.com> is local, \<Green@foo.com> is not. That is D.1's own pairing, and it puts the
+distinguishing value in the command's argument where it belongs.
+
+Ordering still matters: scenarios are written shortest-history-first, so each earns its rule from the
+event that makes it necessary — *increasing complexity* in
 `research/archive/open-spaces-comocamp/_WITNESS.md`.
 
 ⚠️ **An unresolved conflict, flagged before it gets embedded.** 🟥 already means **hotspot** in this
@@ -50,10 +56,10 @@ uses 🟥 for it, which silently overloads the chip. Options are a different chi
 
 | 🟦 C · Step 6 | `RcptTo` |
 |:--|:--|
-| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com>&#10;<br>`250` OK |
+| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com> |
 | | 🟦 **RcptTo** |
 | Event | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
-| **Given** | 🟧 **MailTransactionStarted** · 🟩 `RecipientDirectory.is_local`: true |
+| **Given** | 🟧 **MailTransactionStarted** |
 | **When** | 🟦 **RcptTo** \<Jones@foo.com> |
 | **Then** | 🟧 **RecipientAccepted** |
 
@@ -63,10 +69,10 @@ uses 🟥 for it, which silently overloads the chip. Options are a different chi
 
 | 🟦 C · Step 6 | `RcptTo` |
 |:--|:--|
-| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com>&#10;<br>`250` OK |
+| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com> |
 | | 🟦 **RcptTo** |
 | Event | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
-| ⬅ **G** | 🟧 **MailTransactionStarted** · 🟩 `is_local`: true |
+| ⬅ **G** | 🟧 **MailTransactionStarted** |
 | ⚡ **W** | 🟦 **RcptTo** \<Jones@foo.com> |
 | ➡ **T** | 🟧 **RecipientAccepted** |
 
@@ -74,16 +80,16 @@ uses 🟥 for it, which silently overloads the chip. Options are a different chi
 
 | 🟦 C · Step 6 | `RcptTo` |
 |:--|:--|
-| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com>&#10;<br>`250` OK |
+| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com> |
 | | 🟦 **RcptTo** |
 | Event | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
-| Spec | **Given** 🟧 **MailTransactionStarted** · 🟩 `is_local`: true&#10;<br>**When** 🟦 **RcptTo** \<Jones@foo.com>&#10;<br>**Then** 🟧 **RecipientAccepted** |
+| Spec | **Given** 🟧 **MailTransactionStarted**&#10;<br>**When** 🟦 **RcptTo** \<Jones@foo.com>&#10;<br>**Then** 🟧 **RecipientAccepted** |
 
 ## V4 · One row, inline
 
 | 🟦 C · Step 6 | `RcptTo` |
 |:--|:--|
-| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com>&#10;<br>`250` OK |
+| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com> |
 | | 🟦 **RcptTo** |
 | Event | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 | Spec | 🟧 **MailTransactionStarted** → 🟦 **RcptTo** → 🟧 **RecipientAccepted** |
@@ -92,8 +98,8 @@ uses 🟥 for it, which silently overloads the chip. Options are a different chi
 
 | 🟦 C · Step 6 | `RcptTo` |
 |:--|:--|
-| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com>&#10;<br>`250` OK |
-| **Given** | 🟧 **MailTransactionStarted** · 🟩 `is_local`: true |
+| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com> |
+| **Given** | 🟧 **MailTransactionStarted** |
 | **When** | 🟦 **RcptTo** \<Jones@foo.com> |
 | **Then** | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 
@@ -107,19 +113,19 @@ uses 🟥 for it, which silently overloads the chip. Options are a different chi
 
 | 🟦 C · Step 6 | `RcptTo` |
 |:--|:--|
-| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com>&#10;<br>`250` OK |
+| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com> |
 | | 🟦 **RcptTo** |
 | Event | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 
 | Recipient is local | ✓ |
 |:--|:--|
-| **Given** | 🟧 **MailTransactionStarted** · 🟩 `is_local`: true |
+| **Given** | 🟧 **MailTransactionStarted** |
 | **When** | 🟦 **RcptTo** \<Jones@foo.com> |
 | **Then** | 🟧 **RecipientAccepted** |
 
 | Recipient is not local | ✗ |
 |:--|:--|
-| **Given** | 🟧 **MailTransactionStarted** · 🟩 `is_local`: false |
+| **Given** | 🟧 **MailTransactionStarted** |
 | **When** | 🟦 **RcptTo** \<Green@foo.com> |
 | **Then** | 🟥 `550` No such user here |
 
@@ -129,7 +135,7 @@ Matches Fig. 13.6, where `Given`/`When`/`Then` are row labels and each scenario 
 
 | | Local | Not local | No transaction |
 |:--|:--|:--|:--|
-| **Given** | 🟧 **MailTransactionStarted**&#10;<br>🟩 `is_local`: true | 🟧 **MailTransactionStarted**&#10;<br>🟩 `is_local`: false | 🟧 **ClientIdentified** |
+| **Given** | 🟧 **MailTransactionStarted** | 🟧 **MailTransactionStarted** | 🟧 **ClientIdentified** |
 | **When** | 🟦 **RcptTo** \<Jones@foo.com> | 🟦 **RcptTo** \<Green@foo.com> | 🟦 **RcptTo** \<Jones@foo.com> |
 | **Then** | 🟧 **RecipientAccepted** | 🟥 `550` No such user here | 🟥 `503` Bad sequence of commands |
 
@@ -139,8 +145,8 @@ Matches Fig. 13.6, where `Given`/`When`/`Then` are row labels and each scenario 
 
 | Scenario | Given | When | Then |
 |:--|:--|:--|:--|
-| Local | 🟧 **MailTransactionStarted** · 🟩 `is_local`: true | 🟦 **RcptTo** \<Jones@foo.com> | 🟧 **RecipientAccepted** |
-| Not local | 🟧 **MailTransactionStarted** · 🟩 `is_local`: false | 🟦 **RcptTo** \<Green@foo.com> | 🟥 `550` No such user here |
+| Local | 🟧 **MailTransactionStarted** | 🟦 **RcptTo** \<Jones@foo.com> | 🟧 **RecipientAccepted** |
+| Not local | 🟧 **MailTransactionStarted** | 🟦 **RcptTo** \<Green@foo.com> | 🟥 `550` No such user here |
 | No transaction | 🟧 **ClientIdentified** | 🟦 **RcptTo** \<Jones@foo.com> | 🟥 `503` Bad sequence of commands |
 
 *The corpus says 5–20 scenarios per command handler. This is the only form that survives twenty.*
@@ -152,7 +158,7 @@ Matches Fig. 13.6, where `Given`/`When`/`Then` are row labels and each scenario 
 ## V9 · Blockquote per scenario
 
 > **Recipient is local** ✓
-> **Given** 🟧 **MailTransactionStarted** · 🟩 `is_local`: true
+> **Given** 🟧 **MailTransactionStarted**
 > **When** 🟦 **RcptTo** \<Jones@foo.com>
 > **Then** 🟧 **RecipientAccepted**
 
@@ -164,11 +170,11 @@ Matches Fig. 13.6, where `Given`/`When`/`Then` are row labels and each scenario 
 ## V10 · Nested list
 
 - **Recipient is local** ✓
-  - **Given** 🟧 **MailTransactionStarted** · 🟩 `is_local`: true
+  - **Given** 🟧 **MailTransactionStarted**
   - **When** 🟦 **RcptTo** \<Jones@foo.com>
   - **Then** 🟧 **RecipientAccepted**
 - **Recipient is not local** ✗
-  - **Given** 🟧 **MailTransactionStarted** · 🟩 `is_local`: false
+  - **Given** 🟧 **MailTransactionStarted**
   - **When** 🟦 **RcptTo** \<Green@foo.com>
   - **Then** 🟥 `550` No such user here
 
@@ -177,7 +183,6 @@ Matches Fig. 13.6, where `Given`/`When`/`Then` are row labels and each scenario 
 ```gherkin
 Scenario: Recipient is local
   Given MailTransactionStarted(reverse_path: <Smith@bar.com>)
-    And RecipientDirectory(is_local: true)
    When RcptTo(<Jones@foo.com>)
    Then RecipientAccepted(forward_path: <Jones@foo.com>)
 
@@ -228,7 +233,7 @@ Dymitruk on a whiteboard: *"put a big number one here and then number one down b
 
 | 🟦 C · Step 6 · ① | `RcptTo` |
 |:--|:--|
-| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com>&#10;<br>`250` OK |
+| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com> |
 | | 🟦 **RcptTo** |
 | Event | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 
@@ -236,8 +241,8 @@ Specs collected at the end of the walk, keyed back:
 
 | ① `RcptTo` | Given | When | Then |
 |:--|:--|:--|:--|
-| Local | 🟧 **MailTransactionStarted** · 🟩 `is_local`: true | 🟦 **RcptTo** \<Jones@foo.com> | 🟧 **RecipientAccepted** |
-| Not local | 🟧 **MailTransactionStarted** · 🟩 `is_local`: false | 🟦 **RcptTo** \<Green@foo.com> | 🟥 `550` No such user here |
+| Local | 🟧 **MailTransactionStarted** | 🟦 **RcptTo** \<Jones@foo.com> | 🟧 **RecipientAccepted** |
+| Not local | 🟧 **MailTransactionStarted** | 🟦 **RcptTo** \<Green@foo.com> | 🟥 `550` No such user here |
 
 *Keeps the walk readable at the cost of making the reader jump. The corpus uses this for a 2D board
 where the spec is visible below; in a scrolling document the jump is much longer.*
@@ -266,10 +271,11 @@ where the spec is visible below; in a scrolling document the jump is much longer
 **Three questions the choice actually turns on**, none of which is about looks. Answered
 2026-08-07 — two settled, one open.
 
-1. **Does a step get one scenario or many?** ⚠️ **Open, leaning few.** The inclination is that a step
-   carries only what is at hand for *that* walk — its own data, examples and specifications — rather
-   than the full set belonging to the handler. If that holds, the 5-to-20 figure never lands on a
-   step at all and V1–V5 are not ruled out by size.
+1. **Does a step get one scenario or many?** ✅ **Only its own walk's scenarios.** A step carries what
+   is at hand for *that* traversal and nothing else. **The 5-to-20 figure never lands on a step**, so
+   the size objection that ruled out V1–V5 does not apply and the whole field is back open. It lands
+   instead on the *slice*, where the per-step sets accumulate — and a slice may well want a different
+   form from a step, since V8 and V13 are the only ones that survive twenty.
 2. **Does the spec belong to the step or to the slice?** ✅ **Both, in one direction.** The step
    carries its local set; those sets are then combined and deduplicated across every walk, and that
    union *is* the slice. So a specification is authored at the step and **accumulates** at the slice.
