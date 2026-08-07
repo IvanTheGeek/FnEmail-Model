@@ -8,38 +8,80 @@ moment, with the actual bytes that crossed the wire and the actual field values 
 
 ---
 
-## The form
+## The form — a Command Slice
 
-A step is a heading, a slice table, and a contract.
+Everything lives in one table. There is no heading above it and no contract below it; the header row
+carries the identity and the last row carries the dependency.
 
-```
-### 🟦C · Step N · `SliceName`
-```
-
-- **🟦C** or **🟩V** — Command Slice or View Slice. Same marker the model uses, with the chip
-  carrying the color so the type is visible before the name is read.
-- **N** is the position in *this walk*. Unlike slice numbers it is not arbitrary — a walk is one
-  concrete conversation, and step 4 genuinely happened after step 3. See `../HANDOFF.md`
-  convention 8 for why slices themselves are named rather than numbered.
-- **`SliceName`** matches the heading in `../event-model.md` exactly.
-
-Then the slice, in the convention from [`../diagrams/README.md`](../diagrams/README.md): rows are
-element types, chips carry the type, `&#10;<br>` breaks a line.
-
-**The table's header row is empty.** The heading directly above it already gives the type and the
-name, and repeating them one line later is noise in a document that stacks ten of these. Markdown
-cannot omit a header row — the cells are left blank, which renders as a thin empty band.
-
-| | |
+| 🟦 C · Step 2 | `Helo` |
 |:--|:--|
-| ⬛ **Actor** | `C: HELO` bar.com&#10;<br>`S: 250` foo.com |
-| 🟦 **Command** | **Helo** |
-| 🟧 **Event** | **ClientIdentified**&#10;<br>`claimed_domain`: bar.com · `protocol`: SMTP |
+| MTA Client | ⬛ `HELO` bar.com&#10;<br>`250` foo.com |
+| | 🟦 **Helo**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP |
+| Event | 🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP |
+| Given | 🟧 **ConnectionAccepted** |
 
-Then the contract, which is what makes it a *walk* rather than a picture:
+**The header row** is `🟦 C · Step N` and the slice name. **N** is the position in *this walk* —
+unlike a slice number it is not arbitrary, because a walk is one concrete conversation and step 4
+genuinely happened after step 3. The name matches `../event-model.md` exactly. See `../HANDOFF.md`
+convention 8 for why slices are named rather than numbered.
 
-> **Pre** — `ConnectionAccepted` exists ✓
-> **Post** — `ClientIdentified` emitted ✓
+**The left column names the participant, not the element type.** The wire row is the actor, the
+event row is `Event`, the dependency row is `Given` — and **the command row's label is blank**. That
+blank is deliberate: the middle row *is the slice itself*, which the header named one line above, so
+labeling it would state the name a third time.
+
+⚠️ **The command carries the fields it takes from the actor.** A bare command name breaks the
+completeness check — every field needs an origin, and the command is the origin for everything the
+client supplies. Where the command and event rows look nearly identical, that is the check
+**passing**: a value arriving and being stored unchanged. Where they diverge, something is derived,
+generated or dropped, and that is visible at a glance.
+
+⚠️ **`Given` is last, and it is the only row that can be wrong.** The command and event rows are
+*observations* of what the walk did. A `Given` is a **claim** about what the step depends on.
+
+## The `Given` row
+
+**One event per row.** The label is carried by the first row only; continuation rows leave it blank,
+the same idiom the command row uses.
+
+| Degree | Means | Written as |
+|:--|:--|:--|
+| **nothing** | this step depends on no previous event | ⚪ |
+| **the event exists** | it must have happened; nothing about its contents | 🟧 **EventName** |
+| **the event and its data** | specific fields must match | **the Event row's own layout** |
+
+**It is the minimal dependency, not the accumulated history.** Dymitruk's convention is that a given
+is every previous row, so a test runner *"can always just use an accumulator to add events"*. That
+exists for a runner, which has no walk to read. Here the walk is on the page, so restating it would
+be redundant — `RcptTo` has three events above it and depends on one. **A deliberate departure.**
+
+**A dependency with no event of ours is still written down**, marked 🟨 and stated as external. That
+is what keeps a translation boundary visible at the step where it bites rather than hidden behind a
+read-model name.
+
+⚠️ **The degree-0 marker is provisional.** ⚪ is in use; alternatives are under test in
+[`EXPLORE-gwt-form.md`](EXPLORE-gwt-form.md). It also marks a command that supplies no fields —
+`BeginData` and `Quit` are bare verbs — so one marker covers *nothing required* and *nothing
+supplied*.
+
+---
+
+## A View Slice is different, and is being reworked
+
+**A View Slice has no wire.** Nothing crosses the network to build a read model. Its top row names
+the **consumer**, its bottom row names the **source events**, and it reads bottom to top.
+
+| 🟩 V · Step 3 | `SessionState` |
+|:--|:--|
+| Consumed by | ⬜ `MailFrom` · `RcptTo` · `BeginData` |
+| | 🟩 **SessionState**&#10;<br>&nbsp;&nbsp;`identified`: true&#10;<br>&nbsp;&nbsp;`transaction_open`: false |
+| Sources | 🟧 **ConnectionAccepted** · **ClientIdentified** |
+
+⚠️ **This form predates the Command Slice rework and has not been brought onto it.** It has no
+`Given` row and its rows are still ordered consumer-first. Deliberately left alone — see
+[`EXPLORE-view-slice.md`](EXPLORE-view-slice.md). **Do not pattern it on the Command Slice without
+that work being done**, because the corpus disagrees with itself about whether a view even has a
+`When`.
 
 ---
 
@@ -51,22 +93,15 @@ dialogue in its own form. But §2.4 says a verb *"MAY be encoded in upper case, 
 mixture … with no impact on its meaning"*. Do not read the caps in these paths as normative, and
 never use case to carry meaning — see `../event-model.md` → *Case sensitivity*.
 
-**The Actor row holds the wire, verbatim.** `C:` is the client, `S:` is us. Reply codes are exact,
-including the text after them. This is the row a reader follows to reconstruct the conversation —
-which is why this project needs no sequence diagram (see `../diagrams/README.md` §7).
-
-**A View Slice has no wire.** Nothing crosses the network to build a read model. Its Actor row
-names the **consumer** instead, and its bottom row names the **source events** rather than an
-emitted one. A View Slice reads bottom to top.
-
-| | |
-|:--|:--|
-| ⬜ **Consumed by** | `MailFrom` · `RcptTo` · `BeginData` |
-| 🟩 **Read Model** | **SessionState**&#10;<br>`identified: true` · `transaction_open: false` |
-| 🟧 **Sources** | **ConnectionAccepted** · **ClientIdentified** |
+**The wire row holds the wire, verbatim.** Reply codes are exact, including the text after them.
+This is the row a reader follows to reconstruct the conversation — which is why this project needs
+no sequence diagram (see `../diagrams/README.md` §7). The `C:` and `S:` prefixes are **not** used:
+in SMTP a verb is always the client and a three-digit code is always the server, so direction is
+recoverable from the content. Step 9 is the exception, where the DATA payload is neither, and there
+the RFC 5322 field names carry the monospace instead.
 
 **Monospace marks what the protocol fixes; standard font marks what varies.** On a wire line the
-reply code and the verb are monospace and the rest is not — `S: 220` foo.com Ready. In a payload the
+reply code and the verb are monospace and the rest is not — `220` foo.com Ready. In a payload the
 field name is monospace and the value is not — `peer_address`: 198.51.100.40. **Values carry no
 quotation marks.** One axis only, font family; never bold or italic. Settled in
 [`../diagrams/EXPERIMENT-inline-styling.md`](../diagrams/EXPERIMENT-inline-styling.md).
@@ -76,13 +111,16 @@ quotation marks.** One axis only, font family; never bold or italic. Settled in
 from instantiating a field and seeing that nothing consumed it, or that its value could not survive
 replay.
 
-**Pre and Post are checked, not asserted.** A ✓ means the walk verified it against the slice
-contract in `../event-model.md`. If a precondition cannot be satisfied, the walk stops there and
-that is a finding.
+**A step carries only its own walk's scenarios.** Not the 5–20 a command handler may have. Those
+accumulate at the *slice*, which is the union of what every walk contributed — see `../HANDOFF.md`
+§1, *Paths are the source; slices are derived*.
 
 **Hotspots travel with the step.** A slice under an open question carries its marker inline —
 `🟥 H1` — so a reader walking the path meets the doubt at the point where it matters rather than in
 an appendix.
+
+⚠️ **🟥 is currently overloaded**, meaning both *hotspot* and *error outcome*. Unresolved; see
+[`EXPLORE-gwt-form.md`](EXPLORE-gwt-form.md).
 
 ---
 
@@ -92,6 +130,10 @@ Reply codes and the `<>` around a reverse-path are protocol syntax; losing a bra
 changes their meaning. Code spans render monospace on GitHub and in the Android app, and they
 survive copy-paste into a terminal. `MAIL FROM:<Smith@bar.com>` is testable; *"a MAIL FROM command
 naming Smith"* is not.
+
+⚠️ **An address outside a code span loses its angle brackets** — GFM autolinks it and eats them, and
+`<CRLF>` in running text vanishes entirely. Escape the opening bracket: `\<Smith@bar.com>`. The
+address still autolinks, which is accepted; the brackets are RFC 5321 path syntax and are not.
 
 ---
 
