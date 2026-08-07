@@ -77,8 +77,7 @@ paths cross.
 | MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com>&#10;<br>`250` OK |
 | | 🟦 **RcptTo**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 | Event | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
-| Given | 🟧 **MailTransactionStarted** |
-| | 🟨 **Directory translation** — *no event of ours* |
+| Given | 🟧 **MailTransactionStarted**&#10;<br>🟨 **Directory translation** — *no event of ours* |
 
 Traversed **once**. No `RecipientRejected` anywhere in this walk.
 
@@ -93,8 +92,7 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 | MTA Client | ⬛ `DATA`&#10;<br>`354` Start mail input; end with `<CRLF>.<CRLF>` |
 | | 🟦 **BeginData** |
 | Event | 🟥 **DataPhaseEntered**&#10;<br>&nbsp;&nbsp;*no payload — H1: does it earn its place?* |
-| Given | 🟧 **MailTransactionStarted** |
-| | 🟧 **RecipientAccepted** |
+| Given | 🟧 **MailTransactionStarted**&#10;<br>🟧 **RecipientAccepted** |
 
 **H1 meets you here.** Its only candidate consumer is the transcript rendering `354`. This walk
 does not resolve it — it just shows the event firing with nothing downstream that needs it.

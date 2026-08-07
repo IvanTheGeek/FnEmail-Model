@@ -146,7 +146,7 @@ row in the same place:
 | 2 | 🟦 the command *(blank label — the slice itself)* | 🟩 the read model *(blank label — the slice itself)* |
 | 3 | 🟧 the event emitted | — *a view emits nothing* |
 | 4 | `Given` — the events depended on | `Given` — the events folded |
-| 5 | — | `Where` — the query that reaches the row |
+| 5 | — | `Where` — the query predicate that reaches the row |
 
 **Split into two steps:**
 
@@ -161,9 +161,8 @@ row in the same place:
 |:--|:--|
 | MTA Client | ⬛ `250` foo.com |
 | | 🟩 **SessionState**&#10;<br>&nbsp;&nbsp;`identified`: true&#10;<br>&nbsp;&nbsp;`transaction_open`: false |
-| Given | 🟧 **ConnectionAccepted** |
-| | 🟧 **ClientIdentified** |
-| Where | `session_id`: 01J8Z… |
+| Given | 🟧 **ConnectionAccepted**&#10;<br>🟧 **ClientIdentified** |
+| Where | `session_id` = 01J8Z… |
 
 **Read it bottom-up** and it is a sentence: *for this session, fold these two events, producing this
 state, which renders as this reply.* Read top-down and it is what a reader encounters in order: the
@@ -197,3 +196,78 @@ lost.
 roughly seventeen, since most commands draw a reply. That is a large change to every path and is
 **not** implied by adopting the row ordering — the two decisions are separable, and only the ordering
 was asked for here.
+
+---
+
+# The cadence, and the slices hiding between a command and its reply
+
+Raised 2026-08-07, and it answers the `Consumed by` loss above rather than leaving it open.
+
+## Command and View alternate, and the alternation is load-bearing
+
+**C · V · C · V** is the rhythm of a model, not a coincidence of this example. A command changes
+state; a view makes the changed state readable; the next command acts on what was read. A step that
+breaks the alternation is usually a step doing two jobs.
+
+⚠️ **Verified in Dymitruk's own file**, `research/archive/open-spaces-comocamp/eventmodel.drawio`:
+the actor swimlanes are **Joe the Organizer**, **Adam the Participant**, **Alice the misfit** and
+**Eugene the Sysadmin**. The sysadmin lane is what makes the cadence affordable — it gives a View a
+place to live when **nothing is shown to the external actor**. The V slot is kept; the audience
+changes.
+
+## Which means there are slices between a command and its reply
+
+`250 foo.com` is not automatic. Between receiving `HELO bar.com` and rendering a reply, the server
+may consult policy — is `bar.com` a domain we accept mail from? — and answer with an error code
+instead. **That check is a read model**, and it belongs in the operator's lane rather than the
+client's, because no MTA ever sees it.
+
+| 🟩 V | `DomainPolicy` — *sketch, not in the model* |
+|:--|:--|
+| Operator | 🟤 *nothing rendered — internal* |
+| | 🟩 **DomainPolicy**&#10;<br>&nbsp;&nbsp;`blocked`: false |
+| Given | 🟧 **DomainBlocked**&#10;<br>&nbsp;&nbsp;`domain`: spam.example |
+| Where | `claimed_domain` = bar.com |
+
+**This project already does exactly this and did not notice.** `RecipientDirectory` is a View
+consumed by `RcptTo` and rendered to nobody — it is the same shape as the sketch above, and it is
+why `RcptTo` can answer `550` instead of `250`. The pattern is in the model; only the *reason* for it
+was missing.
+
+## Which resolves `Consumed by` — there are two kinds of View
+
+The earlier attempt lost `Consumed by` because it assumed every View renders to a wire. It does not:
+
+| Kind | Top row | Example |
+|:--|:--|:--|
+| **Rendered** | ⬛ the wire it draws | `SessionState` → `250` foo.com |
+| **Consulted** | ⬜ the commands that read it | `RecipientDirectory` → `RcptTo` |
+
+**They are not exclusive.** `SessionState` renders a `250` *and* is read by `MailFrom`, `RcptTo` and
+`BeginData`. So the top row is not one fact but two, and the form needs room for both — which is the
+sixth row the previous attempt flagged as unresolved:
+
+| 🟩 V · Step 3 | `SessionState` |
+|:--|:--|
+| MTA Client | ⬛ `250` foo.com |
+| Consumed by | ⬜ `MailFrom` · `RcptTo` · `BeginData` |
+| | 🟩 **SessionState**&#10;<br>&nbsp;&nbsp;`identified`: true&#10;<br>&nbsp;&nbsp;`transaction_open`: false |
+| Given | 🟧 **ConnectionAccepted**&#10;<br>🟧 **ClientIdentified** |
+| Where | `session_id` = 01J8Z… |
+
+⚠️ **A Consulted view has no wire row and a Rendered view may have no consumers.** Whether the unused
+row is dropped, left blank, or marked 🟤 is undecided — the sketch above uses 🟤 in the wire row to
+mean *nothing rendered*, which stretches the marker beyond the `Given` scoping settled earlier and is
+flagged rather than assumed.
+
+## Where the error reply goes
+
+If policy rejects `bar.com`, the reply is not `250`. That is a **different rendering of the same
+step**, which is where the corpus puts variation: an error is a `Then`, exclusive with the event, and
+never both. It does **not** become a branch in the model — it becomes another scenario, or a later
+workflow, per *"branching is not shown"*.
+
+⚠️ **This is unbuilt.** `DomainPolicy` is a sketch. FnEmail's charter is `HELO`-only inbound with no
+policy layer, and inventing one to make the cadence look tidy would be modeling ahead of need. It is
+recorded because it explains a shape already present in `RecipientDirectory`, not because it should
+be added.

@@ -41,8 +41,12 @@ generated or dropped, and that is visible at a glance.
 
 ## The `Given` row
 
-**One event per row.** The label is carried by the first row only; continuation rows leave it blank,
-the same idiom the command row uses.
+**One row, however many events.** They stack inside the cell using **exactly the Event row's
+structure** — name, then indented `field`: value lines where data matters — so a `Given` and the
+`Then` it will be matched against are visibly the same kind of thing.
+
+| Given | 🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP&#10;<br>🟧 **OtherEvent**&#10;<br>&nbsp;&nbsp;`other_field`: value |
+|:--|:--|
 
 | Degree | Means | Written as |
 |:--|:--|:--|
