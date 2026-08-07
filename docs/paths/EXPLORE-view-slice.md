@@ -259,31 +259,62 @@ consumed by `RcptTo` and rendered to nobody — it is the same shape as the sket
 why `RcptTo` can answer `550` instead of `250`. The pattern is in the model; only the *reason* for it
 was missing.
 
-## Which resolves `Consumed by` — there are two kinds of View
+## Which kills `Consumed by` — dependencies only ever point backward
 
-The earlier attempt lost `Consumed by` because it assumed every View renders to a wire. It does not:
+The previous attempt lost `Consumed by` and I called that a loss, then proposed restoring it as a
+sixth row. **Both were wrong.** It should not be there at all.
+
+**`MailFrom`, `RcptTo` and `BeginData` already look back through their own `Given` rows.** That is
+where a dependency is declared, and it is declared **by the slice that needs it**. A `Consumed by`
+row states the same relationship from the other end, which buys nothing and costs three things:
+
+- **It duplicates.** The fact already exists, once per consumer, in each consumer's `Given`.
+- **It goes stale silently.** A new path introduces a new consumer, and nothing forces the view's
+  list to be updated — the consumer's `Given` is correct while the view's row quietly is not.
+- **It is derived data written by hand.** Under *paths are the source, slices are derived*, the set
+  of consumers is obtained by **inverting every `Given` across every walk**. A view cannot know its
+  own consumers until the last path is walked, so authoring the list is authoring a conclusion.
+
+**Dependencies point backward, never forward.** A slice declares what it needs; nothing declares
+what needs it.
+
+### And that is the mechanism, not a tidiness argument
+
+⚠️ **This is the point of the whole apparatus.** If a command needs a value and no prior event
+carries it, then **the model is missing a data collection point somewhere in the past** — and the
+`Given` is what makes that visible, at the step where the value is wanted rather than in a review
+later.
+
+Working backward from the need is how the hole gets located: which earlier slice *should* have
+captured it, and did nobody ask for it there, or is the slice missing entirely? A `Consumed by` row
+answers none of that, because it looks the wrong way down the timeline.
+
+This is also why the `Given` cannot be dropped as redundant with the walk. Its value is not that it
+restates what happened — it is that **an unsatisfiable `Given` is a finding**. That is rule 8 and the
+completeness check meeting in one row.
+
+### So a Consulted view has no top row at all
 
 | Kind | Top row | Example |
 |:--|:--|:--|
 | **Rendered** | ⬛ the wire it draws | `SessionState` → `250` foo.com |
-| **Consulted** | ⬜ the commands that read it | `RecipientDirectory` → `RcptTo` |
-
-**They are not exclusive.** `SessionState` renders a `250` *and* is read by `MailFrom`, `RcptTo` and
-`BeginData`. So the top row is not one fact but two, and the form needs room for both — which is the
-sixth row the previous attempt flagged as unresolved:
+| **Consulted** | **none** — its readers declare it, not it | `RecipientDirectory`, read by `RcptTo` |
 
 | 🟩 V · Step 3 | `SessionState` |
 |:--|:--|
 | MTA Client | ⬛ `250` foo.com |
-| Consumed by | ⬜ `MailFrom` · `RcptTo` · `BeginData` |
 | | 🟩 **SessionState**&#10;<br>&nbsp;&nbsp;`identified`: true&#10;<br>&nbsp;&nbsp;`transaction_open`: false |
 | Given | 🟧 **ConnectionAccepted**&#10;<br>🟧 **ClientIdentified** |
 | Where | `session_id` = 01J8Z… |
 
-⚠️ **A Consulted view has no wire row and a Rendered view may have no consumers.** Whether the unused
-row is dropped, left blank, or marked 🟤 is undecided — the sketch above uses 🟤 in the wire row to
-mean *nothing rendered*, which stretches the marker beyond the `Given` scoping settled earlier and is
-flagged rather than assumed.
+| 🟩 V | `RecipientDirectory` — *consulted, renders nothing* |
+|:--|:--|
+| | 🟩 **RecipientDirectory**&#10;<br>&nbsp;&nbsp;`is_local`: true |
+| Given | 🟨 translated from the **Directory context** — external, deferred |
+| Where | `forward_path` = \<Jones@foo.com> |
+
+**Three rows when nothing is rendered, four when something is.** No 🟤 in a wire row, which retires
+the stretch of that marker flagged earlier — the row is simply absent rather than present and empty.
 
 ## Where the error reply goes
 
