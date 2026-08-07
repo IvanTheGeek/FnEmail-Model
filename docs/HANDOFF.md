@@ -109,6 +109,9 @@ anything** — three of five mirrored repos carry no license.
 | **Golden path deliberately unassigned** — *happy* is descriptive, *golden* is a designation | `paths/helo-multi-recipient.md` |
 | ~~**Mermaid label vocabulary**~~ — **superseded 2026-08-06**, diagrams are now tables | `diagrams/README.md` → *Why tables* |
 | **The method research is a separate repo** — FnEmail uses Event Modeling, is not about it | §1 above |
+| **Workflow, never *chapter*** — for a named group of slices. Dymitruk's word 241× to 10×; *chapter* is Dilger's | research: `open-spaces-comocamp/_STRUCTURE.md` |
+| **Workflow nesting has no fixed depth** — as many levels as make sense | same |
+| **Learn the method before extending it** — rule 10's reason, stated | §7 below |
 
 > ⚠️ **The "no arrows" decision needs a caveat, added 2026-08-06.** It stands as a *diagramming*
 > choice, but the corpus shows arrows are working notation in 12+ independent talks, and they have a
