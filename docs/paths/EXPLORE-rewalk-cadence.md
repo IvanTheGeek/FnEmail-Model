@@ -49,15 +49,22 @@ each its own view.
 
 ## Required first &nbsp;*(trial, 2026-08-07)*
 
-**The path-level `Given`: events this walk assumes but does not walk**, each with the fields some
-step consumes. Trial of the preamble proposed in the 🟨 section at the end of this document. 🟨 here
-carries Ivan's **widened sense** — *outside this path definition* — not the settled external-only
-sense; that is exactly the amendment the rule 9 note flags, exercised deliberately.
+**The path-level `Given`: every event this walk requires but does not walk**, each with the fields
+some step consumes. The path is deliberately indifferent to provenance — whose event it is, what
+kind, where the value came from. **Needed is the only claim 🟨 makes here**, and this block is the
+only place 🟨 appears in a path: steps cite every event 🟧. Trial of the preamble proposed in the
+🟨 section at the end of this document, which records the rule 9 amendment this makes.
 
 | 🟨 Required first | *before this walk's timeline* |
 |:--|:--|
-| | 🟨 **ServiceConfigured** — *ours, before every session; name and shape open — see* Walking backwards *below*&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready |
-| | 🟨 **Directory translation** — *another context's events; H3, deferred*&#10;<br>&nbsp;&nbsp;`is_local`: true&#10;<br>&nbsp;&nbsp;`forward_path` = \<Jones@foo.com> |
+| | 🟨 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready |
+| | 🟨 **RecipientResolved**&#10;<br>&nbsp;&nbsp;`is_local`: true&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
+
+Both names are path-local placeholders, and that is the point: the path does not care.
+`ServiceConfigured`'s real name and shape are open — *Walking backwards*, below. `RecipientResolved`
+stands for whatever H3's deferred translation eventually names its events — a concern the model
+owns, elsewhere. Here each is only *an event some step's `Given` needs, carrying the values it
+needs*.
 
 Three trial decisions, made so they can be judged — and a ruling that followed:
 
@@ -68,24 +75,30 @@ deliberately left steps 2, 4 and 16 rendering `server_domain` **without declarin
 change at a time; a second pass the same day added the `Given` to all three, so the declarations
 now live where they belong, on the consumers.
 
-**Both kinds of outside are in one block, told apart by annotation.** `ServiceConfigured` is ours
-and merely earlier; the Directory translation is another context's. One chip, two claims — the
-italic notes carry the difference, which works at two entries and is worth doubting at ten.
+~~**Both kinds of outside are in one block, told apart by annotation.**~~ **Superseded the same
+day by the second ruling below.** The entries briefly carried provenance annotations — *ours,
+merely earlier* against *another context's* — until Ivan ruled that the path does not make that
+distinction at all. Provenance now lives in the prose under the table, as reading aid only, and
+carries no weight in the path.
 
-**The Directory entry duplicates step 7's `Given`, and that is accepted as a different claim.**
-Step 7 declares a *slice* dependency; this block declares what a **replay of the whole path must
-seed** before step 1 can run — the same relationship at two altitudes, the way a scenario's `Given`
-restates a contract's precondition without replacing it. If that reading is wrong, the entry is
-redundant and the block should hold only dependencies no walked step declares — `ServiceConfigured`
-alone. Left in so the trial tests the larger block.
+**The `RecipientResolved` entry duplicates step 7's `Given`, and that is accepted as a different
+claim.** Step 7 declares a *slice* dependency; this block declares what a **replay of the whole
+path must seed** before step 1 can run — the same relationship at two altitudes, the way a
+scenario's `Given` restates a contract's precondition without replacing it. If that reading is
+wrong, the entry is redundant and the block should hold only dependencies no walked step declares.
+Left in so the trial tests the larger block.
 
-**Ruled by Ivan after the trial ran: the preamble seeds this path's event store, so steps cite
-🟧.** The widened 🟨 never leaves this block — it marks *not walked here*, a claim that exists only
-at path level. Once an event is declared here it is in the store and accessible, and a step's
-`Given` cites it exactly as it cites a walked event: 🟧, unannotated. Step-level 🟨 keeps its
-settled meaning untouched — it appears only where there is **no event of ours**, the Directory
-translation at steps 7 and 8 — which shrinks the rule 9 tension to one block per path instead of
-every step that reads configuration.
+**Ruled by Ivan, in two passes.** First: **the preamble seeds this path's event store, so steps
+cite 🟧.** Once an event is declared here it is in the store and accessible, and a step's `Given`
+cites it exactly as it cites a walked event — 🟧, unannotated. Second, superseding the first
+pass's remainder: **there is no step-level 🟨 at all.** The first pass had kept 🟨 at steps 7 and
+8 for the Directory translation, on the ground that *no event of ours* was a different claim; Ivan
+ruled that the preamble resolves that too. The path does not care where an event came from or what
+kind it is — only that it must exist for the steps' `Given` rows to be satisfiable. Every such
+requirement is declared here, whatever its provenance, and every step cites every event 🟧 — the
+Directory dependency under the path-local name **RecipientResolved**. That amends the settled
+*external yellow* meaning for path documents — a rule 9 amendment made deliberately, recorded here
+and in the 🟨 section below.
 
 ---
 
@@ -137,8 +150,8 @@ store, per the ruling in the trial block.
 
 ⚠️ **The reply renders `foo.com` and this view does not carry it.** Was *same gap as step 2*; the
 `Given` now declares the origin, which narrows it. What remains: either `SessionState` gains a
-`server_domain` field, or the rendering draws the value straight from the folded 🟨 event. The
-trial deliberately does not choose.
+`server_domain` field, or the rendering draws the value straight from the folded `ServiceConfigured`.
+The trial deliberately does not choose.
 
 | 🟦 C · Step 5 | `MailFrom` |
 |:--|:--|
@@ -156,10 +169,10 @@ trial deliberately does not choose.
 
 **No top row.** Nothing is drawn to any actor; `RcptTo` declares this dependency in its own `Given`.
 
-| 🟩 V · Step 7 | `RecipientDirectory` &nbsp;*(consulted · translation boundary — H3)* |
+| 🟩 V · Step 7 | `RecipientDirectory` &nbsp;*(consulted)* |
 |:--|:--|
 | | 🟩 **RecipientDirectory**&#10;<br>&nbsp;&nbsp;`is_local`: true |
-| Given | 🟨 translated from the **Directory context** — external, deferred |
+| Given | 🟧 **RecipientResolved**&#10;<br>&nbsp;&nbsp;`is_local`: true&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 | Where | `forward_path` = \<Jones@foo.com> |
 
 | 🟦 C · Step 8 | `RcptTo` |
@@ -167,7 +180,7 @@ trial deliberately does not choose.
 | MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com> |
 | | 🟦 **RcptTo**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 | Event | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
-| Given | 🟧 **MailTransactionStarted**&#10;<br>🟨 **Directory translation** — *no event of ours* |
+| Given | 🟧 **MailTransactionStarted**&#10;<br>🟧 **RecipientResolved**&#10;<br>&nbsp;&nbsp;`is_local`: true&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 
 | 🟩 V · Step 9 | `TransactionState` &nbsp;*(second traversal)* |
 |:--|:--|
@@ -714,10 +727,18 @@ or splitting the second outside onto its own marker — is an amendment to recor
 change. Flagged here so the tension is on the page: the two outsides are different claims, and the
 Directory translation must stay distinguishable from *merely earlier than this walk*.
 
-⚠️ **Ruled 2026-08-07, after the preamble trial ran.** The widened sense never leaves the preamble
-block. An event the preamble declares is thereafter in this path's event store, and steps cite it
-🟧 like any walked event — so step-level 🟨 keeps the settled external-only meaning, and the
-amendment this note flags is confined to one block per path.
+⚠️ **Ruled 2026-08-07, after the preamble trial ran.** An event the preamble declares is
+thereafter in this path's event store, and steps cite it 🟧 like any walked event. The first pass
+of this ruling kept step-level 🟨 for the Directory translation, reading *no event of ours* as a
+different claim.
+
+⚠️ **Ruled again the same day, going further — and superseding the line above.** Step-level 🟨 is
+not kept; it is **amended away for path documents entirely**. The path does not care where an
+event or value came from, only that it is needed for the steps' `Given` rows — every requirement
+is declared in the preamble, and every step cites 🟧, the Directory dependency included, under the
+path-local name `RecipientResolved`. *External yellow* remains available to the **model**, where
+the Translation boundary is real work; in a **path** it is superseded by the preamble. That is the
+rule 9 amendment, now recorded in full rather than flagged as tension.
 
 **The proposal: a path opens with the events it requires.** A predefined block before step 1 —
 🟨-marked events with the fields some step in the walk will need — so a path declares its
