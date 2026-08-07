@@ -118,7 +118,7 @@ correct answer and it is written up ready to adopt.
 
 **Color is carried by emoji chips**, not by markup. Every text-coloring alternative was tested and
 fails or diverges between renderers. 🟧 Event · 🟦 Command · 🟩 Read Model · ⬜ rendered UI ·
-⬛ wire · 🟨 external · 🟥 hotspot.
+⬛ wire · 🟨 external · 🟥 hotspot · 🟤 nothing.
 
 **No Mermaid.** Diagrams are markdown tables — it needs a diagram engine the Android app lacks.
 

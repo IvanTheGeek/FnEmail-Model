@@ -3,7 +3,7 @@
 Renderings of `../event-model.md` v0.3, as **markdown tables**. They render on GitHub, on desktop,
 and in the Android app.
 
-**Colors** — 🟧 Event · 🟦 Command · 🟩 Read Model · ⬜ Screen · 🟨 external · 🟥 hotspot.
+**Colors** — 🟧 Event · 🟦 Command · 🟩 Read Model · ⬜ Screen · 🟨 external · 🟥 hotspot · 🟤 nothing.
 
 **The top row is the Actor row, not the Screen row.** *Screen* names an **element**; *Actor* names
 the **lane**, and the lane is what a row is. The corpus supports the distinction — Dymitruk's step

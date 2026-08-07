@@ -437,7 +437,7 @@ font-fallback worry that ruled out box-drawing characters does not bite here.
 
 | | Candidate | Family | Weight | Note |
 |:--|:--|:--|:--|:--|
-| 1 | ⚪ | emoji | light | fixed white — may vanish on a light background |
+| 1 | ⚪ | emoji | light | fixed white — **too little contrast, rejected** |
 | 2 | ⚫ | emoji | heavy | fixed black; reads as solid and loud |
 | 3 | ○ | text | lightest | **hollow, text-colored — "empty" is exactly the meaning** |
 | 4 | ◌ | text | very light | dotted; reads as *placeholder pending* |
@@ -450,12 +450,15 @@ font-fallback worry that ruled out box-drawing characters does not bite here.
 **The shape argument still holds.** Every element chip here is a **square** naming an element type; a
 circle says *not an element*, which is what a degree-0 marker means.
 
-**⚪ is the working choice pending this comparison** and is applied in
+✅ **ADOPTED: 🟤.** Chosen 2026-08-07 after every circle in the emoji set was compared on the
+phone. Brown and purple are the only two circle colors with no meaning already assigned here, and
+purple reads as too significant for an absence. Brown carries enough contrast to survive a skim,
+which white did not. Applied in
 [`helo-direct-single-recipient.md`](helo-direct-single-recipient.md) — provisionally, pending a look
 on the phone.
 
 **It does double duty.** A command that carries no fields has the same problem as a Given with no
-events — `BeginData` and `Quit` are bare verbs. Both now read ⚪, so one marker covers *nothing
+events — `BeginData` and `Quit` are bare verbs. Both now read 🟤, so one marker covers *nothing
 required* and *nothing supplied*.
 
 ---

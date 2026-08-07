@@ -46,7 +46,7 @@ the same idiom the command row uses.
 
 | Degree | Means | Written as |
 |:--|:--|:--|
-| **nothing** | this step depends on no previous event | ⚪ |
+| **nothing** | this step depends on no previous event | 🟤 |
 | **the event exists** | it must have happened; nothing about its contents | 🟧 **EventName** |
 | **the event and its data** | specific fields must match | **the Event row's own layout** |
 
@@ -59,10 +59,15 @@ be redundant — `RcptTo` has three events above it and depends on one. **A deli
 is what keeps a translation boundary visible at the step where it bites rather than hidden behind a
 read-model name.
 
-⚠️ **The degree-0 marker is provisional.** ⚪ is in use; alternatives are under test in
-[`EXPLORE-gwt-form.md`](EXPLORE-gwt-form.md). It also marks a command that supplies no fields —
-`BeginData` and `Quit` are bare verbs — so one marker covers *nothing required* and *nothing
-supplied*.
+**🟤 marks nothing.** Settled 2026-08-07 after comparing every circle in the emoji set on the phone.
+It is a **circle among squares**, so the shape says *not an element type*, and brown is one of only
+two circle colors this project has not already assigned a meaning — the other being purple, which
+reads as too significant for an absence. It carries enough contrast to survive a skim, which white
+did not.
+
+It also marks a command that supplies no fields — `BeginData` and `Quit` are bare verbs — so **one
+marker covers both *nothing required* and *nothing supplied***. Candidates and the reasoning are in
+[`EXPLORE-gwt-form.md`](EXPLORE-gwt-form.md).
 
 ---
 
