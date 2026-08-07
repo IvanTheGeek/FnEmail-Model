@@ -365,3 +365,179 @@ history that makes the rule fire** rather than the accumulated one. Those are di
 `RcptTo` in this walk has three events above it and needs one. **That gap is the only thing a
 per-step GWT can contribute**, and the corpus points at the accumulator. Unresolved, and it decides
 whether the step-level GWT is worth writing at all.
+
+---
+
+# Family 5 — Given only, because When and Then are already there
+
+The rows of a step **are** the specification. The command row is the `When`, the event row is the
+`Then`, and both already carry this walk's real data. Writing them again as labeled rows restates the
+step. **Only the `Given` is missing**, and it is the one thing a step does not otherwise say: what
+this step *depends on*.
+
+⚠️ **This chooses the minimal Given over the accumulated one.** Dymitruk's convention is that the
+given is every previous row, so a runner *"can always just use an accumulator to add events"*
+(episode 8). That exists for a **test runner, which has no walk to read**. Here the walk is on the
+page, so restating it would reintroduce the redundancy this family removes. Step 6 has three events
+above it and depends on one. **A deliberate departure, recorded rather than drifted into.**
+
+Note also that `Given` is the only row in a step that can be *wrong*. `When` and `Then` are
+observations of what the walk did; a `Given` is a **claim** about dependency.
+
+## V15 · Given in place — between the wire and the command
+
+Reading down gives `Given` → `When` → `Then` in order, with the wire kept on top as what is actually
+observed.
+
+| 🟦 C · Step 2 | `Helo` |
+|:--|:--|
+| MTA Client | ⬛ `HELO` bar.com |
+| Given | 🟧 **ConnectionAccepted** |
+| | 🟦 **Helo** |
+| Event | 🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP |
+
+*Costs a reordering of the settled three-row form.*
+
+---
+
+## The three degrees a `Given` can take
+
+A dependency is not always the same strength, and the notation should show which is meant.
+
+| Degree | Means | Written as |
+|:--|:--|:--|
+| **0 — nothing** | this step depends on no previous event | a glyph, below |
+| **1 — the event exists** | it must have happened; no constraint on its contents | 🟧 **EventName** |
+| **2 — the event and its data** | specific fields must match | **formatted exactly like an Event row** |
+
+**Degree 2 uses the Event row's own layout** — name, then indented `field`: value lines — so that a
+`Given` and the `Then` it will one day be matched against are visibly the same kind of thing.
+
+### ⚠️ The degree-0 glyph is undecided
+
+Three candidates, to be judged on the phone since that is where an uncommon glyph fails:
+
+| | Rendered | Note |
+|:--|:--|:--|
+| **A** | ∅ | U+2205 empty set. Exact, one character, **untested in the Android app** |
+| **B** | *none* | italic word. Cannot fail anywhere |
+| **C** | — | em dash. Already used in prose here, so it is ambiguous |
+
+**B is the safe answer and A is the precise one.** Nothing is adopted.
+
+---
+
+## V16 · Given appended at the bottom, events stacked in one cell
+
+Appending leaves the settled three rows untouched — nothing is reordered — at the cost of reading
+`Then` before `Given`.
+
+**Degree 0** — `AcceptConnection` opens the session and depends on nothing:
+
+| 🟦 C · Step 1 | `AcceptConnection` |
+|:--|:--|
+| MTA Client | ⬛ `220` foo.com Simple Mail Transfer Service Ready |
+| | 🟦 **AcceptConnection** |
+| Event | 🟧 **ConnectionAccepted**&#10;<br>&nbsp;&nbsp;`peer_address`: 203.0.113.20&#10;<br>&nbsp;&nbsp;`local_address`: 192.0.2.10:25 |
+| Given | ∅ |
+
+**Degree 1** — `Helo` needs the connection to exist, and nothing about it:
+
+| 🟦 C · Step 2 | `Helo` |
+|:--|:--|
+| MTA Client | ⬛ `HELO` bar.com |
+| | 🟦 **Helo** |
+| Event | 🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP |
+| Given | 🟧 **ConnectionAccepted** |
+
+**Degree 2, and two of them** — `BeginData` needs an open transaction with at least one recipient,
+and the fields say *which* transaction:
+
+| 🟦 C · Step 8 | `BeginData` &nbsp;🟥 **H1** |
+|:--|:--|
+| MTA Client | ⬛ `DATA` |
+| | 🟦 **BeginData** |
+| Event | 🟥 **DataPhaseEntered**&#10;<br>&nbsp;&nbsp;*no payload — H1: does it earn its place?* |
+| Given | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
+
+**The external case** — `RcptTo` depends on something with no event of ours at all:
+
+| 🟦 C · Step 6 | `RcptTo` |
+|:--|:--|
+| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com> |
+| | 🟦 **RcptTo** |
+| Event | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
+| Given | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>🟨 **Directory translation** — *no event of ours* |
+
+---
+
+## V17 · Given appended at the bottom, one row per event
+
+Same content, one event per row, the label carried only by the first — the blank-continuation idiom
+the command row already uses.
+
+**Degree 0:**
+
+| 🟦 C · Step 1 | `AcceptConnection` |
+|:--|:--|
+| MTA Client | ⬛ `220` foo.com Simple Mail Transfer Service Ready |
+| | 🟦 **AcceptConnection** |
+| Event | 🟧 **ConnectionAccepted**&#10;<br>&nbsp;&nbsp;`peer_address`: 203.0.113.20&#10;<br>&nbsp;&nbsp;`local_address`: 192.0.2.10:25 |
+| Given | ∅ |
+
+**Degree 1:**
+
+| 🟦 C · Step 2 | `Helo` |
+|:--|:--|
+| MTA Client | ⬛ `HELO` bar.com |
+| | 🟦 **Helo** |
+| Event | 🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP |
+| Given | 🟧 **ConnectionAccepted** |
+
+**Degree 2, two events — one per row:**
+
+| 🟦 C · Step 8 | `BeginData` &nbsp;🟥 **H1** |
+|:--|:--|
+| MTA Client | ⬛ `DATA` |
+| | 🟦 **BeginData** |
+| Event | 🟥 **DataPhaseEntered**&#10;<br>&nbsp;&nbsp;*no payload — H1: does it earn its place?* |
+| Given | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
+| | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
+
+**The external case:**
+
+| 🟦 C · Step 6 | `RcptTo` |
+|:--|:--|
+| MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com> |
+| | 🟦 **RcptTo** |
+| Event | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
+| Given | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
+| | 🟨 **Directory translation** — *no event of ours* |
+
+---
+
+## V16 against V17
+
+| | V16 stacked | V17 row each |
+|:--|:--|:--|
+| Row count | fixed at four, whatever the Given holds | grows with the Given |
+| Where an event begins | found by eye inside a cell | a row boundary |
+| A single long Given | one tall cell, wraps hard on a phone | wraps within its own row |
+| Generated output | one cell to build | one row per given event — **closer to the data** |
+| Selecting one event | drags its neighbors | selects cleanly |
+
+**V17 is the shape the underlying data already has**, which matters if these documents are to be
+emitted by a tool rather than typed. **V16 keeps every step exactly four rows tall**, which makes ten
+stacked steps scan evenly.
+
+### What the `Given` row surfaces that the prose `Pre` hid
+
+Three of the seven current `Pre` lines name **read models**, not events —
+`SessionState.identified = true`, `TransactionState.open`, `RecipientDirectory.is_local`. Converting
+them is a translation rather than a rename: the first becomes 🟧 **ClientIdentified**, the second
+🟧 **MailTransactionStarted**.
+
+**The third resolves to nothing.** `RecipientDirectory.is_local` comes from the Directory context
+across the translation boundary, and there is no event of ours behind it. The prose `Pre` hid that
+behind a name that read like any other precondition. **A typed `Given` cannot hide it** — which puts
+H3 in front of the reader at the step where it actually bites.
