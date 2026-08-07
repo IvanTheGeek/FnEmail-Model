@@ -298,3 +298,70 @@ emitted by a modeling tool rather than written by hand, so the question is not *
 pleasant to type* but **which form is right to read** — the typing cost disappears when a generator
 does it. A form that is tedious by hand and correct on the page beats a form that is quick to write
 and ambiguous. See `../HANDOFF.md` §1.
+
+---
+
+## Why multiple GWTs rather than one timeline
+
+Asked 2026-08-07: *our walk, narrowed to just what it deals with, looks like the expanded version of
+one of Adam's GWTs — his GWT stack is just condensing an exhaustive timeline.*
+
+**The structural half of that is exactly right.** A step in a walk *is* a GWT. Its `Given` is every
+event above it, its `When` is the step's command, its `Then` is the step's event. So a ten-step walk
+is ten chained GWTs where each `Given` is the previous `Then` accumulated. Nothing is being added by
+writing it out; the walk already has that shape.
+
+**Where the two forms come apart is what each one varies.**
+
+| | varies | holds fixed |
+|:--|:--|:--|
+| **Timeline / walk** | the **command** — it moves forward | the history, which is simply whatever accumulated |
+| **GWT set** | the **history** — the `Given` is the variable | the command under test |
+
+That is why the reduction only runs one way. **A timeline always decomposes into GWTs**, one per
+step. **A GWT set only recomposes into a timeline when the scenarios happen to nest.** Adam's four
+blocks nest — each adds one event — which is precisely why they read as slices of one exhaustive
+history. That is a property of *that set*, not of GWTs.
+
+It breaks the moment a scenario needs a **shorter or mutually exclusive** history. `RcptTo` with no
+`MAIL FROM` is not a later point on the happy timeline; it is a *different, shorter* one. To force it
+onto a single line you would have to build a contrived history that visits every state, and then
+every scenario's `Given` drags in irrelevant events and — the real cost — **the scenarios become
+coupled**. Change one early event and every later scenario shifts. GWTs are independent by
+construction, and that independence is what makes them testable in isolation.
+
+### The corpus says where variation is allowed to go
+
+Dymitruk routes it to exactly two places, and **neither is the timeline**. Copenhagen DDD,
+2020-03-29 @27347, machine transcript:
+
+> *"that's one of the reasons that that we don't do branching specifically an alternate major
+> workflow would be basically added on the end of this thing … if we want to just have really
+> inconsequential derivations or maybe the the difference in different types of data how it's stored
+> maybe how the calculation is made we can elaborate that on anywhere from 5 to 20 different given
+> when thenns for a particular command handler … so that's why branching is is not shown"*
+
+| Kind of variation | Where it goes |
+|:--|:--|
+| a major alternative | **a new workflow, added on the end** — Dilger's *"Linearize it!"* |
+| a derivation, a data difference, a different calculation | **5–20 GWTs on the command handler** |
+| anything else | nowhere — *"branching is not shown"* |
+
+**So the timeline is deliberately branch-free, and the GWTs are where the branches were sent.** The
+walk shows the one path taken; the GWTs show what the path did *not* take. They are complements, not
+compressions of one another.
+
+### ⚠️ Which lands on one real question for this project
+
+Within a single walk, a step's `Given` is **every event above it** — already on the page. So an
+explicit per-step GWT restates the walk and adds nothing, *unless* the `Given` is the **minimal
+history that makes the rule fire** rather than the accumulated one. Those are different claims:
+
+- *Everything above* — Dymitruk's stated convention, so a runner *"can always just use an accumulator
+  to add events"* (episode 8). Mechanical, and **zero new information at a step**.
+- *Minimal sufficient* — what a test would assert. Genuinely new information: it says which prior
+  events the rule actually depends on.
+
+`RcptTo` in this walk has three events above it and needs one. **That gap is the only thing a
+per-step GWT can contribute**, and the corpus points at the accumulator. Unresolved, and it decides
+whether the step-level GWT is worth writing at all.
