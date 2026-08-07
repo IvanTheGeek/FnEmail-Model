@@ -4,6 +4,11 @@
 [`helo-direct-single-recipient.md`](helo-direct-single-recipient.md) with everything settled on
 2026-08-07 applied at once, so the two can be read side by side.
 
+> ⚠️ **2026-08-07, end of day: partially superseded as a walk, kept as the reasoning record.** The
+> final semantics this document arrived at are instantiated cleanly in
+> [`helo-direct-single-recipient-v2.md`](helo-direct-single-recipient-v2.md) — read that file for
+> the path; read this one for how each decision was reached, corrected and ruled.
+
 What changed, and why a re-walk rather than an edit: **a server reply is a rendered read model, not
 part of the command that provoked it.** Splitting each reply out of its command's wire row turns
 ten steps into fifteen and puts four replies in front of read models that **do not exist in the
@@ -405,6 +410,10 @@ views** — which is the point: the original walk had been hiding read models in
 the model**. The table and the heading's fifteen are left as written; they were true of the re-walk
 this section describes, and the sixteenth step is not a reply but the output written into the
 stored message.
+
+⚠️ **And *twelve* was itself a miscount**, caught by the v2 verification pass the same day:
+**fifteen** distinct slices — seven commands, three model views, five path-defined views, with
+`TransactionState` traversed twice. The *five of which do not exist* half was right.
 
 ---
 
