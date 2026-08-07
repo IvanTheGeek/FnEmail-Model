@@ -274,6 +274,46 @@ of a Translation: two patterns adjacent, which the corpus neither forbids nor di
 ordering rule would live. **Not an exhaustive sweep**, so this is *no rule found where a rule would
 be*, not *proven absent*.
 
+> ### ✅ Full sweep completed 2026-08-07 — verdict: **artifact**, and stronger than "no rule found"
+>
+> 35 talks, 46 podcast episodes, both sites, the kits and the drawio, with three adversarial passes.
+> Detail in `research/CADENCE-FINDINGS.md`. Four things change what is written above.
+>
+> **⚠️ *Cadence* is his word — and it means the wiring rule, not slice order.** SE Radio 539:
+> *"there's definitely a Cadence like an opinion as to the flow and what arrows can connect"* —
+> forcing the UI to hit a blue box, then orange, then green. **Anyone grepping for the term lands on
+> that and reads it as alternation.** All 33 hits in the 2015-2020 talks carry one of three senses,
+> none of them sequence. This document used the word in the wrong sense in its own title.
+>
+> **The wave is explicitly variable-period.** *"this kind of makes this nice sine wave across this
+> time line so they can be longer or shorter sine waves"* — a wave whose wavelength varies is not a
+> fixed C·V period.
+>
+> **The canonical article argues against pairing.** Steps 4 and 5 add **all** commands, then **all**
+> views — two bulk passes, which no method prescribing pairing would prescribe — and *"Features can
+> be created in any order."* Its actual rule is that a step is tied to **either** a command or a
+> view (**typed, not ordered**) and that **all information has to have an origin and a destination**.
+>
+> **The negatives are the evidence.** *rhythm*, *ping pong*, *flip flop*, *zigzag*, *oscillate*,
+> *interleave*, *take turns* — **zero hits corpus-wide**. He never raises adjacent same-type slices
+> as a question, so he neither defends nor forbids them.
+>
+> Two passages that read like prohibitions are not. Podcast 24's *"you can't put another command
+> after that"* is followed by *"are you describing the same slice? No"* — it is the
+> one-command-per-slice rule **inside** a slice. And *a command cannot kick off a command* is about
+> **arrows**, not columns.
+>
+> ⚠️ **And the binary is not even total.** An Automation is composite — read model, processor and
+> command in one step — so it cannot be a term in a C·V alternation at all. There is also a modeled
+> navigation step that changes no state and is neither type.
+
+⚠️ **My drawio parse was wrong, and the corrected one still answers the question.** I reported 34
+slices, strict alternation for eight, and a run of four Views. Restricting to the timeline band
+instead of raw x-containment gives **28 boxes — 12 Command, 16 View — alternation for six, and a run
+of three**. The inflation came from the Given/When/Then stacks hanging *below* the timeline, which
+repeat the same boxes at successive states. Three parses of one file now disagree on the count and
+**all three agree that long adjacent same-type runs are present in both directions**.
+
 ⚠️ **And the alternation is an observation of this protocol, not of the method.** RFC 5321 §4.3.1
 calls SMTP an *"alternating dialogue"*. That is why this walk alternates. **The regularity comes from
 SMTP, not from Event Modeling** — which is the opposite of what I implied when I first wrote the
