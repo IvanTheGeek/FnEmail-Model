@@ -426,15 +426,31 @@ There is also a semantic argument. **Every element chip in this project is a squ
 ⬛ 🟨 🟥 — and each names an element *type*. A degree-0 marker names the **absence** of one. A
 different **shape** says that; another square would imply it is an eighth element type.
 
-| | Candidate | Reads as | Note |
-|:--|:--|:--|:--|
-| **1** | ⚪ | *nothing here* | circle, so visibly not an element. Same weight as the squares |
-| **2** | ⭕ | *nothing here*, louder | heavier ring; may read as an error |
-| **3** | ➖ | *removed* | wrong meaning — suggests something was taken away |
-| **4** | ∅ | *empty set* | exact, and the only non-emoji — **font-fallback risk** |
-| **5** | *none* | *nothing here* | cannot fail anywhere; verbose in a narrow cell |
+⚠️ **There is no grey circle emoji.** The emoji circles are red, orange, yellow, green, blue,
+purple, brown, black and white — no grey, and no grey square either. Anything grey has to come from a
+**text glyph**, which is a different family with a different property: it renders in the **body text
+color** rather than a fixed color, so it reads as dark grey on these light backgrounds **and follows
+the theme** if a renderer ever goes dark. Emoji cannot do that.
 
-**⚪ is the working choice** and is applied in
+Tested on the phone 2026-08-07: **every candidate rendered**, including the empty-set symbol, so the
+font-fallback worry that ruled out box-drawing characters does not bite here.
+
+| | Candidate | Family | Weight | Note |
+|:--|:--|:--|:--|:--|
+| 1 | ⚪ | emoji | light | fixed white — may vanish on a light background |
+| 2 | ⚫ | emoji | heavy | fixed black; reads as solid and loud |
+| 3 | ○ | text | lightest | **hollow, text-colored — "empty" is exactly the meaning** |
+| 4 | ◌ | text | very light | dotted; reads as *placeholder pending* |
+| 5 | ◎ | text | medium | bullseye; reads as a target, wrong meaning |
+| 6 | ● | text | medium-dark | solid, body-text grey — the true "grey circle" |
+| 7 | ⬤ | text | dark | larger solid |
+| 8 | ∅ | text | medium | exact, but a **math symbol** rather than a shape |
+| 9 | 🚫 | emoji | heavy | ❌ **rejected** — red collides with 🟥 hotspot and with error, and *forbidden* is not *empty* |
+
+**The shape argument still holds.** Every element chip here is a **square** naming an element type; a
+circle says *not an element*, which is what a degree-0 marker means.
+
+**⚪ is the working choice pending this comparison** and is applied in
 [`helo-direct-single-recipient.md`](helo-direct-single-recipient.md) — provisionally, pending a look
 on the phone.
 
