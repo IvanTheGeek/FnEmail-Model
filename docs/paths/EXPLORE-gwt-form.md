@@ -1,7 +1,12 @@
 # Exploring — how to write Given/When/Then in the markdown model
 
-**Open. Nothing here is adopted.** Thirteen ways to attach a specification to a Command Slice, all
-carrying the *same* content so the comparison is about form and never about the example.
+**Concluded in the main, 2026-08-07/08 — kept as the reasoning record.** Several verdicts here
+were adopted: 🟤 as the degree-0 marker (commits dc96213, 8c4b987), V17 applied to the direct path
+(commit 5a821e9), and Family 5's minimal `Given` became the settled `Given` row. Still genuinely
+open: the 🟥 hotspot/error overload (flagged below, and anchored from `STEP-FORM.md`), and the
+slice-level GWT form — V8 vs V13 — which the step-level verdict deliberately did not decide.
+Thirteen ways to attach a specification to a Command Slice, all carrying the *same* content so the
+comparison is about form and never about the example.
 
 Everything is pure markdown. Raw HTML tables are settled dead — they strip in the Claude Android app
 and print as literal tags in the Claude Code desktop app. See
@@ -41,7 +46,7 @@ distinguishing value in the command's argument where it belongs.
 
 Ordering still matters: scenarios are written shortest-history-first, so each earns its rule from the
 event that makes it necessary — *increasing complexity* in
-`research/archive/open-spaces-comocamp/_WITNESS.md`.
+`event-modeling-research:research/archive/open-spaces-comocamp/_WITNESS.md`.
 
 ⚠️ **An unresolved conflict, flagged before it gets embedded.** 🟥 already means **hotspot** in this
 project. Dymitruk's models use red for an **error** outcome. Every variant below that shows a failure

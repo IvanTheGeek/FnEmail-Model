@@ -1,9 +1,15 @@
 # Exploring — the View Slice form
 
-**Open. Nothing here is adopted.** The Command Slice form was reworked on 2026-08-07 and the View
-Slice was deliberately left behind, because bringing it along would have prejudged a question the
-corpus does not settle. This document is the starting point: every View Slice as it stands today,
-unchanged, so the rework has something to argue against.
+**Concluded by the v2 rulings, 2026-08-08 — kept as the reasoning record.** The closing questions
+were answered on the walk: a view is the dataset provided to the actor, view steps gained `Given`
+rows and read top-down like every other step, the required-first preamble carries what no walked
+event supplies, and the `Where` row died on paths — the removal was the finding. What stays live
+here: the **slice-level** question (does a View Slice's *composed* GWT get a `When`?) and the
+corpus contradiction survey below, which is recorded nowhere else. Originally: the Command Slice
+form was reworked on 2026-08-07 and the View Slice was deliberately left behind, because bringing
+it along would have prejudged a question the corpus does not settle; this document was the
+starting point — every View Slice as it stood, unchanged, so the rework had something to argue
+against.
 
 Command Slices now read: wire, command **with its actor-supplied fields**, event, and a `Given`
 carrying the minimal dependency. See [`STEP-FORM.md`](STEP-FORM.md).
@@ -71,7 +77,7 @@ would be a rename rather than a redesign.
 
 ## ⚠️ The corpus disagrees with itself here — this is the whole reason for a separate pass
 
-Detail and citations in `research/GWT-FINDINGS.md`. In brief:
+Detail and citations in `event-modeling-research:research/GWT-FINDINGS.md`. In brief:
 
 **Dymitruk specified a View as Given/Then with no `When` for six years**, from 2019 through YOW! 2023
 and into a 2025 talk, giving a different reason each time — no command, no action, *"you can't reject
@@ -234,7 +240,8 @@ Raised 2026-08-07, and it answers the `Consumed by` loss above rather than leavi
 state; a view makes the changed state readable; the next command acts on what was read. A step that
 breaks the alternation is usually a step doing two jobs.
 
-⚠️ **Verified in Dymitruk's own file**, `research/archive/open-spaces-comocamp/eventmodel.drawio`:
+⚠️ **Verified in Dymitruk's own file**,
+`event-modeling-research:research/archive/open-spaces-comocamp/eventmodel.drawio`:
 the actor swimlanes are **Joe the Organizer**, **Adam the Participant**, **Alice the misfit** and
 **Eugene the Sysadmin**. The sysadmin lane is what makes the cadence affordable — it gives a View a
 place to live when **nothing is shown to the external actor**. The V slot is kept; the audience

@@ -3,6 +3,14 @@
 The default illustration. One originating host, one recipient, no errors, no relay hop. If you are
 showing someone the model for the first time, show them this.
 
+> **A restructured re-walk of this scenario exists:**
+> [`WORKING-helo-direct-single-recipient-v2.md`](WORKING-helo-direct-single-recipient-v2.md),
+> the same bytes walked under the semantics settled 2026-08-07/08 — that file is now the current
+> form, and "show them this first" applies to it once its `WORKING-` prefix drops. The v2 walk
+> **inherits this file's *What this walk tested* findings rather than restating them**, so this
+> file remains their record; its steps use the pre-preamble form. Its final fate — absorbed or
+> kept under a superseded banner — is decided at prefix-drop, after the inheritance is resolved.
+
 Derived from **RFC 5321 Appendix D.1** — *A Typical SMTP Transaction Scenario* — reduced to one
 recipient, with `HELO` substituted for `EHLO`. Verified against
 [`../rfc/rfc5321.txt`](../rfc/rfc5321.txt).

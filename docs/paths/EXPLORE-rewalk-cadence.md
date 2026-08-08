@@ -341,7 +341,8 @@ be*, not *proven absent*.
 > ### ✅ Full sweep completed 2026-08-07 — verdict: **artifact**, and stronger than "no rule found"
 >
 > 35 talks, 46 podcast episodes, both sites, the kits and the drawio, with three adversarial passes.
-> Detail in `research/CADENCE-FINDINGS.md`. Four things change what is written above.
+> Detail in `event-modeling-research:research/CADENCE-FINDINGS.md`. Four things change what is
+written above.
 >
 > **⚠️ *Cadence* is his word — and it means the wiring rule, not slice order.** SE Radio 539:
 > *"there's definitely a Cadence like an opinion as to the flow and what arrows can connect"* —

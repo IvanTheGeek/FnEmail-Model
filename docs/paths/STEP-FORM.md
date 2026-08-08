@@ -6,6 +6,16 @@ the same whichever path you are in.
 A **path** is the model instantiated with real data. A **step** is one slice of that model, at one
 moment, with the actual bytes that crossed the wire and the actual field values that resulted.
 
+> ⚠️ **Status, 2026-08-08: the generic step form is now owned by the method repo** —
+> [`path-and-step-form.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/path-and-step-form.md)
+> — and this file predates the semantics settled 2026-08-07/08: its examples still show the reply
+> inside the command's wire row, a `protocol` field, a consulted `SessionState`, and no
+> required-first preamble. **Do not pattern new steps on the examples here**; pattern them on
+> [`WORKING-helo-direct-single-recipient-v2.md`](WORKING-helo-direct-single-recipient-v2.md),
+> which this file catches up with when that walk concludes. What remains authoritative here is
+> the SMTP-specific layer: uppercase verbs as the RFC's example convention, wire rows verbatim
+> with no `C:`/`S:` prefixes, the step 9 DATA exception, and the 🟥 overload flag.
+
 ---
 
 ## The form — a Command Slice

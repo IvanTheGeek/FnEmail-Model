@@ -138,27 +138,6 @@ Post    SessionClosed{ cause: "quit" }
 
 ---
 
-## As a sequence
-
-```mermaid
-sequenceDiagram
-    participant C as foo.com (relay)
-    participant S as xyz.com (us)
-    S->>C: 220 xyz.com Simple Mail Transfer Service Ready
-    C->>S: HELO foo.com
-    S->>C: 250 xyz.com is on the air
-    C->>S: MAIL FROM JQP at bar.com
-    S->>C: 250 OK
-    C->>S: RCPT TO Jones at XYZ.COM
-    S->>C: 250 OK
-    C->>S: DATA
-    S->>C: 354 Start mail input
-    C->>S: headers, body, then dot
-    S->>C: 250 OK queued as x91B4C7
-    C->>S: QUIT
-    S->>C: 221 closing channel
-```
-
 Every reply is 2xx or 3xx. No error branch is taken anywhere.
 
 ---
