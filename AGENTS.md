@@ -229,9 +229,11 @@ a ⚠️ correction under rule 4 with the evidence attached — not a quiet chan
 
 ## 10. Extensions stay parked
 
-[`docs/event-model-extensions.md`](docs/event-model-extensions.md) is deliberately not applied, so
-the orthodox model stays measurable against it — learn the method before extending it. Do not fold
-extension ideas into the model without being asked.
+The author's extension ideas live in the method repo —
+[`EventModeling/docs/extensions.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/extensions.md),
+moved there 2026-08-08 from this repo's `docs/event-model-extensions.md` (history here) — and are
+deliberately not applied, so the orthodox model stays measurable against them — learn the method
+before extending it. Do not fold extension ideas into the model without being asked.
 
 ## 11. Four repositories, one direction of flow
 

@@ -108,14 +108,14 @@ Start with the method layer, then this repo, then the research repo as needed.
 
 | File | Repo | Why |
 |---|---|---|
-| `README.md`, then `docs/` (four files) | EventModeling | **The method layer.** Layering, path/step form, the three-fates split, rendering — the canonical statements this repo cites |
+| `README.md`, then `docs/` (six files) | EventModeling | **The method layer.** Layering, path/step form, the three-fates split, rendering, altitude, the parked extensions — the canonical statements this repo cites |
 | [`DECISIONS.md`](DECISIONS.md) | this repo | What is settled, and must not be re-litigated (AGENTS.md rule 9) |
 | [`event-model.md`](event-model.md) | this repo | The model — v0.3, 12 slices. **Lags the v2 walk deliberately**; its banner lists the pending reconciliations |
-| [`model-altitude.md`](model-altitude.md) | this repo | What belongs in this model at all — charter, gate sequence, four tiers |
+| [`model-altitude.md`](model-altitude.md) | this repo | What belongs in this model — charter, gate sequence, four tiers, the classified events. Its generic sections moved to `EventModeling/docs/altitude.md` 2026-08-08 |
 | [`smtp-path-vs-mailbox.md`](smtp-path-vs-mailbox.md) | this repo | Path versus mailbox — the SMTP reference distinction the walks lean on |
 | [`paths/`](paths/) | this repo | The walked paths. `WORKING-helo-direct-single-recipient-v2.md` is the active walk; `STEP-FORM.md` defines the step convention (its banner says what has moved on) |
 | [`diagrams/README.md`](diagrams/README.md) | this repo | The model as tables — renders on GitHub *and* the Claude apps |
-| [`event-model-extensions.md`](event-model-extensions.md) | this repo | The author's extension ideas — **parked, deliberately not applied** (rule 10) |
+| `docs/extensions.md` | EventModeling | The author's extension ideas — **parked, deliberately not applied** (rule 10). Moved 2026-08-08 from this repo's `event-model-extensions.md` |
 | `research/METHOD-REFERENCE.md` | research | The method as its authors define it, contradictions named rather than smoothed over |
 | `research/CORRECTIONS-v0.1.md` | research | 20 ways the first draft misapplied the method |
 
@@ -196,7 +196,9 @@ The reconciliation pass runs **when the v2 walk sheds its `WORKING-` prefix**, n
 **EventModeling:** when the `WORKING-` prefix drops, three deep links there need the new filename
 (`layering.md`, `path-and-step-form.md`, `state-view-todo-list-decision-model.md`); create the
 departures register and add the minimal-`Given` departure (`STEP-FORM.md` records it here); the
-three-fates step-6 mismatch above. Flow candidates when ripe: the cadence verdict, the
+three-fates step-6 mismatch above; add `altitude.md` and `extensions.md` to the README reading
+order — deferred 2026-08-08 because the README carried uncommitted local edits the move must not
+sweep in. Flow candidates when ripe: the cadence verdict, the
 GWT-vs-timeline analysis, the view-`When` corpus contradiction, `diagrams/README.md`'s generic
 halves, `DECISIONS.md`'s held method rows, the prefix convention, the rendering experiments (with
 `rendering.md`'s evidence pointer updated in the same move).
@@ -225,6 +227,7 @@ apex fails TLS — use `www.`.
 - **RFCs** — 5321 and 7504 under [`rfc/`](rfc/)
 - **Code** — none yet, by design
 - **Method repo** — seeded 2026-08-08 from these walk-throughs: layering, path/step form, the
-  three-fates split, rendering
+  three-fates split, rendering; grew the same day by the parked extensions and the generic
+  altitude sections, moved from this repo on Ivan's ruling
 - **Research repo** — method reference, 20 corrections, 152 sources, the mirrored corpus, the
   extracted book (57 chapters), and 982,637 words of verified transcript across podcasts and talks

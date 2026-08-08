@@ -15,7 +15,8 @@ something the RFC demonstrates — see *On HELO* below.
 
 **Status:** worked example. Example data is orthodox — Dymitruk: *"The more realistic the data the
 better."* The *step/path* framing anticipates the extension parked in
-`../event-model-extensions.md` §3 and is not yet part of the method as its authors describe it.
+`EventModeling/docs/extensions.md` §3 (moved there 2026-08-08 from this repo) and is not yet part
+of the method as its authors describe it.
 
 ---
 
@@ -244,7 +245,7 @@ single-recipient branch is never exercised here. One path is not coverage — no
 
 **No example dialogue in RFC 5321 uses `HELO`.** Five occurrences of `C: EHLO`, zero of `C: HELO`.
 
-Consequence for `../event-model-extensions.md` §3: the claim that "the RFC ships the paths" holds
+Consequence for `EventModeling/docs/extensions.md` §3: the claim that "the RFC ships the paths" holds
 for the *shape* of each scenario but not verbatim under our HELO-only scope. Every path needs the
 greeting exchange substituted, which means these are RFC-**derived** paths, not RFC-**quoted**
 ones. Promoting them to conformance tests requires saying which.
@@ -287,7 +288,7 @@ This walk is not unambiguously happy either:
 
 Outcome is relative to an actor, the same way screens are. The honest label for this path is
 **happy for the server, partial for the sender**. Whether a path's outcome should be recorded per
-actor lane rather than as a single verdict is open — see `../event-model-extensions.md` §3.
+actor lane rather than as a single verdict is open — see `EventModeling/docs/extensions.md` §3.
 
 ## Next paths
 

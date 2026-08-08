@@ -6,8 +6,9 @@ Scope: **inbound SMTP, `HELO` only.** No ESMTP, no relay, no outbound.
 Method reference: `event-modeling-research:research/METHOD-REFERENCE.md`. Corrections from v0.1: `event-modeling-research:research/CORRECTIONS-v0.1.md`.
 Altitude rules — what belongs in this model at all: `model-altitude.md`.
 Diagrams (markdown tables, render on GitHub and the Claude apps): `diagrams/`.
-Extensions are parked in `event-model-extensions.md` and **not** applied here — this document is
-orthodox Dymitruk/Dilger by intent, so extensions can be measured against it.
+Extensions are parked in the method repo — `EventModeling/docs/extensions.md`, moved there
+2026-08-08 from this repo — and **not** applied here — this document is orthodox Dymitruk/Dilger
+by intent, so extensions can be measured against it.
 
 > ⚠️ **This document is derived, and it lags the active walk — deliberately.** Paths are the
 > source and slices are derived ([`DECISIONS.md`](DECISIONS.md); canonical statement in the method
@@ -603,7 +604,9 @@ consumes it. `local_address` is the control: same origin, no consumer, orphaned 
 ## H3 resolved — Directory is a separate context
 
 The question was whether `RecipientDirectory` names a *layer* inside FnEmail's charter or a
-separate context. Applying the criterion in `model-altitude.md` §2.0c — subdivide within a context
+separate context. Applying the criterion in
+`event-modeling-research:research/model-altitude-theory.md` §2.0c *(that section moved out with
+the 2026-08-06 split; this reference had not caught up)* — subdivide within a context
 and you have layers; subdivide until the pieces have separate charters and owners and you have
 separate contexts:
 
@@ -626,7 +629,8 @@ arrive yellow, get translated into our vocabulary, and `RecipientDirectory` proj
 translated events. This is exactly what the Translation pattern is for.
 
 **2. It does not motivate the multiple-models extension.** An earlier note called H3 *"the
-strongest pull toward the multiple-models idea"* in `event-model-extensions.md` §1. That was wrong.
+strongest pull toward the multiple-models idea"* in `event-model-extensions.md` §1 (now
+`EventModeling/docs/extensions.md`). That was wrong.
 §1 concerns splitting **one** context into layers — protocol, domain, operational. Directory is a
 **different context**, which orthodox Event Modeling already handles. H3 needs no extension.
 
