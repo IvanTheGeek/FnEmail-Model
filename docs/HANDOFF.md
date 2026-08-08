@@ -196,9 +196,7 @@ The reconciliation pass runs **when the v2 walk sheds its `WORKING-` prefix**, n
 **EventModeling:** when the `WORKING-` prefix drops, three deep links there need the new filename
 (`layering.md`, `path-and-step-form.md`, `state-view-todo-list-decision-model.md`); create the
 departures register and add the minimal-`Given` departure (`STEP-FORM.md` records it here); the
-three-fates step-6 mismatch above; add `altitude.md` and `extensions.md` to the README reading
-order — deferred 2026-08-08 because the README carried uncommitted local edits the move must not
-sweep in. Flow candidates when ripe: the cadence verdict, the
+three-fates step-6 mismatch above. Flow candidates when ripe: the cadence verdict, the
 GWT-vs-timeline analysis, the view-`When` corpus contradiction, `diagrams/README.md`'s generic
 halves, `DECISIONS.md`'s held method rows, the prefix convention, the rendering experiments (with
 `rendering.md`'s evidence pointer updated in the same move).

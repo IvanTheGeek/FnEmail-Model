@@ -7,7 +7,8 @@ H2 and H5.
 > altitude, and §2.0b–§2.0d on vocabulary and the DDD question — moved to the private
 > `event-modeling-research` repo, at `research/model-altitude-theory.md`. FnEmail uses Event
 > Modeling but is not about it. **Section numbers here are unchanged**, so the sequence starts at
-> §2; references below to §0, §1.1 and §1.4 point into that document.
+> §2; references below to §0 and §1.1 point into that document *(a §1.4 reference left with §4's
+> generic half in the 2026-08-08 move below)*.
 >
 > What stayed is everything that decides what goes in *this* model: role collapse, the charter,
 > the gate sequence, the four tiers, the payload rule, and the classified events.
