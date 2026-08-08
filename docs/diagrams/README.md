@@ -45,7 +45,7 @@ A Command Slice reads **top to bottom**. A View Slice reads **bottom to top**. S
 > ⚠️ Arrows are notation, not semantics, and this project does not use them — but that forgoes
 > something. Their job in the corpus is **information-completeness tracing**: following one field
 > from where it is captured to where it is used. This project does that check in prose instead. See
-> `../HANDOFF.md` §4.
+> `../DECISIONS.md`, the no-arrows caveat.
 
 ---
 

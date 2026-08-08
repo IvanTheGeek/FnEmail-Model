@@ -22,8 +22,8 @@ carries the identity and the last row carries the dependency.
 
 **The header row** is `🟦 C · Step N` and the slice name. **N** is the position in *this walk* —
 unlike a slice number it is not arbitrary, because a walk is one concrete conversation and step 4
-genuinely happened after step 3. The name matches `../event-model.md` exactly. See `../HANDOFF.md`
-convention 8 for why slices are named rather than numbered.
+genuinely happened after step 3. The name matches `../event-model.md` exactly. See `../../AGENTS.md`
+rule 5 for why slices are named rather than numbered.
 
 **The left column names the participant, not the element type.** The wire row is the actor, the
 event row is `Event`, the dependency row is `Given` — and **the command row's label is blank**. That
