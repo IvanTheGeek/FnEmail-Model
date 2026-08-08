@@ -104,7 +104,7 @@ walk material keeps the block in place — the `EXPLORE-` records, the walked pa
 `EXPERIMENT-` files are read for their trail, and that holds for superseded rulings too. A
 normative document records the correction in the commit that fixes it (rule 6) and keeps a block
 in-document only while it changes how the current text must be read — a status banner that
-reframes the whole document qualifies (`event-model.md` and `STEP-FORM.md` each carry one); a
+reframes the whole document qualifies (`event-model.md` carries one); a
 superseded position does not. And in a normative document, a **ruling that changes is not a
 correction**: the old position was the accepted one until it was superseded, and it goes to
 history (rule 14), not to a ⚠️ block.

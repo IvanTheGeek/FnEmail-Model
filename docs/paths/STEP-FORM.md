@@ -1,176 +1,83 @@
-# The step form
+# The step form — the SMTP layer
 
-What one step of a walked path looks like. Every path in this directory uses it, so a step reads
-the same whichever path you are in.
+What a walked step in this repository adds to the generic form.
 
-A **path** is the model instantiated with real data. A **step** is one slice of that model, at one
-moment, with the actual bytes that crossed the wire and the actual field values that resulted.
+The generic form is the method repo's:
+[`path-and-step-form.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/path-and-step-form.md)
+— the step table and its rows, the `Given` block and its three degrees, what a view is, what a path
+document contains besides steps. This file does not restate any of it (rule 11). Rendering
+conventions are [`../../AGENTS.md`](../../AGENTS.md) rule 5; the chip legend is
+[`../diagrams/README.md`](../diagrams/README.md).
 
-> ⚠️ **Status, 2026-08-08: the generic step form is now owned by the method repo** —
-> [`path-and-step-form.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/path-and-step-form.md)
-> — and this file predates the semantics settled 2026-08-07/08: its examples still show the reply
-> inside the command's wire row, a `protocol` field, a consulted `SessionState`, and no
-> required-first preamble. **Do not pattern new steps on the examples here**; pattern them on
-> [`WORKING-helo-direct-single-recipient-v2.md`](WORKING-helo-direct-single-recipient-v2.md),
-> which this file catches up with when that walk concludes. What remains authoritative here is
-> the SMTP-specific layer: uppercase verbs as the RFC's example convention, wire rows verbatim
-> with no `C:`/`S:` prefixes, the step 9 DATA exception, and the 🟥 overload flag.
+The worked instance is
+[`WORKING-helo-direct-single-recipient-v2.md`](WORKING-helo-direct-single-recipient-v2.md).
+Pattern new steps on it — and note that it still carries its `WORKING-` prefix, so its details may
+move (rule 13).
 
 ---
 
-## The form — a Command Slice
+## Every server reply is a step of its own
 
-Everything lives in one table. There is no heading above it and no contract below it; the header row
-carries the identity and the last row carries the dependency.
+A reply is a **rendered view**: the wire line is what the renderer produces from the view's fields.
+So each of the seven replies in a walk gets its own view step, and none of them appear as text
+inside the wire row of the command that provoked them. A view read only internally —
+`RecipientDirectory`, which `RcptTo` consults and which is rendered to nobody — has no top row at
+all, and its readers declare it in their own `Given`.
 
-| 🟦 C · Step 2 | `Helo` |
-|:--|:--|
-| MTA Client | ⬛ `HELO` bar.com&#10;<br>`250` foo.com |
-| | 🟦 **Helo**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP |
-| Event | 🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP |
-| Given | 🟧 **ConnectionAccepted** |
+The eighth output is not a reply and still gets a step: the `Received:` trace line, drawn into the
+stored message rather than the socket, which is why its top row carries no wire chip.
 
-**The header row** is `🟦 C · Step N` and the slice name. **N** is the position in *this walk* —
-unlike a slice number it is not arbitrary, because a walk is one concrete conversation and step 4
-genuinely happened after step 3. The name matches `../event-model.md` exactly. See `../../AGENTS.md`
-rule 5 for why slices are named rather than numbered.
+## Uppercase verbs are the RFC's example convention, not a requirement
 
-**The left column names the participant, not the element type.** The wire row is the actor, the
-event row is `Event`, the dependency row is `Given` — and **the command row's label is blank**. That
-blank is deliberate: the middle row *is the slice itself*, which the header named one line above, so
-labeling it would state the name a third time.
+Every path here writes `HELO`, `MAIL FROM`, `RCPT TO` in caps because RFC 5321 Appendix D does, and
+rule 2 keeps a quoted dialogue in its own form. But §2.4 says a verb *"MAY be encoded in upper
+case, lower case, or any mixture … with no impact on its meaning"*. Do not read the caps in these
+paths as normative, and never use case to carry meaning — see
+[`../event-model.md`](../event-model.md) → *Case sensitivity*.
 
-⚠️ **The command carries the fields it takes from the actor.** A bare command name breaks the
-completeness check — every field needs an origin, and the command is the origin for everything the
-client supplies. Where the command and event rows look nearly identical, that is the check
-**passing**: a value arriving and being stored unchanged. Where they diverge, something is derived,
-generated or dropped, and that is visible at a glance.
+## The wire row holds the wire, verbatim
 
-⚠️ **`Given` is last, and it is the only row that can be wrong.** The command and event rows are
-*observations* of what the walk did. A `Given` is a **claim** about what the step depends on.
+Reply codes are exact, including the text after them. This is the row a reader follows to
+reconstruct the conversation, which is why this project needs no sequence diagram
+([`../diagrams/README.md`](../diagrams/README.md) §7).
 
-## The `Given` row
+**The `C:` and `S:` prefixes are not used.** In SMTP a verb is always the client and a three-digit
+code is always the server, so direction is recoverable from the content itself.
 
-**One row, however many events.** They stack inside the cell using **exactly the Event row's
-structure** — name, then indented `field`: value lines where data matters — so a `Given` and the
-`Then` it will be matched against are visibly the same kind of thing.
-
-| Given | 🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP&#10;<br>🟧 **OtherEvent**&#10;<br>&nbsp;&nbsp;`other_field`: value |
-|:--|:--|
-
-| Degree | Means | Written as |
-|:--|:--|:--|
-| **nothing** | this step depends on no previous event | 🟤 |
-| **the event exists** | it must have happened; nothing about its contents | 🟧 **EventName** |
-| **the event and its data** | specific fields must match | **the Event row's own layout** |
-
-**It is the minimal dependency, not the accumulated history.** Dymitruk's convention is that a given
-is every previous row, so a test runner *"can always just use an accumulator to add events"*. That
-exists for a runner, which has no walk to read. Here the walk is on the page, so restating it would
-be redundant — `RcptTo` has three events above it and depends on one. **A deliberate departure.**
-
-**A dependency with no event of ours is still written down**, marked 🟨 and stated as external. That
-is what keeps a translation boundary visible at the step where it bites rather than hidden behind a
-read-model name.
-
-**🟤 marks nothing.** Settled 2026-08-07 after comparing every circle in the emoji set on the phone.
-It is a **circle among squares**, so the shape says *not an element type*, and brown is one of only
-two circle colors this project has not already assigned a meaning — the other being purple, which
-reads as too significant for an absence. It carries enough contrast to survive a skim, which white
-did not.
-
-⚠️ **🟤 belongs to the `Given` row only.** A command that supplies no fields — `BeginData` and
-`Quit` are bare verbs — simply carries no field lines. It needs no marker, because its emptiness is
-**corroborated by the wire row directly above it**: `QUIT` visibly takes no argument. A `Given` has
-no such corroboration anywhere in the table, and it is the one row that can be wrong, so it must say
-*deliberately nothing* rather than leave a reader to guess *not filled in yet*. Candidates and the
-reasoning are in [`EXPLORE-gwt-form.md`](EXPLORE-gwt-form.md).
-
----
-
-## A View Slice is different, and is being reworked
-
-**A View Slice has no wire.** Nothing crosses the network to build a read model. Its top row names
-the **consumer**, its bottom row names the **source events**, and it reads bottom to top.
-
-| 🟩 V · Step 3 | `SessionState` |
-|:--|:--|
-| Consumed by | ⬜ `MailFrom` · `RcptTo` · `BeginData` |
-| | 🟩 **SessionState**&#10;<br>&nbsp;&nbsp;`identified`: true&#10;<br>&nbsp;&nbsp;`transaction_open`: false |
-| Sources | 🟧 **ConnectionAccepted** · **ClientIdentified** |
-
-⚠️ **This form predates the Command Slice rework and has not been brought onto it.** It has no
-`Given` row and its rows are still ordered consumer-first. Deliberately left alone — see
-[`EXPLORE-view-slice.md`](EXPLORE-view-slice.md). **Do not pattern it on the Command Slice without
-that work being done**, because the corpus disagrees with itself about whether a view even has a
-`When`.
-
----
-
-## Rules
-
-**Uppercase verbs are the RFC's example convention, not a requirement.** Every path here writes
-`HELO`, `MAIL FROM`, `RCPT TO` in caps because RFC 5321 Appendix D does, and rule 2 keeps a quoted
-dialogue in its own form. But §2.4 says a verb *"MAY be encoded in upper case, lower case, or any
-mixture … with no impact on its meaning"*. Do not read the caps in these paths as normative, and
-never use case to carry meaning — see `../event-model.md` → *Case sensitivity*.
-
-**The wire row holds the wire, verbatim.** Reply codes are exact, including the text after them.
-This is the row a reader follows to reconstruct the conversation — which is why this project needs
-no sequence diagram (see `../diagrams/README.md` §7). The `C:` and `S:` prefixes are **not** used:
-in SMTP a verb is always the client and a three-digit code is always the server, so direction is
-recoverable from the content. Step 9 is the exception, where the DATA payload is neither, and there
-the RFC 5322 field names carry the monospace instead.
-
-**Monospace marks what the protocol fixes; standard font marks what varies.** On a wire line the
-reply code and the verb are monospace and the rest is not — `220` foo.com Ready. In a payload the
-field name is monospace and the value is not — `peer_address`: 198.51.100.40. **Values carry no
-quotation marks.** One axis only, font family; never bold or italic. Settled in
-[`../diagrams/EXPERIMENT-inline-styling.md`](../diagrams/EXPERIMENT-inline-styling.md).
-
-**Every field carries a real value.** Not `<address>` but 198.51.100.40. The value is the point
-— walking with placeholders finds nothing, and both payload defects this project has found came
-from instantiating a field and seeing that nothing consumed it, or that its value could not survive
-replay.
-
-**A step carries only its own walk's scenarios.** Not the 5–20 a command handler may have. Those
-accumulate at the *slice*, which is the union of what every walk contributed — see
-[`../DECISIONS.md`](../DECISIONS.md), *Paths are the source; slices are derived*.
-
-**Hotspots travel with the step.** A slice under an open question carries its marker inline —
-`🟥 H1` — so a reader walking the path meets the doubt at the point where it matters rather than in
-an appendix.
-
-⚠️ **🟥 is currently overloaded**, meaning both *hotspot* and *error outcome*. Unresolved; see
+The wire row also corroborates an emptiness that nothing else can. `BeginData` and `Quit` are bare
+verbs and carry no field lines, and they need no marker saying so, because `QUIT` visibly takes no
+argument on the line directly above. A `Given` has no such corroboration anywhere in the table,
+which is why it is the one place 🟤 is written — the reasoning, and the candidates rejected, are in
 [`EXPLORE-gwt-form.md`](EXPLORE-gwt-form.md).
 
----
+## The DATA payload is neither a verb nor a code
 
-## Why the wire is a code span and not prose
+One wire row in every walk breaks the monospace rule's usual reading, because what crosses is
+message content rather than protocol. There the RFC 5322 field names carry the monospace and the
+values do not:
+
+| 🟦 C · Step 12 | `SubmitContent` |
+|:--|:--|
+| MTA Client | ⬛ `Date:` Tue, 19 May 1998 09:14:02 -0700&#10;<br>`From:` Smith \<Smith@bar.com>&#10;<br>`To:` Jones@foo.com&#10;<br>`Subject:` Tuesday&#10;<br>(blank)&#10;<br>Blah blah blah...&#10;<br>`.` |
+| | 🟦 **SubmitContent**&#10;<br>&nbsp;&nbsp;`content`: 194 octets, dot-unstuffed |
+
+The terminating lone `.` is protocol and stays monospace. The step number is this walk's position,
+not a handle — slices are referred to by name (rule 5).
+
+## The wire is a code span because SMTP syntax is load-bearing
 
 Reply codes and the `<>` around a reverse-path are protocol syntax; losing a bracket or a space
-changes their meaning. Code spans render monospace on GitHub and in the Android app, and they
-survive copy-paste into a terminal. `MAIL FROM:<Smith@bar.com>` is testable; *"a MAIL FROM command
-naming Smith"* is not.
+changes their meaning. `MAIL FROM:<Smith@bar.com>` is testable, *"a MAIL FROM command naming
+Smith"* is not. Code spans render monospace in every renderer this project targets and survive
+copy-paste into a terminal.
 
-⚠️ **An address outside a code span loses its angle brackets** — GFM autolinks it and eats them, and
-`<CRLF>` in running text vanishes entirely. Escape the opening bracket: `\<Smith@bar.com>`. The
-address still autolinks, which is accepted; the brackets are RFC 5321 path syntax and are not.
+⚠️ **An address outside a code span loses its angle brackets** — GFM autolinks it and eats them,
+and `<CRLF>` in running text vanishes entirely. Escape the opening bracket: `\<Smith@bar.com>`. The
+address still autolinks, which is accepted; the brackets are RFC 5321 path syntax and are not. The
+general rule is in `AGENTS.md` rule 5; what is SMTP's is that the brackets are *syntax* —
+`MAIL FROM:<>` is not `MAIL FROM:`.
 
----
+## 🟥 is overloaded — open
 
-## What a path needs besides steps
-
-The walk is the middle of the document, not all of it:
-
-| Section | Does |
-|:--|:--|
-| **Scene** | the actors, addresses and time, as a table. Anything deliberate about the setup is called out here |
-| **The walk** | the steps |
-| **Accounting** | steps vs distinct slices touched, and what remains uncovered across all paths |
-| **Completeness, instantiated** | the origin-and-destination check run against real values — usually the `Received:` header, since it is where the model's fields become output |
-| **What this walk tested** | what it proved. Negative results count and are often the valuable kind |
-| **What it did not test** | stated plainly. A clean path confirms; it does not discover |
-
-The last two matter more than they look. A path that found nothing should say so — that is a fact
-about the path, and it is how this project learned to walk the messy path first.
+The chip means both *hotspot* and *error outcome*. Unresolved; see
+[`EXPLORE-gwt-form.md`](EXPLORE-gwt-form.md).

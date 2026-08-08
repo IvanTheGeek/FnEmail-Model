@@ -21,7 +21,10 @@ is a reduction, not a quotation — so this walk is RFC-derived in structure and
 every reply code, but the exchange as written does not appear in the specification. Stated plainly
 because the other two paths *are* quotable and this one is not.
 
-Steps follow [`STEP-FORM.md`](STEP-FORM.md).
+Steps follow the step form **as it stood before the 2026-08-07/08 rework** — the reply inside the
+command's wire row, a `protocol` field, a consulted `SessionState`, no required-first preamble.
+[`STEP-FORM.md`](STEP-FORM.md) now carries only what SMTP adds; the superseded generic form is in
+that file's history.
 
 ---
 
