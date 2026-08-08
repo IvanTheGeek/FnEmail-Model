@@ -26,7 +26,7 @@ A step is one table, no heading. Dependencies point backward only.
 
 **No *not in the model* markers.** Paths are the source and slices are derived — what a path
 needs, it defines, and the union across paths populates the model
-([`../HANDOFF.md`](../HANDOFF.md) §1). The five views and two seeded events this walk defines
+([`../HANDOFF.md`](../HANDOFF.md) §1). The six views and two seeded events this walk defines
 beyond the current model are simply part of this path; reconciling the model is model work.
 Hotspots appear only where open — see *Hotspots* at the end.
 
@@ -152,14 +152,23 @@ cannot vary, and a constant is a rule, not a fact. The `WITH` value joins the re
 constants. If the charter ever admits `EHLO`, the field re-enters as a fact originated by the
 verb that actually arrived.*
 
-| 🟩 V · Step 4 | `SessionState` |
+| 🟩 V · Step 4 | `SessionReady` |
 |:--|:--|
 | MTA Client | ⬛ `250` foo.com |
-| | 🟩 **SessionState**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`identified`: true&#10;<br>&nbsp;&nbsp;`transaction_open`: false |
-| Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **ConnectionAccepted**&#10;<br>🟧 **ClientIdentified** |
+| | 🟩 **SessionReady**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com |
+| Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **ClientIdentified** |
 
-*`server_domain` joined this view 2026-08-08 by the same ruling as step 2 — the reply renders it,
-so the dataset carries it. This closes the choice the preamble trial had deliberately left open.*
+*Renamed and reduced, ruled 2026-08-08. This view spent the walk's whole history as
+`SessionState` — a name belonging to the model's consulted precondition view, which this walk
+never consults: every command's `Given` cites events directly. The only job performed here is
+rendering `250` foo.com, and §4.1.1.1 names both halves of it — the reply confirms *"the initial
+state"*, carried by the code, renderer territory; and *"The SMTP server identifies itself to the
+SMTP client in the connection greeting reply and in the response to this command"*, carried by
+the data. So: `SessionReady`, the `220`'s sibling — service ready, then session ready — with a
+one-field dataset, `server_domain` (which had joined earlier the same day when the trial's open
+choice closed). `identified` and `transaction_open` leave by the `accepting` precedent, booleans
+nothing renders; `ConnectionAccepted` leaves the `Given` with them, having only ever been there
+for their fold. `ClientIdentified` is the occasion, `ServiceConfigured` the data.*
 
 | 🟦 C · Step 5 | `MailFrom` |
 |:--|:--|
@@ -267,8 +276,8 @@ never walked.
 | Replies shown as wire text inside a command | 7 | **0** |
 | Outputs with a step behind them | 0 of 8 | **8 of 8** |
 | Events seeded by the preamble | — | 2 |
-| Model slices touched (of 12) | 10 | 10 — `Reset` and `SessionTranscript` still untouched |
-| Slices this path defines beyond the model | 0 | 5 views + 2 seeded events |
+| Model slices touched (of 12) | 10 | **9** — `Reset`, `SessionTranscript`, and now `SessionState`: no `Given` here ever consults it |
+| Slices this path defines beyond the model | 0 | 6 views + 2 seeded events |
 
 ---
 
@@ -279,7 +288,7 @@ never walked.
 | Output | Drawn by | Origin of every varying value |
 |:--|:--|:--|
 | `220` foo.com Simple Mail Transfer Service Ready | `ServiceReady` (step 2) | `ServiceConfigured.server_domain`, `.greeting_text` — both carried by the view; the `220` code itself is this scenario's rendering |
-| `250` foo.com | `SessionState` (step 4) | `ServiceConfigured.server_domain`, carried by the view; booleans fold from `ConnectionAccepted`, `ClientIdentified` |
+| `250` foo.com | `SessionReady` (step 4) | `ServiceConfigured.server_domain`, carried by the view; the `250` code is this scenario's rendering |
 | `250` OK | `TransactionState` (step 6) | `MailTransactionStarted.reverse_path` |
 | `250` OK | `TransactionState` (step 9) | `MailTransactionStarted`, `RecipientAccepted` |
 | `354` prompt | `DataPrompt` (step 11) | `DataPhaseEntered`'s existence |
@@ -301,7 +310,7 @@ on purpose: §3.1 invites the operator to extend it with software and version, w
 |:--|:--|
 | `ServiceConfigured` *(seeded)* | steps 2, 4, 13, 16 (`server_domain`; step 2 also `greeting_text`) |
 | `RecipientResolved` *(seeded)* | steps 7, 8 (`is_local`, `forward_path`) |
-| `ConnectionAccepted` | steps 2, 3, 4, 15 (existence); step 13 (`peer_address`) — `local_address` has **no consumer**, 🟥 H6 |
+| `ConnectionAccepted` | steps 2, 3, 15 (existence); step 13 (`peer_address`) — `local_address` has **no consumer**, 🟥 H6 |
 | `ClientIdentified` | steps 4, 5 (existence); step 13 (`claimed_domain`) |
 | `MailTransactionStarted` | steps 8, 10 (existence); steps 6, 9 (`reverse_path`) |
 | `RecipientAccepted` | steps 9, 10 (existence); step 13 (`forward_path`) |
@@ -376,7 +385,7 @@ walk sources from the seeded event — same fact, now with an origin the complet
 
 ## Hotspots
 
-Only what is open or new. H3 and H5 are resolved and therefore absent; the five path-defined views
+Only what is open or new. H3 and H5 are resolved and therefore absent; the six path-defined views
 and two seeded events carry no markers, because *paths are the source* — they are this path's
 contribution, not doubts about it.
 
