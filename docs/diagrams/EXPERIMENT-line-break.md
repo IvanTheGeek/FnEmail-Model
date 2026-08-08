@@ -14,8 +14,8 @@ a markdown table and that file mentions Mermaid zero times. It has always been a
 
 | Renderer | Version |
 |:--|:--|
-| **Claude Android app** | fill in at time of test |
-| **Claude Code desktop app** | fill in at time of test |
+| **Claude Android app** | not recorded at test time — [`EXPERIMENT-text-color.md`](EXPERIMENT-text-color.md) and [`EXPERIMENT-inline-styling.md`](EXPERIMENT-inline-styling.md) record **1.260721.20** (build 26072120) in the same period, 2026-08-06 |
+| **Claude Code desktop app** | not recorded at test time |
 | **GitHub** | web renderer. Column measured through the `POST /markdown` API **and confirmed by eye** 2026-08-07 — the API predicted all seven correctly |
 
 ---

@@ -2,8 +2,9 @@
 
 **Concluded by the v2 rulings, 2026-08-08 — kept as the reasoning record.** The closing questions
 were answered on the walk: a view is the dataset provided to the actor, view steps gained `Given`
-rows and read top-down like every other step, the required-first preamble carries what no walked
-event supplies, and the `Where` row died on paths — the removal was the finding. What stays live
+blocks (a labeled block, not a row — 3fb8160) and read top-down like every other step, the
+required-first preamble carries what no walked event supplies, and the `Where` row died on paths —
+the removal was the finding. What stays live
 here: the **slice-level** question (does a View Slice's *composed* GWT get a `When`?) and the
 corpus contradiction survey below, which is recorded nowhere else. Originally: the Command Slice
 form was reworked on 2026-08-07 and the View Slice was deliberately left behind, because bringing
@@ -12,11 +13,15 @@ starting point — every View Slice as it stood, unchanged, so the rework had so
 against.
 
 Command Slices now read: wire, command **with its actor-supplied fields**, event, and a `Given`
-carrying the minimal dependency. See [`STEP-FORM.md`](STEP-FORM.md).
+block carrying the minimal dependency. The generic form is the method repo's
+[`path-and-step-form.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/path-and-step-form.md);
+the worked instance is
+[`WORKING-helo-direct-single-recipient-v2.md`](WORKING-helo-direct-single-recipient-v2.md);
+[`STEP-FORM.md`](STEP-FORM.md) carries what SMTP adds.
 
 ---
 
-## The three View Slices, exactly as they are now
+## The three View Slices, exactly as they stood (2026-08-07)
 
 All three are exercised by [`helo-direct-single-recipient.md`](helo-direct-single-recipient.md).
 

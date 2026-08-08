@@ -186,7 +186,7 @@ the three, and it is the one a reader is least likely to catch.
 Written before the test, kept unedited.
 
 **The chip is a swatch, not a label.** Color in Event Modeling *is* the element type, and a chip
-puts that color beside the name without altering the name. Colored text would have to recolour
+puts that color beside the name without altering the name. Colored text would have to recolor
 the name itself, which is a different claim: it says the *word* is orange rather than that the
 *thing* is.
 

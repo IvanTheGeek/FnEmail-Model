@@ -8,9 +8,9 @@ path**, `<>`, a legal Path containing no Mailbox at all. A Mailbox cannot be emp
 The brackets are what make *nothing* sendable.
 
 Written up 2026-08-08 from the [`WORKING` walk-through](paths/WORKING-helo-direct-single-recipient-v2.md)
-of step 5, where the question was whether `MAIL FROM:` carries `<Smith@bar.com>` or a bare
-Smith@bar.com. Citations give the archived spec ([`rfc/rfc5321.txt`](rfc/rfc5321.txt), line-linked)
-and the canonical text at rfc-editor.org.
+at the `MailFrom` step, where the question was whether `MAIL FROM:` carries `<Smith@bar.com>`
+or a bare Smith@bar.com. Citations give the archived spec ([`rfc/rfc5321.txt`](rfc/rfc5321.txt),
+line-linked) and the canonical text at rfc-editor.org.
 
 ⚠️ **Naming collision, harmless but worth a sentence:** SMTP's *Path* has nothing to do with this
 repository's *paths* (walked timelines in [`paths/`](paths/)). Same word, unrelated ideas; this
@@ -66,7 +66,7 @@ will be deposited. The term "mailbox" refers to that depository."*
 
 So a conformant client sends `MAIL FROM:<Smith@bar.com>` — brackets on the wire — and a bare
 `MAIL FROM:Smith@bar.com` does not parse. RFC 5321 carries no tolerance for the bracket-less form;
-the old lore about accepting it was RFC 1123-era receiver robustness, and it did not survive into
+the old lore about accepting it was pre-5321 receiver robustness, and it did not survive into
 this grammar.
 
 ---
@@ -90,7 +90,7 @@ MAIL FROM:<>
 ```
 
 §4.5.5, *Messages with a Null Reverse-Path*
-([archived ll. 3787–3818](rfc/rfc5321.txt#L3787) ·
+([archived ll. 3787–3820](rfc/rfc5321.txt#L3787) ·
 [rfc-editor §4.5.5](https://www.rfc-editor.org/rfc/rfc5321#section-4.5.5)), completes the rules:
 everything not required to be null *"SHOULD be sent with a valid, non-null reverse-path"*, and
 automated processors *"SHOULD NOT reply to messages with a null reverse-path, and they SHOULD NOT

@@ -18,6 +18,16 @@ better."* The *step/path* framing anticipates the extension parked in
 `EventModeling/docs/extensions.md` §3 (moved there 2026-08-08 from this repo) and is not yet part
 of the method as its authors describe it.
 
+> **Superseded form — findings and rulings stand, steps are trail.** Steps follow the step form
+> as it stood before the 2026-08-07/08 rework — the reply inside the command's wire row, a
+> `protocol` field, a consulted `SessionState` — and keep pre-rename event names as trail
+> (rule 14 — [`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md) rules that
+> the superseded walked paths keep the old names). The current generic form is the method repo's
+> [`path-and-step-form.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/path-and-step-form.md);
+> [`STEP-FORM.md`](STEP-FORM.md) carries only what SMTP adds. ⚠️ The walked `actual_octets` was
+> later recomputed and is wrong — 412 is unreachable from the displayed content — kept as trail
+> per [`../FOLLOW-UPS.md`](../FOLLOW-UPS.md).
+
 ---
 
 ## Scene
@@ -139,6 +149,9 @@ Post    MessageAccepted{ queue_id: "q7F3A21",
                          received_at: "2026-08-05T14:23:01Z" }
 ```
 The responsibility boundary. One command, one event.
+
+⚠️ Corrected 2026-08-08: §2.1 places the handoff at issuance of the `250` after `DATA`, not at
+the event — see the docs-review findings in [`../FOLLOW-UPS.md`](../FOLLOW-UPS.md).
 
 ### Step 10 · `Quit` — C
 

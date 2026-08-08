@@ -2,9 +2,11 @@
 
 **Concluded in the main, 2026-08-07/08 — kept as the reasoning record.** Several verdicts here
 were adopted: 🟤 as the degree-0 marker (commits dc96213, 8c4b987), V17 applied to the direct path
-(commit 5a821e9), and Family 5's minimal `Given` became the settled `Given` row. Still genuinely
-open: the 🟥 hotspot/error overload (flagged below, and anchored from `STEP-FORM.md`), and the
-slice-level GWT form — V8 vs V13 — which the step-level verdict deliberately did not decide.
+(commit 5a821e9) — V17's one-row-per-event body survives inside the labeled block that superseded
+its label placement (3fb8160) — and Family 5's minimal `Given` became the settled `Given` —
+since 3fb8160 (method 18093f2) a two-row labeled block, not a row. Still genuinely open: the 🟥
+hotspot/error overload (flagged below, and anchored from `STEP-FORM.md`), and the slice-level GWT
+form — V8 vs V13 — which the step-level verdict deliberately did not decide.
 Thirteen ways to attach a specification to a Command Slice, all carrying the *same* content so the
 comparison is about form and never about the example.
 

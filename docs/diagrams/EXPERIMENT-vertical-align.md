@@ -28,8 +28,8 @@ label and the line it names are not level.
 
 | Renderer | Version |
 |:--|:--|
-| **Claude Android app** | fill in at time of test — the app updates independently of this repository |
-| **Claude Code desktop app** | fill in at time of test |
+| **Claude Android app** | not recorded at test time — the app updates independently of this repository; [`EXPERIMENT-text-color.md`](EXPERIMENT-text-color.md) and [`EXPERIMENT-inline-styling.md`](EXPERIMENT-inline-styling.md) record **1.260721.20** (build 26072120) in the same period, 2026-08-06 |
+| **Claude Code desktop app** | not recorded at test time |
 | **GitHub** | web renderer, viewed in Chrome on Android and on desktop; predictions cross-checked against the `POST /markdown` API |
 
 ⚠️ **There are three renderers, not two.** Every experiment in this directory before 2026-08-07 was

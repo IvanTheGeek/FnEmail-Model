@@ -115,8 +115,15 @@ does not resolve it — it just shows the event firing with nothing downstream t
 | Event | 🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipients`: [\<Jones@foo.com>]&#10;<br>&nbsp;&nbsp;`content_ref`: blob:sha256:9c1e…&#10;<br>&nbsp;&nbsp;`actual_octets`: 194&#10;<br>&nbsp;&nbsp;`received_at`: 1998-05-19T09:14:07-07:00 |
 | Given | 🟧 **DataPhaseEntered** |
 
+⚠️ `actual_octets`: 194 was recomputed 2026-08-08 as 126 (CRLF, dot line excluded); the walked
+value stands as trail — the numeric fix is reserved for the v2 walk. See
+[`../FOLLOW-UPS.md`](../FOLLOW-UPS.md).
+
 Left of here, abandoning costs nothing. At `MessageAccepted` we have accepted responsibility for
 delivering or reporting failure — RFC 5321 §2.1. **That is the responsibility boundary.**
+
+⚠️ Corrected 2026-08-08: §2.1 places the handoff at issuance of the `250` after `DATA`, not at
+the event — see the docs-review findings in [`../FOLLOW-UPS.md`](../FOLLOW-UPS.md).
 
 | 🟦 C · Step 10 | `Quit` |
 |:--|:--|

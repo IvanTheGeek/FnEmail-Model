@@ -4,9 +4,10 @@
 steps 6/9 collapse; the walk carries both. The adopting commits are titled
 *ReversePathDeclared names the step 5 event* and
 *Position replaces state at steps 6 and 9*. Still open: `DataPhaseEntered`'s name (H1), the
-acknowledgment view's name, the step 8 symmetry, the third-category question, and the
-command-naming rule. Started 2026-08-08 on branch `explore/declaration-vs-status`,
-during the step-by-step walk-through of
+acknowledgment view's name, the step 8 symmetry, the third-category question, the
+command-naming rule, and the dataset cascade the collapse spawned (tracked in
+[`../FOLLOW-UPS.md`](../FOLLOW-UPS.md)). Started 2026-08-08 on branch
+`explore/declaration-vs-status`, during the step-by-step walk-through of
 [`WORKING-helo-direct-single-recipient-v2.md`](WORKING-helo-direct-single-recipient-v2.md). Under
 rule 13 the walk lags this file for anything this exploration governs, and nothing else is
 reconciled to either until both settle.
@@ -299,19 +300,25 @@ Ordered by when, not by size.
 **Now, on this branch:**
 
 1. The walk's eight `MailTransactionStarted` occurrences — steps 5 and 6 `Event`/`Given` rows,
-   steps 8, 9 and 10 `Given` rows, the forward completeness table, the backward completeness table.
-2. Steps 6 and 9 `Given` blocks collapse to one event, existence only.
-3. `TransactionState`'s dataset and name — the step-6 ruling this exploration was spawned from,
-   still owed and now dependent on this one.
+   steps 8, 9 and 10 `Given` rows, the forward completeness table, the backward completeness
+   table. Done (d19f91d).
+2. Steps 6 and 9 `Given` blocks collapse to one event, existence only. Done (cd06274).
+3. `TransactionState`'s dataset and name — the step-6 ruling this exploration was spawned from.
+   Dataset: done (cd06274). Name: still open — the acknowledgment view's name, on this header's
+   still-open list; not settled here.
 4. The backward completeness rows for both `250 OK` lines: they currently claim field origins for a
    line with no varying value, and must take the honest form line 315 already uses for the `354`.
+   Done (cd06274).
 5. The forward completeness table: `MailTransactionStarted` → the new name, existence only at every
    site. **This orphans `reverse_path`,** which invalidates the walk's claim that
    `ConnectionAccepted.local_address` is the single unconsumed field. Do not patch around it — the
    orphan is a real finding, and the field's actual consumer is step 12's emitted
-   `MessageAccepted.reverse_path`, which no `Given` declares.
+   `MessageAccepted.reverse_path`, which no `Given` declares. Done (d19f91d); the orphan was then
+   discharged by the payload check becoming completeness's third (27627f9), which seated step 12's
+   `Given` — the arc the v2 walk's forward table records.
 6. `docs/FOLLOW-UPS.md` — the three-fates step-6 mismatch is discharged by the same edit and its
-   entry updated or removed.
+   entry updated or removed. Done (cd06274) — the entry was removed; its cross-repo successor is
+   now bidirectional with the step-6 note.
 
 **When this branch lands:**
 

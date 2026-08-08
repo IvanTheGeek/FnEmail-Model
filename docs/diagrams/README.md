@@ -1,8 +1,11 @@
 # Diagrams — FnEmail inbound event model
 
 Renderings of `../event-model.md` v0.3, as **markdown tables**. They render on GitHub, on desktop,
-and in the Android app. v0.3 as drawn — the model's own banner lists what the active walk has
-queued against it, and these sections rebuild with that reconciliation pass.
+and in the Android app. Sections 4–6 were reconciled 2026-08-08 to the walked timeline of
+[`WORKING-helo-direct-single-recipient-v2.md`](../paths/WORKING-helo-direct-single-recipient-v2.md),
+on the owner's waiver of the rule-13 hold. What stays open is flagged where it sits: the
+consulted-view reading at `RecipientDirectory`, the dataset-cascade fields, and the open names
+(`DataPhaseEntered`, `TransactionState`).
 
 **Colors** — 🟧 Event · 🟦 Command · 🟩 Read Model · ⬜ rendered UI (Screen) · ⬛ wire ·
 🟨 external / required-first · 🟥 hotspot · 🟤 nothing, only ever in a `Given`.
@@ -34,7 +37,8 @@ nothing but fragility — slice numbering is an artifact of the current altitude
 renumber wholesale if either moved. Slices are referred to **by name**; counts like "twelve slices"
 are still fine, because a count is a fact about the model rather than a handle on one part of it.
 
-**No arrows.** Meaning is carried by row position and left-to-right time. Rows are fixed:
+**No arrows, and no branching.** Meaning is carried by row position and left-to-right time; a
+timeline holds no branch points. Rows are fixed:
 
 ```
 row 1   Actor      screen, or automation for a processor
@@ -95,9 +99,9 @@ The `MailFrom` slice.
 
 | | **MailFrom** |
 |:--|:--|
-| ⬜ **Actor** | **Remote client**&#10;<br>`MAIL FROM:`\<Smith@bar.com> |
+| ⬜ **Actor** | **MTA Client**&#10;<br>`MAIL FROM:`\<Smith@bar.com> |
 | 🟦 **Command** | **MailFrom**&#10;<br>`reverse_path` |
-| 🟧 **Event** | **MailTransactionStarted**&#10;<br>`reverse_path` |
+| 🟧 **Event** | **ReversePathDeclared**&#10;<br>`reverse_path` |
 
 ### One event per command
 
@@ -128,17 +132,19 @@ event, leaving one command, one event — and the model got simpler, not poorer.
 
 *(aka state view, read model, query)*
 
-The `SessionState` slice. Same three rows, read **bottom to top**.
+The `SessionReady` slice — the view that renders the `250` foo.com reply to `HELO` (ruled
+2026-08-08, commit cf3227d). Same three rows, read **bottom to top**.
 
-| | **SessionState** |
+| | **SessionReady** |
 |:--|:--|
-| ⬜ **Consumed by** | **MailFrom · RcptTo · BeginData** |
-| 🟩 **Read Model** | **SessionState**&#10;<br>`identified`&#10;<br>`transaction_open` |
-| 🟧 **Events** | **ConnectionAccepted**&#10;<br>**ClientIdentified**&#10;<br>**SessionReset** |
+| ⬜ **Actor** | **MTA Client**&#10;<br>⬛ `250` foo.com |
+| 🟩 **Read Model** | **SessionReady**&#10;<br>`server_domain` |
+| 🟧 **Events** | **ServiceConfigured**&#10;<br>**ClientIdentified** |
 
 A View Slice may draw on events from **anywhere earlier** on the timeline. It is placed at its
-**consumer**, not next to its sources — which is why `SessionState` sits with its consumers
-while its sources are `AcceptConnection` and `ClientIdentified`, further left.
+**consumer**, not next to its sources — which is why `SessionReady` sits at the reply it renders
+while its sources lie further left: `ClientIdentified` is the occasion, and `ServiceConfigured`,
+seeded before the timeline, carries the data.
 
 Many events feeding one read model is the *"right chair"* shape. Expected for a view that
 accumulates; worth watching if it grows without a matching growth in the question it answers.
@@ -164,45 +170,78 @@ Given-When-Thens rather than one.
 
 ## 4. Inbound timeline — session establishment
 
-`AcceptConnection` → `SessionState`. Columns are slices; rows are element types; `—` marks a row a slice does not use.
+`AcceptConnection` → `SessionReady`. Columns are slices; rows are element types; `—` marks a row a
+slice does not use. Every server reply has a view step behind it, per the walked timeline.
 
-| | **AcceptConnection** | **Helo** | **SessionState** |
-|:--|:--|:--|:--|
-| ⬜ **Actor** | tcp connect | `HELO` bar.com | **consumed by**&#10;<br>MailFrom · RcptTo · BeginData |
-| **Cmd / View** | 🟦 **AcceptConnection** | 🟦 **Helo** | 🟩 **SessionState**&#10;<br>`identified` |
-| 🟧 **Event** | **ConnectionAccepted**&#10;<br>`peer_address` | **ClientIdentified**&#10;<br>`claimed_domain` | — |
+| | **AcceptConnection** | **ServiceReady** | **Helo** | **SessionReady** |
+|:--|:--|:--|:--|:--|
+| ⬜ **Actor** | tcp connect | ⬛ `220` foo.com Simple Mail Transfer Service Ready | `HELO` bar.com | ⬛ `250` foo.com |
+| **Cmd / View** | 🟦 **AcceptConnection** | 🟩 **ServiceReady**&#10;<br>`server_domain`&#10;<br>`greeting_text` | 🟦 **Helo** | 🟩 **SessionReady**&#10;<br>`server_domain` |
+| 🟧 **Event** | **ConnectionAccepted**&#10;<br>`peer_address`&#10;<br>`local_address` 🟥 H6 | — | **ClientIdentified**&#10;<br>`claimed_domain` | — |
+
+Both views fold in the seeded 🟨 `ServiceConfigured`, the path-level `Given` that carries
+`server_domain` and `greeting_text` from before the timeline. `local_address` is 🟥 **H6** — two
+candidate consumers on the walk, the multi-homed `Received:` BY arm and the nameless-server `220`
+greeting, and the walk exercises neither; no arm is picked here.
 
 ---
 
 ## 5. Inbound timeline — the transaction
 
-`MailFrom` → `TransactionState`. `RecipientDirectory` is the Translation boundary onto the Directory context (H3
-resolved), so its source is outside this model — shown 🟨 **yellow**.
+`MailFrom` → `RcptTo`. `RecipientDirectory` is the Translation boundary onto the Directory context
+(H3 resolved), so its source is outside this model — shown 🟨 **yellow**: the seeded
+`RecipientResolved`.
 
-| | **MailFrom** | **RecipientDirectory** | **RcptTo** | **TransactionState** |
+| | **MailFrom** | **TransactionState** | **RecipientDirectory** | **RcptTo** |
 |:--|:--|:--|:--|:--|
-| ⬜ **Actor** | `MAIL FROM` | **consumed by**&#10;<br>RcptTo | `RCPT TO` | **consumed by**&#10;<br>RcptTo · BeginData · SubmitContent |
-| **Cmd / View** | 🟦 **MailFrom** | 🟩 **RecipientDirectory**&#10;<br>`is_local` | 🟦 **RcptTo** | 🟩 **TransactionState**&#10;<br>`recipient_count` |
-| **Event** | 🟧 **MailTransactionStarted**&#10;<br>`reverse_path` | 🟨 **Directory context**&#10;<br>translated — external | 🟧 **RecipientAccepted**&#10;<br>🟧 **RecipientRejected** `550` | — |
+| ⬜ **Actor** | `MAIL FROM` | ⬛ `250` OK | *consulted — no top row on the walk; form pending* | `RCPT TO` |
+| **Cmd / View** | 🟦 **MailFrom** | 🟩 **TransactionState** | 🟩 **RecipientDirectory**&#10;<br>`is_local` | 🟦 **RcptTo** |
+| **Event** | 🟧 **ReversePathDeclared**&#10;<br>`reverse_path` | — | 🟨 **RecipientResolved**&#10;<br>translated — external | 🟧 **RecipientAccepted**&#10;<br>🟧 **RecipientRejected** `550` |
 
-The 🟨 **yellow** cell is what distinguishes Translation from Automation — the source events belong
+The 🟨 **yellow** cell is what distinguishes Translation from Automation — the source event belongs
 to another context.
+
+`TransactionState` renders each `250` OK from event existence alone: its dataset was emptied on
+the walked path (commit cd06274), and the walk traverses it a second time after `RcptTo`, the two
+traversals distinguished by which event occasioned them. The second traversal is not drawn as a
+second column — slice-layer aggregation across walks is model work still to land. The view's
+future name and any replacement dataset are open in
+[`EXPLORE-declaration-vs-status.md`](../paths/EXPLORE-declaration-vs-status.md).
+
+`RecipientDirectory` is *consulted*: on the walk nothing is drawn to any actor, and `RcptTo`
+declares the dependency in its own `Given`. How a consulted view is read on a path is an open
+question — the walk's `RecipientDirectory` step carries it — so the Actor cell above is a flag,
+not a settled form.
 
 ---
 
 ## 6. Inbound timeline — content and close
 
-`BeginData` → `SessionTranscript`. `DataPhaseEntered` is 🟥 **red**: hotspot **H1**, on trial because its only candidate
-consumer is the transcript.
+`BeginData` → `SessionClosing`. `DataPhaseEntered` keeps its 🟥 chip: H1's earn-its-place question
+was answered on the v2 walk — `DataPrompt` folds it to render the `354`, and `SubmitContent`
+declares it as `Given`; the transcript is untouched — but formal closure in `../event-model.md` is
+pending, and the event's *name* is the open question
+([`EXPLORE-declaration-vs-status.md`](../paths/EXPLORE-declaration-vs-status.md)).
 
-| | **BeginData** | **SubmitContent** | **Reset** | **Quit** | **SessionTranscript** |
-|:--|:--|:--|:--|:--|:--|
-| ⬜ **Actor** | `DATA` | content · then dot | `RSET` | `QUIT` | **Operator**&#10;<br>reads transcript |
-| **Cmd / View** | 🟦 **BeginData** | 🟦 **SubmitContent** | 🟦 **Reset** | 🟦 **Quit** | 🟩 **SessionTranscript** |
-| **Event** | 🟥 **DataPhaseEntered**&#10;<br>H1 — consumer? | 🟧 **MessageAccepted**&#10;<br>`queue_id` · `received_at` | 🟧 **TransactionAborted** | 🟧 **SessionClosed** | — |
+| | **BeginData** | **DataPrompt** | **SubmitContent** | **MessageTrace** | **MessageQueued** | **Quit** | **SessionClosing** |
+|:--|:--|:--|:--|:--|:--|:--|:--|
+| ⬜ **Actor** | `DATA` | ⬛ `354` Start mail input; end with `<CRLF>.<CRLF>` | content · then dot | **Stored message**&#10;<br>the `Received:` header | ⬛ `250` OK | `QUIT` | ⬛ `221` foo.com Service closing transmission channel |
+| **Cmd / View** | 🟦 **BeginData** | 🟩 **DataPrompt**&#10;<br>`awaiting_content` ⚠️ | 🟦 **SubmitContent** | 🟩 **MessageTrace** 🟥 H6&#10;<br>`from_domain` · `address_literal` · `by` · `id` · `for` · `at` | 🟩 **MessageQueued**&#10;<br>`queue_id` ⚠️ · `accepted` ⚠️ | 🟦 **Quit** | 🟩 **SessionClosing**&#10;<br>`server_domain` · `cause` ⚠️ |
+| **Event** | 🟥 **DataPhaseEntered**&#10;<br>H1 — consumers verified on the v2 walk; *name* open | — | 🟧 **MessageAccepted**&#10;<br>`queue_id` ⚠️ · `reverse_path` · `recipients` · `content_ref` · `actual_octets` · `received_at` | — | — | 🟧 **SessionClosed**&#10;<br>`cause` ⚠️ | — |
 
-`SessionTranscript` is the **"right chair"** shape — one read model fed by every event above.
-Expected here; worth watching if it grows.
+**⚠️ marks the dataset-cascade fields** — `awaiting_content`, `accepted`, `queue_id`, `cause` —
+under the open render-failure test for a field the wire never shows. They are drawn as the walk
+draws them, flagged for a ruling rather than ruled on here; the test is stated in the walk's
+`ServiceReady` step note.
+
+**🟥 H6 bites at `MessageTrace`**: the `by` clause renders from `ServiceConfigured.server_domain`
+on the config arm, and would render from `ConnectionAccepted.local_address` on the multi-homed
+arm — two candidate consumers, neither exercised by the walk, neither picked here.
+
+`Reset` (`RSET` → `TransactionAborted`) and `SessionTranscript` are model slices this walked
+timeline does not touch: no walked path exercises `Reset` — the aborted-transaction scenario,
+D.2, would — and the v2 walk renders every reply from a named view rather than through
+`SessionTranscript`.
 
 ---
 

@@ -52,6 +52,9 @@ FnEmail's charter, as of v0.3:
 > **A conformant inbound RFC 5321 + RFC 7504 server, operated by us, whose obligations begin at
 > `MessageAccepted`.**
 
+*(`MessageAccepted` is the model's name for the obligation moment. §2.1 and §6.1 place the
+handoff itself at the issuance of the `250` that follows `DATA`; the event is its record.)*
+
 Read that charter twice. It contains "conformant" and it names an RFC. **This is what makes SMTP
 mechanics domain rather than protocol here** — not the fact that we happen to implement SMTP.
 
@@ -132,17 +135,21 @@ already makes for `received_at`:
 
 ## 3. FnEmail's events, classified
 
-Charter per §2.1. Consumers available in this model: the `Received:` header (§4.4), the session
-transcript, `SessionState` / `TransactionState`, and the queue handoff at `MessageAccepted`.
+Charter per §2.1. Consumers available in this model: the `Received:` header (§4.4), rendered by
+the `MessageTrace` view, the rendered reply views, and the queue handoff at `MessageAccepted`.
+⚠️ Two former entries are flagged rather than restated: no `Given` on the v2 walk consults
+`SessionState` (its rendering role became `SessionReady{server_domain}`, commit cf3227d), and
+`TransactionState`'s dataset was emptied on the walked path (commit cd06274) — its future name,
+and the dataset cascade generally, stay open in `docs/paths/EXPLORE-declaration-vs-status.md`.
 
 | Event | Tier | Decided by | Survives implementation swap? |
 |---|---|---|---|
 | `ConnectionAccepted` | **Product** ⚠️ *was "Domain (fragile)"* | G1 via `peer_address`; **G3 → product**, §4.4's address literal is SHOULD | Yes — one field only |
 | `ClientIdentified` | **Domain** | G2, G4 | Yes |
-| `MailTransactionStarted` | **Domain** | G2, G4 | Yes |
+| `ReversePathDeclared` | **Domain** | G2, G4 | Yes |
 | `RecipientAccepted` | **Domain** | G2, G4 | Yes |
 | `RecipientRejected` | **Domain** + product field + protocol field | G2, G4; §2.4 on `reply_code` | Yes |
-| `DataPhaseEntered` | **Product**, not protocol — if kept | G1 (contested) | No, as drawn |
+| `DataPhaseEntered` | **Product**, not protocol | G1 — two consumers on the v2 walk | No, as drawn |
 | `MessageAccepted` | **Domain** — the domain fact | all gates | Yes |
 | `TransactionAborted` | **Domain**, protocol-named values | G2, G4 | Yes |
 | `SessionClosed` | **Product**, weakest in the model | G1 marginal, G4 fails | No |
@@ -156,9 +163,11 @@ event in the operating system's sense. It is in the model for exactly one reason
 > "Exists to carry `peer_address`, which the `Received:` header requires and nothing else supplies."
 
 G1 passes because the `Received:` FROM clause consumes the address literal, which is permanent
-output on the message. It resolves H5: not "domain fact or infrastructure noise" as a matter of
-judgement, but *infrastructure in shape, **admitted by consumer***. If the `Received:` requirement
-vanished, the event would go the way of `ServiceGreetingSent`.
+output on the message. It resolves H5's classification: not "domain fact or infrastructure noise"
+as a matter of judgment, but *infrastructure in shape, **admitted by consumer*** — the residue,
+whether FnEmail commits to emitting the address literal, folds into H7, and `event-model.md`
+keeps H5 open on exactly that. If the `Received:` requirement vanished, the event would go the
+way of `ServiceGreetingSent`.
 
 > ⚠️ **Corrected 2026-08-06 — "mandates" was wrong, and the tier moves.** This paragraph read
 > *"§4.4 mandates the FROM address literal"*, which would make `peer_address` domain by G3. The
@@ -181,33 +190,50 @@ vanished, the event would go the way of `ServiceGreetingSent`.
 > specification names the transport is the one place this model admits a transport fact. The full
 > argument now lives in `event-model.md` under H5, which is what this paragraph asked for.
 
-`local_address` (H6) fails G1 today — infrastructure until multi-homing gives it a destination.
-Correctly flagged rather than kept on faith.
+The v2 walk adds an existence footing: a `554`-refused greeting still has a session — §3.1 makes
+waiting for the client's `QUIT` a MUST — so `ConnectionAccepted` must exist on the refused path
+too, contradicting the model's recorded contract *reply 554, no event* (the rule 4 correction is
+pending in `event-model.md`). `peer_address` stays the only field-level consumer, so the tier
+argument is untouched.
+
+`local_address` (H6) still fails G1 on the walked path — the v2 walk found two candidate
+consumers, the multi-homed `Received:` BY arm and the nameless-server `220` greeting, since the
+greeting's identity slot admits an address literal (§4.2) — and exercises neither. Which arm, if
+either, wins stays open. Correctly flagged rather than kept on faith.
 
 ### ClientIdentified — Domain
 
 Named for the state change, not the verb. That naming is doing real work: `HELO` is protocol, but
 *"the peer has claimed an identity"* is the conversation the protocol encodes, and it survives G4 —
-any submission protocol has this moment. G2 passes hard: it gates every subsequent write via
-`SessionState.identified`. `claimed_domain` has a permanent destination (`Received: FROM`).
+any submission protocol has this moment. G2 passes hard: it gates every subsequent write — later
+commands cite `ClientIdentified` directly in their `Given`s, the fold that `SessionState.identified`
+once named having fallen with the booleans-nothing-renders ruling (commit cf3227d).
+`claimed_domain` has a permanent destination (`Received: FROM`).
 
-The `protocol: "SMTP"` field is **protocol tier**, constant-valued in HELO-only scope. It earns its
-place solely because `Received: WITH` requires it as output — §2.4's exception, same as
-`received_at`. A constant-valued field is normally a smell; note explicitly *why* this one stays,
-or a later reader will delete it.
+⚠️ **The `protocol: "SMTP"` field fell, exactly as this section predicted.** The paragraph that
+stood here kept the field solely because `Received: WITH` required it as output, and warned: *a
+constant-valued field is normally a smell; note explicitly why this one stays, or a later reader
+will delete it.* The later reader did, for exactly that reason — in a `HELO`-only charter the
+value cannot vary, so `WITH`'s value joined the renderer's constants and the field left the
+command and the event (commit 2673b1b, recorded at the walk's `Helo` step). If the charter ever
+admits `EHLO`, the field re-enters as a fact originated by the verb that actually arrived.
 
-### MailTransactionStarted — Domain
+### ReversePathDeclared — Domain
 
 `reverse_path` is where delivery failure reports go. That is a business fact in any mail system
-whatsoever and survives G4 outright. Named for the transaction rather than for `MAIL FROM` — same
-good pattern as `ClientIdentified`.
+whatsoever and survives G4 outright. Named for the client's declaration — the thing that happened —
+rather than for the wire verb (`MAIL FROM`) or for the receiver's state transition, which was the
+old name's register: `MailTransactionStarted` spoke §3.3's own vocabulary (see *Registers* below).
+The candidate screening lives in `docs/paths/EXPLORE-declaration-vs-status.md`; the rename was
+adopted in commit d19f91d.
 
 ### RecipientAccepted — Domain
 
 Accepting a recipient is a decision with a consequence: the address enters the delivery set that
 `MessageAccepted` will carry, and responsibility attaches to it. `is_local` is arguably product
-(our routing policy), but it is sourced from the Directory hole (H3) and is a fact about the
-address space, so: domain.
+(our routing policy), but it is sourced from the Directory context (H3, resolved — a separate
+context joined by Translation; see `event-model.md`) and is a fact about the address space, so:
+domain.
 
 ### RecipientRejected — Domain event carrying one product field and one protocol field
 
@@ -227,35 +253,26 @@ But the payload mixes tiers, and §2.4 exposes something the model has not yet s
 keep `reply_code` as the emitted-output exception. Then G5 also becomes satisfiable — an outside
 consumer can read the disposition without knowing SMTP.
 
-### DataPhaseEntered — the H1 resolution
+### DataPhaseEntered — H1, answered by the walk
 
-As currently drawn: empty payload, one candidate consumer (the transcript rendering `354`).
 G4's second form fails — a phase transition is an artifact of SMTP's line-oriented
-command/response encoding, not of the conversation. G2 passes narrowly (it does change which input
-is legal). G1 is the live question, and `event-model.md` already frames it correctly: *"its only
-candidate consumer is the transcript rendering `354`."*
+command/response encoding, not of the conversation — so the event is **product**, not protocol.
+G2 passes narrowly (it does change which input is legal). G1, the live question this section used
+to carry, is answered by the v2 walk: *"On this page it has two consumers: `DataPrompt` folds it
+to render the `354`, and `SubmitContent` declares it as `Given`."*
+(`docs/paths/WORKING-helo-direct-single-recipient-v2.md`, its ✅ H1 block.) Formal closure in
+`event-model.md` is pending model work — and whether a `Given` citation counts as a consumer, the
+consumer-or-key question, is genuinely open, so the count is the walk's, on the walk's terms.
 
-**But the tier is wrong, and that changes the decision.** `DataPhaseEntered` is not protocol —
-it is **product**, because there is exactly one thing it records that nothing else does:
-
-> A session that entered DATA and then died mid-body emits **no** `MessageAccepted` and **no**
-> `MessageRejected`. Without `DataPhaseEntered`, the log cannot distinguish "abandoned after
-> `RCPT`" from "abandoned after transferring 4 MB of body."
-
-That distinction is an **operator** question — bandwidth consumed, abuse detection, whether a peer
-is repeatedly failing mid-transfer. So H1 resolves to a criterion instead of taste:
-
-> **Keep `DataPhaseEntered` iff the operator needs to distinguish abandonment-before-body from
-> abandonment-during-body. If yes, it is a product event and should be documented as one — its
-> consumer is the transcript, and its reason for existing is the abandonment case, not the `354`.
-> If no, it fails G1 and should be deleted exactly as `ServiceGreetingSent` was.**
-
-Note that G1 as currently applied looks only at the *success* path, which is why the answer has
-seemed unclear. Applying the completeness check to the abandonment path is what settles it.
+What H1 leaves open is the event's **name**. `DataPhaseEntered` is this document's own
+wire-named-event case, and `DATA` declares nothing, so the declaration reading that produced
+`ReversePathDeclared` has no purchase here. Tracked in
+`docs/paths/EXPLORE-declaration-vs-status.md`; no name is proposed here.
 
 ### MessageAccepted — Domain, and the model's integration event
 
-Every gate passes. This is where responsibility transfers (§2.1, quoted in the model), and its
+Every gate passes. This records the responsibility transfer — §2.1 and §6.1 place it at the
+issuance of the `250` that follows `DATA`, and `MessageAccepted` is its record — and its
 payload is already Dilger-shaped: `queue_id`, `content_ref`, `recipients[]`, `actual_octets`,
 `received_at` — **pre-calculated data sufficient for a downstream system, requiring none of our
 rules to interpret.** That is G5 satisfied, and it is `Cart Submitted` by another name:
@@ -274,25 +291,45 @@ Minor, real, cheap to fix, and it prevents the vocabulary from hardening.
 
 ### SessionClosed — Product, and the weakest event in the model
 
-G4 fails: closing a connection is infrastructure. G1 is marginal — its only consumer is the
-transcript, as an end-marker, and `TransactionAborted` already carries the abandonment fact.
-`cause: timeout | shutdown` is operational telemetry, not domain.
+G4 fails: closing a connection is infrastructure. G1 is marginal — on the v2 walk its consumer is
+the `SessionClosing` view, rendering the `221` from `ServiceConfigured.server_domain` and
+`SessionClosed.cause`, a named view rather than a generic transcript end-marker — and
+`TransactionAborted` already carries the abandonment fact. `cause: timeout | shutdown` is
+operational telemetry, not domain; whether `cause` survives at all sits inside the open
+dataset-cascade question — the render-failure test for a non-constant field — flagged in the v2
+walk and not settled here.
 
 It survives as **product**, on the same footing as `DataPhaseEntered`: the operator wants sessions
 to be countable and terminable in the transcript. But it has not been subjected to the forward
-completeness pass that deleted `ServiceGreetingSent`, and by symmetry it should be.
+check — of the three-check completeness pass, *Completeness closes in three checks* (commit
+27627f9) — that deleted `ServiceGreetingSent`, and by symmetry it should be.
 
 **Proposed new hotspot, H8 — Does `SessionClosed` earn its place?** Note the coupling: deleting it
 leaves `Quit` (`Quit`) with no post-condition event, which is legal under H2's rule but odd for a
-non-error command. Decide the two together.
+non-error command. Decide the two together. (`event-model.md`'s banner records H8 as proposed but
+not yet registered there.)
 
 ### Pattern across the nine
 
 Every event that passes G4 is **named for the conversation, not the wire** — `ClientIdentified`,
-not `HeloReceived`; `MailTransactionStarted`, not `MailFromAccepted`. Every event on trial
+not `HeloReceived`; `ReversePathDeclared`, not `MailFromAccepted`. Every event on trial
 (`DataPhaseEntered`) or weak (`SessionClosed`) is named for the wire. **Naming predicts tier**, and
 this is a cheap review heuristic: an event named after a verb or a phase is a protocol event until
 it proves otherwise.
+
+### Registers — the altitude ruling behind the rename
+
+RFC 5321 states every transaction command in two registers: the client's intent — `MAIL` is
+*"used to initiate a mail transaction"* (§4.1.1.2) — and the receiver's buffer/state machinery —
+the same command *"tells the SMTP-receiver that a new mail transaction is starting and to reset
+all its state tables and buffers"* (§3.3). §4.1.1 even carries a complete alternative model at
+the buffer altitude: *"there is a reverse-path buffer, a forward-path buffer, and a mail data
+buffer"* — a coherent model of SMTP, and not this one. The RFC does not choose between registers,
+so the choice is a charter decision. This charter's conversation altitude selects the intent
+register, and that selection is what renamed `MailTransactionStarted` — §3.3's own vocabulary —
+to `ReversePathDeclared`. The screening is `docs/paths/EXPLORE-declaration-vs-status.md`, adopted
+in commit d19f91d; only the rename is adopted — the exploration's generalized naming rule is not
+settled here.
 
 ---
 
@@ -307,13 +344,14 @@ its application:
 
 | Boundary | Split? | Interface |
 |---|---|---|
-| **Directory / provisioning** (H3) | **Yes** — different room (ops/provisioning), different language (mailbox ≠ forward path) | Inbound. `RecipientDirectory` is a typed hole; the upstream model publishes mailbox and relay-authorization facts, we translate them into the read model. `event-model.md` is right that the hole *"names a slice that must exist upstream"* — this is the split, already correctly identified. |
-| **Outbound delivery / relay** | **Yes** — the roles invert (already documented: *"they command, we reply"* becomes *"we command, they reply"*, and the automation lives there) | Outbound. `MessageAccepted` is the integration event. Responsibility transfers with it, per §2.1. |
+| **Directory / provisioning** (H3, resolved) | **Yes** — different room (ops/provisioning), different language (mailbox ≠ forward path) | Inbound. `RecipientDirectory` is the Translation boundary onto the separate Directory context; the upstream model publishes mailbox and relay-authorization facts, we translate them into the read model. `event-model.md` was right that the hole *"names a slice that must exist upstream"* — the resolution confirmed exactly this split. |
+| **Outbound delivery / relay** | **Yes** — the roles invert (already documented: *"they command, we reply"* becomes *"we command, they reply"*, and the automation lives there) | Outbound. `MessageAccepted` is the integration event. Responsibility transfers at the `250`'s issuance, which `MessageAccepted` records (§2.1, §6.1). |
 | **Any consuming business** (e-commerce, notifications) | **Yes**, trivially | Outbound. `MessageAccepted` again — collapsed to one event on their board. §5. |
 
 Note that all three interfaces are the boundary the RFC itself draws at §2.1. The responsibility
-transfer, the integration event, and the model boundary coincide. That is a good sign and worth
-saying out loud in `event-model.md`.
+transfer — at the issuance of the `250` that follows `DATA` — the integration event that records
+it, and the model boundary coincide. That is a good sign and worth saying out loud in
+`event-model.md`.
 
 ---
 
@@ -351,6 +389,9 @@ of shared events measures the boundary's quality, and one is healthy.
 
 - **Q5. H1 restated:** does the operator need to distinguish abandonment-before-body from
   abandonment-during-body? Answer decides `DataPhaseEntered` outright.
+  ✅ **Answered by the v2 walk** — two consumers on the page; formal closure in `event-model.md`
+  pending; the event's name remains open (H1 residue, tracked in
+  `docs/paths/EXPLORE-declaration-vs-status.md`).
 - **Q6. New — H8:** does `SessionClosed` survive a forward completeness pass? Decide jointly with
   `Quit`'s post-condition.
 - **Q7.** Should `RecipientRejected` gain `disposition: permanent | transient`, promoting the
