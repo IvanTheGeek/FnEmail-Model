@@ -1,8 +1,9 @@
 # Working rules for agents in this repository
 
-Operating instructions. For what the project *is* — scope, model state, open hotspots, reading
-order — see [`docs/HANDOFF.md`](docs/HANDOFF.md). This file is only the rules that produce bad work
-when broken.
+Operating instructions. For what the project *is* — scope, state, open items, reading order — see
+[`docs/HANDOFF.md`](docs/HANDOFF.md). For decisions already settled, see
+[`docs/DECISIONS.md`](docs/DECISIONS.md). This file is only the rules that produce bad work when
+broken.
 
 ---
 
@@ -24,11 +25,17 @@ Check both:
 
 ```bash
 # files
-grep -rniE '\b(colour|behaviour|honour|centre|modelling|labell|maths|whilst)\w*|\b(organis|sanitis|recognis|generalis|prioritis|summaris|apologis)(e|es|ed|ing|ation|er)\b|\b(analyse|analysed|analysing)\b' --include='*.md' .
+grep -rniE '\b(colour|behaviour|honour|centre|modelling|labell|maths|whilst|artefact)\w*|\b(organis|sanitis|recognis|generalis|prioritis|summaris|apologis|authoris|standardis)(e|es|ed|ing|ation|er)\b|\b(analyse|analysed|analysing)\b' --include='*.md' .
 
 # commit messages, before you write the next one
-git log -n 20 --format='%B' | grep -niE '\b(colour|behaviour|honour|centre|modelling|labell|maths|whilst)\w*|\b(organis|sanitis|recognis|generalis|prioritis|summaris|apologis)(e|es|ed|ing|ation|er)\b|\b(analyse|analysed|analysing)\b'
+git log -n 20 --format='%B' | grep -niE '\b(colour|behaviour|honour|centre|modelling|labell|maths|whilst|artefact)\w*|\b(organis|sanitis|recognis|generalis|prioritis|summaris|apologis|authoris|standardis)(e|es|ed|ing|ation|er)\b|\b(analyse|analysed|analysing)\b'
 ```
+
+*(The `artefact`, `authoris` and `standardis` stems were added 2026-08-08, after three live hits —
+two *artefact*s and a *relay-authorisation* in `model-altitude.md`, plus a *standardise* in
+`HANDOFF.md` — escaped every earlier sweep because the stems were missing. Tested both directions
+on addition: the pattern catches *artefact*, *authorisation*, *standardise* and does not fire on
+*artifact*, *authorization*, *standardize*.)*
 
 ⚠️ **The pattern is tested by running it, not by reading it.** Three earlier versions were wrong,
 each in a different way, and the third was invisible: a script wrote `\b` through a non-raw Python
@@ -73,7 +80,9 @@ belong to the source.
 ## 3. Verify citations. Do not trust a remembered one
 
 Every method claim traces to a file and a line. `docs/research/` moved out to a separate repo —
-see rule 7 — but the discipline did not.
+see rule 7 — but the discipline did not. Method conventions now also trace to the method repo's
+documents (`EventModeling/docs/` — see rule 11); a claim about what this project settled traces to
+[`docs/DECISIONS.md`](docs/DECISIONS.md).
 
 **When citing an RFC, open the RFC.** This session produced two citation failures that were caught
 only by reading the text: a claim attributed to §3.6 that is not there, and a "MUST" that is a
@@ -92,6 +101,13 @@ This applies to your own work in the same session.
 
 ## 5. Markdown conventions
 
+**The canonical rule set is the method repo's
+[`docs/rendering.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/rendering.md)** —
+every convention there was measured, not assumed, and the experiments that measured them live in
+this repo's [`docs/diagrams/`](docs/diagrams/), which that document names as its evidence base.
+This rule keeps what the method repo deliberately does not repeat: the short form of each
+convention, the ⚠️ incident records behind them, and the SMTP-specific rules.
+
 **Line breaks inside a table cell are `&#10;<br>` — both halves, always.** GitHub uses the `<br>`
 and collapses the entity; the Claude Android app strips the `<br>` and uses the entity. A lone
 `<br>` fails **silently and only on a phone**, fusing two words. Confirmed across all three
@@ -103,58 +119,37 @@ honors *both* halves, so it breaks twice. **Do not "fix" this by dropping a half
 and GitHub stops breaking at all — the entity emits a newline character, which HTML collapses to a
 space. Drop the entity and the phone **fuses the words**. Both of those lose information; the gap
 only looks untidy, and it looks untidy in the one renderer where nothing is being read for the
-first time.
+first time. One row per line is the only technique that cannot fail, and it is rejected on
+row-count cost — written up in the experiment with the evidence attached, ready to adopt if the
+cost ever stops mattering.
 
-The full matrix is in the experiment. No token gives one break in all three: GitHub needs a **tag**,
-the phone needs an **entity**, the desktop honors **either**. GitHub and the phone need opposites,
-so a pairing is forced, and the desktop doubles whatever is forced. Reversing the order does not
-help.
-
-**One row per line is the only technique that cannot fail, and it is rejected on cost.** A
-three-field event becomes four rows, a step's eight wire lines become eight rows, and step tables
-stop being a uniform height. That is too much structure to pay for a cosmetic gap. Rejected with the
-evidence attached rather than left unconsidered — if the row count ever stops mattering, it is the
-correct answer and it is written up ready to adopt.
-
-**Color is carried by emoji chips**, not by markup. Every text-coloring alternative was tested and
+**Color is carried by emoji chips**, not by markup — every text-coloring alternative was tested and
 fails or diverges between renderers. 🟧 Event · 🟦 Command · 🟩 Read Model · ⬜ rendered UI ·
-⬛ wire · 🟨 external · 🟥 hotspot · 🟤 nothing.
+⬛ wire · 🟨 external / required-first · 🟥 hotspot · 🟤 nothing, and only ever in a `Given` row.
 
 **No Mermaid.** Diagrams are markdown tables — it needs a diagram engine the Android app lacks.
 
-**ASCII art uses printable ASCII only — `| - + / \ ^ _`.** Box-drawing characters (**U+2500 to U+257F**)
-are **not in most monospace fonts**, so they fall back to a substitute at a different advance width
-and the alignment collapses. It aligns on a desktop and breaks on a phone in **both** renderers,
-because it is a font problem rather than a markup one — no markup change can fix it. The same
-caution applies to the ellipsis, em dash and middot inside a block where columns must line up; they are fine in
-prose. Tested in [`docs/diagrams/EXPERIMENT-inline-styling.md`](docs/diagrams/EXPERIMENT-inline-styling.md).
+**ASCII art uses printable ASCII only — `| - + / \ ^ _`.** Box-drawing characters (**U+2500 to
+U+257F**) fall back to a substitute at a different advance width on a phone, and the alignment
+collapses — a font problem rather than a markup one, so no markup change can fix it. The same
+caution applies to the ellipsis, em dash and middot inside a block where columns must line up;
+they are fine in prose. Tested in
+[`docs/diagrams/EXPERIMENT-inline-styling.md`](docs/diagrams/EXPERIMENT-inline-styling.md).
 
 **Monospace marks what the protocol fixes; standard font marks what varies.** `S: 220` foo.com
 Simple Mail Transfer Service Ready — the reply code is monospace, the operator-configurable text is
 not. `claimed_domain`: bar.com — the field name is monospace, the instance value is not. One axis,
-font family, never weight or slant. **Values carry no quotation marks.** Settled empirically in
+font family, never weight or slant; **values carry no quotation marks**. And **bold does not apply
+to monospace in the Claude app** — ``**`code`**`` silently loses its weight there and `<code><b>`
+fails too — so monospace text is never bolded; italic on a code span does work. Settled
+empirically in
 [`docs/diagrams/EXPERIMENT-inline-styling.md`](docs/diagrams/EXPERIMENT-inline-styling.md) against
 thirty alternatives.
 
-**Bold does not apply to monospace in the Claude app.** ``**`code`**`` renders at normal weight
-there and bold on GitHub; `<code><b>` fails too, because the app strips `<code>`. There is no third
-route, so **monospace text cannot be bolded** for a reader on the app. Italic on a code span *does*
-work. The three usable axes are font family, italic, and bold on standard text only. Tested in
-[`docs/diagrams/EXPERIMENT-inline-styling.md`](docs/diagrams/EXPERIMENT-inline-styling.md).
-
-**No raw HTML tables, and therefore no vertical alignment.** Cells are left-aligned with `|:--|`,
-which GitHub emits as `align="left"`; there is no markdown equivalent for `valign`, and the only
-route to it is a raw `<table>` with `valign="top"` on every cell. That route survives GitHub's
-sanitizer and even keeps markdown working inside the cells if a blank line is left around their
-contents — and **both Claude renderers refuse it**: the Android app strips the tags and runs the cell
-contents together with no separator, the desktop app prints the tags as literal text.
-
-**Do not pad cells with trailing line breaks either.** It is pure markdown and nothing can reject
-it, which makes it the tempting one, and it buys nothing: **table cells already top-align in both
-Claude renderers**, so padding adds empty height and no alignment. It also does not survive contact
-with the real diagrams — the moment a grid holds more than one slice, every padded cell has to be
-re-counted against whichever neighbor happens to be tallest, and any edit to any cell re-opens all
-of them.
+**No raw HTML tables, and no padding cells with trailing line breaks.** Both Claude renderers
+refuse a raw `<table>` — the Android app strips the tags and runs the cell contents together, the
+desktop app prints the tags as literal text — and padding buys nothing, because **table cells
+already top-align in both Claude renderers**.
 
 ⚠️ **The claim this block used to make — that a short label floats to the middle of a tall row — was
 never verified in any renderer.** It was taken from the HTML default for a table cell and asserted
@@ -173,8 +168,12 @@ brackets stripped**, and in SMTP those brackets are path syntax — `MAIL FROM:<
 `MAIL FROM:`. Escaping the opening bracket (`\<`) restores both, but GFM still autolinks a bare
 address; only a code span suppresses that. This bit on 2026-08-06, when moving values out of
 monospace to apply the mono-fixed/standard-variable rule silently deleted six angle-bracket pairs
-that had been safe inside their old code spans. **Any convention change that moves text out of a
-code span has to be re-rendered, not just re-read.**
+that had been safe inside their old code spans.
+
+**Re-render, never just re-read.** Any convention change that moves text out of a code span, and
+any table surgery — adding, removing or reordering rows — is verified in the actual renderers
+before it is called done. Widened from convention changes to all table surgery on 2026-08-08,
+after a row removal fused two tables silently (commit a1dc975).
 
 **To show a backtick inside a code span, use double backticks as the delimiter.** Backslash escapes
 **do not work inside a code span** — the backslash renders literally and the escaped backtick still
@@ -183,7 +182,8 @@ closes the span, splitting the content in half. Write ``` ``**`code`**`` ``` and
 
 **Refer to slices by name, never by number.** Numbering is an artifact of the current altitude and
 scope; change either and every cross-reference breaks silently. Counts are fine — "twelve slices"
-is a fact, "slice 4" is a handle that moves.
+is a fact, "slice 4" is a handle that moves. The method repo states the same discipline in
+[`docs/path-and-step-form.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/path-and-step-form.md).
 
 ## 6. Commit messages carry the reasoning
 
@@ -209,24 +209,49 @@ The Event Modeling research lives in a **separate private repo**,
 `git@github.com:IvanTheGeek/event-modeling-research.git`. It holds two commercial books, a mostly
 unlicensed mirrored corpus, and machine transcripts of copyrighted speech.
 
-**FnEmail cites, quotes briefly with attribution, and links. It never reproduces.** This is what
-keeps FnEmail releasable, and it is not negotiable.
+**FnEmail-Model cites, quotes briefly with attribution, and links. It never reproduces.** This is
+what keeps this repository releasable, and it is not negotiable. *(The bare name `FnEmail` now
+designates the future code repo — see rule 11.)*
 
 ## 8. Walk paths with real data
 
-Placeholders find nothing. Both payload defects this project has found, the orphan field, and H3's
-resolution all came from instantiating a field with a real value and seeing that nothing consumed
-it. `<address>` teaches nothing; `"198.51.100.40"` does.
+Placeholders find nothing. Both payload defects this project has found, the orphan field, and the
+resolution of H3, the Directory-context hotspot (settled — see
+[`docs/DECISIONS.md`](docs/DECISIONS.md)) all came from instantiating a field with a real value and
+seeing that nothing consumed it. `<address>` teaches nothing; `"198.51.100.40"` does.
 
 A clean path confirms; a messy path discovers. Walk the messy one first.
 
 ## 9. Do not re-litigate settled decisions
 
-`docs/HANDOFF.md` §4 lists them. If evidence genuinely overturns one, that is a ⚠️ correction under
-rule 4 with the evidence attached — not a quiet change.
+[`docs/DECISIONS.md`](docs/DECISIONS.md) lists them. If evidence genuinely overturns one, that is
+a ⚠️ correction under rule 4 with the evidence attached — not a quiet change.
 
 ## 10. Extensions stay parked
 
 [`docs/event-model-extensions.md`](docs/event-model-extensions.md) is deliberately not applied, so
-the orthodox model stays measurable against it. Do not fold extension ideas into the model without
-being asked.
+the orthodox model stays measurable against it — learn the method before extending it. Do not fold
+extension ideas into the model without being asked.
+
+## 11. Four repositories, one direction of flow
+
+The repos mirror the modeling layers — method (`EventModeling`, public), model (this repo), code
+(`FnEmail`, future), sources (`event-modeling-research`, private). **Method-generic insight flows
+to `EventModeling`, with FnEmail demoted to worked example; SMTP specifics stay here and cite the
+method repo rather than restating it.** Research material is cited, never reproduced, into either
+public repo. The ruling and the full map are in [`docs/DECISIONS.md`](docs/DECISIONS.md).
+
+## 12. Unknowns become hotspots
+
+On the model, not in an appendix. An open question gets a 🟥 marker at the point where it bites,
+and hotspots travel with the steps that meet them. One caveat applies: hotspots are Dilger's
+device, not Dymitruk's, so this practice is legitimate but not method-neutral — see the caveat in
+[`docs/DECISIONS.md`](docs/DECISIONS.md).
+
+## 13. EXPLORE- and WORKING- prefixes mark the working stance
+
+An `EXPLORE-` document is an exploration in progress: while one is open, other documents
+deliberately lag it — **cite the active EXPLORE file, not `event-model.md`**, for anything the
+exploration governs. A `WORKING-` prefix marks a path still being walked through; its contents may
+move, and nothing else is reconciled to it until the prefix drops. Defined in commit 9aa2578;
+`docs/HANDOFF.md` names the currently active files.
