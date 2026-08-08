@@ -5,9 +5,34 @@ Scope: **inbound SMTP, `HELO` only.** No ESMTP, no relay, no outbound.
 
 Method reference: `event-modeling-research:research/METHOD-REFERENCE.md`. Corrections from v0.1: `event-modeling-research:research/CORRECTIONS-v0.1.md`.
 Altitude rules — what belongs in this model at all: `model-altitude.md`.
-Diagrams (mermaid, renders on GitHub): `diagrams/`.
+Diagrams (markdown tables, render on GitHub and the Claude apps): `diagrams/`.
 Extensions are parked in `event-model-extensions.md` and **not** applied here — this document is
 orthodox Dymitruk/Dilger by intent, so extensions can be measured against it.
+
+> ⚠️ **This document is derived, and it lags the active walk — deliberately.** Paths are the
+> source and slices are derived ([`DECISIONS.md`](DECISIONS.md); canonical statement in the method
+> repo's `layering.md`), so this file is the union of what the walked paths have contributed,
+> reconciled in passes. The active working stance is
+> [`paths/WORKING-helo-direct-single-recipient-v2.md`](paths/WORKING-helo-direct-single-recipient-v2.md),
+> and nothing is reconciled to it until the `WORKING-` prefix drops (AGENTS.md rule 13). Known
+> pending against this text, listed so it is not lost to commit messages:
+>
+> - `AcceptConnection`'s contract *reply 554, no event* is contradicted by RFC 5321 §3.1 — a
+>   refused greeting still has a session and MUST wait for `QUIT`. Rule 4 correction pending.
+> - `ClientIdentified.protocol` fell to the constant test (commit 2673b1b); `WITH`'s value joined
+>   the renderer's constants in a `HELO`-only charter.
+> - No `Given` in the v2 walk ever consults `SessionState`; its rendering role became
+>   `SessionReady{server_domain}` (commit cf3227d).
+> - The metadata table carries three correlation schemes against its own one-mechanism warning;
+>   `session_id` and `correlation_id` died on the path (commit 0e31109 and the walk's *The
+>   layering* block).
+> - The `WHEN Query(session)` scenario below ships a form only three podcast episodes support,
+>   and it names no key — flagged in [`paths/EXPLORE-view-slice.md`](paths/EXPLORE-view-slice.md)
+>   before the v2 walk existed.
+> - H1 is answered on the walk's page — `DataPhaseEntered` has two consumers there; formal closure
+>   here is pending. H8 (`SessionClosed` — `model-altitude.md` Q6) is proposed but never
+>   registered in the hotspot list below.
+> - The walk defines six views and two seeded events this document does not yet carry.
 
 ---
 
