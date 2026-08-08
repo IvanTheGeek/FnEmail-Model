@@ -103,6 +103,14 @@ the TCP connection" (§4.4); `local_address` is the listening socket's, and H6's
 | Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready&#10;<br>🟧 **ConnectionAccepted** |
 | Where | `session_id` = 00T22SDG4R9FQ3ZK7VWX2M5N8P |
 
+*The `Where` key appears in no `Given` payload, deliberately. The RFC names no session identifier
+anywhere — while a session lives, the TCP channel is its identity — so `session_id` is ours:
+minted at `AcceptConnection` (the ULID's first ten characters encode that instant) and carried by
+every later event either as envelope metadata or as the name of the stream they append to. Which
+of those two is H4's question — see* Hotspots. *A payload home is ruled out by the completeness
+check itself: no output the server ever emits carries a session id, so the field could never have
+a destination, and a fact needs both.*
+
 | 🟦 C · Step 3 | `Helo` |
 |:--|:--|
 | MTA Client | ⬛ `HELO` bar.com |
@@ -346,10 +354,38 @@ consumers — the multi-homed `BY` arm at step 13, and the nameless-server greet
 identity slot admits an address literal (§4.2). This walk exercises neither, so the field stays
 its one unconsumed value.
 
-**🟥 H4 — open, with new evidence.** This walk instantiates three stream scopes side by side:
-service lifetime (`ServiceConfigured`), session (`session_id` = 00T22SDG4R9FQ3ZK7VWX2M5N8P), and
-message (`queue_id` = f2C8D14). Whatever stream design the model picks has to account for all
-three appearing in a single sixteen-step conversation.
+**🟥 H4 — open, and this walk sharpened what needs ruling.** A stream is the unit of ordering,
+of atomic invariants, and of a fold's scope — so H4 decides every `Where` key on this page. Five
+pieces of evidence this walk adds:
+
+1. **Three scopes appear side by side**: service lifetime (`ServiceConfigured`), session
+   (`session_id` = 00T22SDG4R9FQ3ZK7VWX2M5N8P), and message (`queue_id` = f2C8D14) — in one
+   sixteen-step conversation.
+2. **`session_id` has no protocol existence.** The RFC names no session identifier; the channel
+   is the identity. So the key is either envelope metadata or the session stream's name — it can
+   never be payload, because no emitted output carries it: no destination, and a fact needs both.
+3. **No transaction identifier exists anywhere.** Every session-scoped `Where` uses `session_id`;
+   `TransactionState` included. That works because at most one transaction is open per session at
+   a time — but it means per-transaction streams would require minting an id no step consumes.
+4. **Step 13 is the only non-session `Where`.** The message, keyed by the RFC's own trace
+   identifier, is the one thing that outlives the session — the responsibility boundary is the
+   natural stream boundary.
+5. **§4.3.1 serializes the session** — the client MUST wait for each reply — so there is never
+   write contention inside one session, and splitting streams buys no concurrency inbound.
+
+What needs ruling, in order: **(i)** is `session_id` the session stream's name or envelope
+metadata; **(ii)** does the transaction get its own stream — and therefore a minted identifier —
+or is it a phase inside the session stream, which the aborted-transaction walk (D.2, `Reset`) is
+the test for; **(iii)** does the message become its own stream at `MessageAccepted`, named
+`queue_id`, crossing the boundary into delivery's scope.
+
+**Ruled 2026-08-08: this path carries no `correlation_id`.** No step consumes such a value, so
+under this path's own discipline it does not appear — *needed* is the only claim that seats a
+value here. The model-level question is flagged upward rather than settled: the model's metadata
+table carries `session_id`, `correlation_id` and `queue_id` — three correlation schemes against
+its own warning that the RFC's `ID` clause and `queue_id` *"are one mechanism, not two"* — and
+with session = connection verified 1:1, `correlation_id` duplicates `session_id` inside this
+scope while `queue_id` supersedes it beyond. Something to deal with at a higher level, not here.
 
 **🟥 H7 — open, product.** Does FnEmail ever refuse mail entirely (RFC 7504 `521`)? It decides
 whether `ServiceReady` ever renders anything but `220` at connection time beyond the `554`
