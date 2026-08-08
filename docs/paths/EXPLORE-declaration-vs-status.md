@@ -161,6 +161,61 @@ this*. It has not been given the strongest form someone who believed it would gi
 
 ---
 
+## The step 5 name — candidates, generated and screened
+
+The piece of work the options above left ungenerated, done 2026-08-08 against the RFC text rather
+than from taste: every verb below was grepped before it was argued (rule 3). The corollary makes
+the first cut mechanical — the payload is `reverse_path`, so the name is about the reverse-path,
+or the replacement fails the same test that condemned the incumbent.
+
+### Killed, and by what
+
+| Candidate | Killed by |
+|:--|:--|
+| `SenderIdentified` · `SenderDeclared` · `OriginatorIdentified` | **The null path.** `Reverse-path = Path / "<>"` (§4.1.2), and `MAIL FROM:<>` is legal and load-bearing — §4.1.1.2:1893 sends the null case to §3.6, worked at §3.6.3:1522 — so an event with *sender* in its name cannot fire on the bounce-suppression walk; [`../smtp-path-vs-mailbox.md`](../smtp-path-vs-mailbox.md) stands on exactly this fact. *Identify* is also spent: it is RCPT's intent verb (§4.1.1.3:1918), and `ClientIdentified` already holds it |
+| `TransactionOpened` and kin | The status register under challenge — §3.3:1029 is where the incumbent's own name came from |
+| `EnvelopeOpened` | Real RFC vocabulary — §2.3.1:614 has the envelope consist of an originator address, recipient addresses, and extension material — but it is the same status register one altitude up, and the payload is one path, not an envelope |
+| `ReversePathReceived` | Restates the wire; the command row directly above it already records what crossed |
+| `ReversePathBuffered` · `ReversePathRecorded` | §4.1.1.2:1895's buffer register — the RFC's other model, already placed at the other altitude above |
+| `ReversePathClaimed` | Set aside on a distinction worth keeping: a *claim* is checkable against the world — `claimed_domain`'s register, and the reason the alignment question exists at all. A path is not that kind of thing: `<>` cannot be true or false. Blurring the two registers costs more than the echo buys |
+
+### The three that survive
+
+| Name | Provenance | Against |
+|:--|:--|:--|
+| `ReversePathDeclared` | Not core RFC 5321 — the sole *declar* hit in the spec is a reference title (:4533). But that title is RFC 1870, *Message Size Declaration*: the ecosystem's own word for a client-supplied, unverified value. And the register has precedent on this exact event — `declared_size` sat on `MailTransactionStarted` from v0.1 (a927002) until the HELO scoping dropped it (4f6379a) | The verb is extension vocabulary, not the base spec's |
+| `ReversePathSpecified` | The strongest core grounding: §2.3.1:625 calls MAIL the *"reverse-path (originator) address specification"* command, and §3.3:1035 refuses *"the mailbox specification"* | Registerless — *specify* says nothing about verification status, and this walk has been using register to carry epistemics |
+| `ReversePathAccepted` | Direct: *"accept the reverse-path (with a 250 reply)"* (§3.3:1043); *"If accepted, the SMTP server returns a '250 OK' reply"* (:1034) | Three arguments, below |
+
+### What selects among them
+
+**The two `250`s, already found above — and only one option keeps them.** *What the RFC says*
+establishes that step 6's reply is *recorded, provisionally* and step 9's is *this recipient is
+good*. The page shows the same thing structurally: step 8's acceptance has an adjudication behind
+it — step 7 consults `RecipientDirectory` — and step 5 consults nothing. `ReversePathDeclared`
+against `RecipientAccepted` carries that difference in the names themselves.
+`ReversePathAccepted` erases it, naming the unadjudicated reply identically to the adjudicated
+one.
+
+**`Accepted` swells the unexamined category.** The rule's own ⚠️ flags `ConnectionAccepted` and
+`MessageAccepted` — events naming our decision rather than the peer's action — as a possible third
+shape nobody has attacked. Adopting `ReversePathAccepted` makes it four of seven before the
+question is asked.
+
+**And an acceptance cannot fire on a refusal.** A declaration happened whether or not we honor
+it, so the same event serves the 550/553 branch and keeps what the client supplied on the page.
+Under `Accepted`, the rejection walk records the offered path nowhere — or mints a second event to
+hold it.
+
+**The step 8 coupling, argued here, not ruled.** The open item below says consistency pushes
+`RecipientAccepted` toward `ForwardPathDeclared`. The two-`250`s fact says that push is
+resistible: the asymmetry is not an inconsistency but the finding itself — MAIL's answer is
+provisional by the RFC's own words, RCPT's is adjudicated on this very page, and the tell wants
+differently shaped names for differently shaped facts. This file's argument, not a ruling; the
+bullet stands.
+
+---
+
 ## What steps 6 and 9 become
 
 Independent of which option lands, Ivan's second claim stands on its own and is worth recording
