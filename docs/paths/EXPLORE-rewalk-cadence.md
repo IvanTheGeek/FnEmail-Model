@@ -6,8 +6,9 @@
 
 > ⚠️ **2026-08-07, end of day: partially superseded as a walk, kept as the reasoning record.** The
 > final semantics this document arrived at are instantiated cleanly in
-> [`helo-direct-single-recipient-v2.md`](helo-direct-single-recipient-v2.md) — read that file for
-> the path; read this one for how each decision was reached, corrected and ruled.
+> [`WORKING-helo-direct-single-recipient-v2.md`](WORKING-helo-direct-single-recipient-v2.md) —
+> read that file for the path; read this one for how each decision was reached, corrected and
+> ruled. The WORKING- prefix stays while Ivan walks through it.
 
 What changed, and why a re-walk rather than an edit: **a server reply is a rendered read model, not
 part of the command that provoked it.** Splitting each reply out of its command's wire row turns
