@@ -119,27 +119,32 @@ scope — but it settles the licensing question that `NOTICE.md` had left open.
 
 ## 2. Get set up
 
-**Nothing is on disk yet.** Clone both repos.
+**Nothing is on disk yet.** Clone all three repos. *(Updated 2026-08-08: repo renamed to
+`FnEmail-Model`, local directory renamed to match, default branch is now `main`, and the method
+repo exists.)*
 
 ```bash
-# 1. The project. All work is on this branch — main is empty.
-cd /home/ivan/FnEmail            # existing empty directory
-git clone -b claude/github-access-v08b5c git@github.com:IvanTheGeek/FnEmail.git .
+# 1. The model — this repo. Work is on main.
+git clone git@github.com:IvanTheGeek/FnEmail-Model.git /home/ivan/FnEmail-Model
 
-# 2. The research — PRIVATE, needs auth
+# 2. The method repo — PUBLIC
+git clone git@github.com:IvanTheGeek/EventModeling.git /home/ivan/EventModeling
+
+# 3. The research — PRIVATE, needs auth
 git clone git@github.com:IvanTheGeek/event-modeling-research.git ~/event-modeling-research
 ```
 
-Both use SSH. If you get a 404 on the private repo that means **not authenticated**, not *does not
+All use SSH. If you get a 404 on the private repo that means **not authenticated**, not *does not
 exist* — it is the confusing failure mode. Generate a key with `ssh-keygen -t ed25519`, add the
 `.pub` half at <https://github.com/settings/keys>, and check with `ssh -T git@github.com`.
 
 Verify:
 
 ```bash
-git -C /home/ivan/FnEmail branch --show-current      # → claude/github-access-v08b5c
-ls /home/ivan/FnEmail/docs                           # → event-model.md, paths/, diagrams/, rfc/
-ls ~/event-modeling-research                         # → research/, extracted/, 5 root files
+git -C /home/ivan/FnEmail-Model branch --show-current   # → main
+ls /home/ivan/FnEmail-Model/docs                        # → event-model.md, paths/, diagrams/, rfc/
+ls /home/ivan/EventModeling/docs                        # → layering.md, path-and-step-form.md, …
+ls ~/event-modeling-research                            # → research/, extracted/, 5 root files
 ```
 
 ⚠️ **Never copy anything from `~/event-modeling-research` into FnEmail.** It holds two commercial
