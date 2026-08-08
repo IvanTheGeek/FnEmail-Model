@@ -1,9 +1,11 @@
 # Diagrams — FnEmail inbound event model
 
 Renderings of `../event-model.md` v0.3, as **markdown tables**. They render on GitHub, on desktop,
-and in the Android app.
+and in the Android app. v0.3 as drawn — the model's own banner lists what the active walk has
+queued against it, and these sections rebuild with that reconciliation pass.
 
-**Colors** — 🟧 Event · 🟦 Command · 🟩 Read Model · ⬜ Screen · 🟨 external · 🟥 hotspot · 🟤 nothing.
+**Colors** — 🟧 Event · 🟦 Command · 🟩 Read Model · ⬜ rendered UI (Screen) · ⬛ wire ·
+🟨 external / required-first · 🟥 hotspot · 🟤 nothing, only ever in a `Given` row.
 
 **The top row is the Actor row, not the Screen row.** *Screen* names an **element**; *Actor* names
 the **lane**, and the lane is what a row is. The corpus supports the distinction — Dymitruk's step
@@ -51,6 +53,10 @@ A Command Slice reads **top to bottom**. A View Slice reads **bottom to top**. S
 
 ## Why tables, and why the line breaks look like that
 
+*(The rendering conventions are now stated canonically in the method repo's `rendering.md`; this
+section and the two-renderer matrix below are the 2026-08-06 record that produced them. The
+three-renderer verdict lives in [`EXPERIMENT-line-break.md`](EXPERIMENT-line-break.md).)*
+
 Replaced Mermaid on 2026-08-06. Mermaid needs a **diagram engine**; a table needs only a markdown
 renderer. The Android app has the second and not the first, so the diagrams were invisible there —
 which for a model meant to be read anywhere is a real cost.
@@ -89,7 +95,7 @@ The `MailFrom` slice.
 
 | | **MailFrom** |
 |:--|:--|
-| ⬜ **Actor** | **Remote client**&#10;<br>`MAIL FROM:`<Smith@bar.com> |
+| ⬜ **Actor** | **Remote client**&#10;<br>`MAIL FROM:`\<Smith@bar.com> |
 | 🟦 **Command** | **MailFrom**&#10;<br>`reverse_path` |
 | 🟧 **Event** | **MailTransactionStarted**&#10;<br>`reverse_path` |
 
@@ -202,18 +208,21 @@ Expected here; worth watching if it grows.
 
 ## 7. Worked paths
 
-Two paths are walked with real data in [`../paths/`](../paths/). They are **not redrawn here as
-sequence diagrams**, for two reasons.
+Three paths are walked with real data in [`../paths/`](../paths/), and the direct one is being
+re-walked under the settled semantics as
+[`WORKING-helo-direct-single-recipient-v2.md`](../paths/WORKING-helo-direct-single-recipient-v2.md).
+They are **not redrawn here as sequence diagrams**, for two reasons.
 
 **The top row already is the conversation.** Read the ⬜ Actor row of §4 → §5 → §6 left to right
 and you have the exchange: `tcp connect`, `HELO`, `MAIL FROM`, `RCPT TO`, `DATA`, content, `QUIT`.
 A separate sequence diagram restates what the timeline's first row carries, and restating it means
 two artifacts that can disagree.
 
-**And a sequence diagram is the wrong notation to reach for here.** Dymitruk describes an event
-model as one — *"it kind of looks like a **sideways sequence diagram**, but it cuts out the how"*
-(`14KWuOH9nSk`), *"sort of like a sequence diagram but turned sideways"* (`8Uz4370F_KQ`) — but he is
-pointed about why the original will not do:
+**And a sequence diagram is the wrong notation to reach for here.** The Dymitruk quotations in
+this section are machine transcripts. He describes an event model as one — *"it kind of looks
+like a **sideways sequence diagram**, but it cuts out the how"* (`14KWuOH9nSk`), *"sort of like a
+sequence diagram but turned sideways"* (`8Uz4370F_KQ`) — but he is pointed about why the original
+will not do:
 
 > *"it will not do branching. **Sequence diagrams have branching.** … the problem is the human mind
 > can't remember a graph"* — `14KWuOH9nSk`
@@ -228,6 +237,8 @@ rather than converted.
 | Path | Shape |
 |:--|:--|
 | [`helo-multi-recipient.md`](../paths/helo-multi-recipient.md) | Three recipients, one rejected mid-flow with 🟥 `550`. Complete success for the server, **partial** for the sender, failure for `Green` — outcome is relative to the actor. |
-| [`helo-single-recipient.md`](../paths/helo-single-recipient.md) | One recipient, no errors. Succeeds for everyone. |
+| [`helo-single-recipient.md`](../paths/helo-single-recipient.md) | One recipient, no errors, relayed — the client is a relay, not the origin. Succeeds for everyone. |
+| [`helo-direct-single-recipient.md`](../paths/helo-direct-single-recipient.md) | One recipient, no errors, direct — client and sender domains align. The default illustration, being re-walked as v2. |
 
-`Reset` is the only slice no path has touched — the gap a third path, D.2, would close.
+`Reset` is the only slice no path has touched — the gap the aborted-transaction scenario, D.2,
+would close.

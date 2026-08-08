@@ -1,9 +1,10 @@
 # Experiment — can markdown color text?
 
 Testing whether colored **text** is available as an alternative or supplement to the emoji chips
-used in [`README.md`](README.md). Same empirical method as
-[`EXPERIMENT-block-labels.md`](EXPERIMENT-block-labels.md): try every candidate, record what each
-renderer actually does, keep only what works in both.
+used in [`README.md`](README.md). Same empirical method as the Mermaid block-label experiment
+(`EXPERIMENT-block-labels.md` — superseded with Mermaid and deleted 2026-08-08; it survives in git
+history, last present at commit d22315e): try every candidate, record what each renderer actually
+does, keep only what works in both.
 
 **Two renderers must agree** — GitHub (browser, desktop and phone) and the Claude Android app.
 

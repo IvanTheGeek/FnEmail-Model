@@ -25,10 +25,10 @@
 > Everything below is the working that led here, kept per rule 4.
 
 
-Third in the series, after [`EXPERIMENT-block-labels.md`](EXPERIMENT-block-labels.md) (Mermaid
-label syntax, superseded) and [`EXPERIMENT-text-color.md`](EXPERIMENT-text-color.md) (color, closed
-— chips won). Same method: try every candidate, open it in **both** renderers, keep only what
-works in both.
+Third in the series, after `EXPERIMENT-block-labels.md` (Mermaid label syntax, superseded and
+deleted 2026-08-08 with the rest of the Mermaid era — in git history, last present at commit
+d22315e) and [`EXPERIMENT-text-color.md`](EXPERIMENT-text-color.md) (color, closed — chips won).
+Same method: try every candidate, open it in **both** renderers, keep only what works in both.
 
 **Renderers under test.** A technique must work in both.
 
