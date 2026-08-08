@@ -574,7 +574,8 @@ Read the clause precisely:
 **The clause is MUST; its contents are SHOULD.** A server that supplies a FROM clause carrying only
 the EHLO name is conformant. By G3 — *MUST → domain, MAY/SHOULD → product* — `peer_address` is
 therefore **product, not domain**, and `ConnectionAccepted` is a **Product-tier** event rather than
-the "Domain (fragile)" it is classified as in `model-altitude.md` §3.
+the "Domain (fragile)" it was classified as in `model-altitude.md` §3 before that table took the
+same correction.
 
 **That explains the fragility.** The model kept flagging this event as uncomfortable while calling
 it domain. It was not fragile domain; it was product misfiled as domain. Product facts are expected

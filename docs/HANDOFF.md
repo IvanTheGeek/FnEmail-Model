@@ -143,7 +143,7 @@ One line each:
 |---|---|
 | **H1** | ✅ answered by the v2 walk — `DataPhaseEntered` has two consumers on the page. Formal closure in the model is pending (rule 9) |
 | **H2** | are protocol errors events? **Untouched by the v2 walk** (no error branch taken). Statement in `event-model.md`; the corpus answer is a size test, not a kind test — `event-modeling-research:research/TALKS-FINDINGS.md` |
-| **H4** | stream boundaries — a store-level ruling. The walk passes three findings upward and leaves three sub-rulings pending; D.2 is the designated test for the transaction question |
+| **H4** | stream boundaries — a store-level ruling. The walk passes four findings upward and leaves three sub-rulings pending; D.2 is the designated test for the transaction question |
 | **H6** | is `Received:`'s `BY` from config or `local_address`? Bites at the walk's step 13; `local_address` keeps exactly one unconsumed value |
 | **H7** | does FnEmail ever refuse mail entirely (RFC 7504 `521`)? Product question |
 | **H8** | does `SessionClosed` survive a forward completeness pass? Proposed in `model-altitude.md` Q6, never registered in the model — register it or close it |

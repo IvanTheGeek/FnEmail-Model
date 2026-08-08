@@ -86,9 +86,13 @@ stay recorded in full until they flow (AGENTS.md rule 11):
 >
 > ⚠️ **And hotspots are Dilger's device, not Dymitruk's.** He removed them from what he took over
 > from Event Storming — *"there is no there's no hotspots"* — and refuses to standardize any marker
-> for open questions. This project's hotspots are legitimate, since Dilger is canonical, but
-> AGENTS.md rule 12 presents "unknowns become hotspots" as method practice and it is not
-> method-neutral. `event-modeling-research:research/TALKS-FINDINGS-CORPUS.md` §2.
+> for open questions. This project's hotspots are legitimate, since Dilger is canonical, and
+> AGENTS.md rule 12 carries this caveat for exactly that reason — the practice is method-legitimate
+> but not method-neutral. *(The caveat originally counted "seven hotspots" and criticized a
+> HANDOFF conventions item that stated the practice without the caveat; on the 2026-08-08 move the
+> count was dropped as volatile — H1 is answered, H8 only proposed, and the walk added an
+> unnumbered one — and the criticized item became rule 12, which states the caveat itself.)*
+> `event-modeling-research:research/TALKS-FINDINGS-CORPUS.md` §2.
 
 ### Aggregates and DCB are out of scope
 
