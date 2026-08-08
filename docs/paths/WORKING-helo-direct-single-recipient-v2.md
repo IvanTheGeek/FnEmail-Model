@@ -143,7 +143,8 @@ choice of code, which is scenario selection — a slice-level concern. The same 
 | MTA Client | ⬛ `HELO` bar.com |
 | | 🟦 **Helo**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com |
 | Event | 🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com |
-| Given | 🟧 **ConnectionAccepted** |
+| Given | |
+| | 🟧 **ConnectionAccepted** |
 
 *Ruled 2026-08-08: `protocol` leaves the command and the event. Unlike `session_id` and
 `queue_id`, the word has RFC grounding — `Protocol` is the `WITH` clause's own grammar term, and
@@ -156,7 +157,8 @@ verb that actually arrived.*
 |:--|:--|
 | MTA Client | ⬛ `250` foo.com |
 | | 🟩 **SessionReady**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com |
-| Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **ClientIdentified** |
+| Given | |
+| | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **ClientIdentified** |
 
 *Renamed and reduced, ruled 2026-08-08. This view spent the walk's whole history as
 `SessionState` — a name belonging to the model's consulted precondition view, which this walk
