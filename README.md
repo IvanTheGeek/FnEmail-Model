@@ -81,7 +81,7 @@ Start with the method layer, then this repo, then the research repo as needed.
 | [`docs/event-model.md`](docs/event-model.md) | this repo | The model — v0.3, 12 slices. **Lags the active walk deliberately**; its banner lists the pending reconciliations |
 | [`docs/model-altitude.md`](docs/model-altitude.md) | this repo | What belongs in this model — charter, gate sequence, four tiers, the classified events |
 | [`docs/smtp-path-vs-mailbox.md`](docs/smtp-path-vs-mailbox.md) | this repo | Path versus mailbox — the SMTP reference distinction the walks lean on |
-| [`docs/paths/`](docs/paths/) | this repo | The walked paths. `STEP-FORM.md` defines the step convention (its banner says what has moved on) |
+| [`docs/paths/`](docs/paths/) | this repo | The walked paths. `STEP-FORM.md` carries what SMTP adds to the step form; the generic form is the method repo's |
 | [`docs/diagrams/README.md`](docs/diagrams/README.md) | this repo | The model as tables — renders on GitHub *and* the Claude apps |
 | `research/METHOD-REFERENCE.md` | research | The method as its authors define it, contradictions named rather than smoothed over |
 | `research/CORRECTIONS-v0.1.md` | research | 20 ways the first draft misapplied the method |

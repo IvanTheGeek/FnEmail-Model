@@ -11,7 +11,8 @@ Absorbed from `HANDOFF.md`'s open items when that file dissolved, 2026-08-08.
   v2 walk). Coordinate with this repo's own rename sweep.
 - **Create the departures register** — its AGENTS rule requires labeling departures, but no
   register document exists yet. Two entries wait on it: the minimal-`Given` departure
-  (`paths/STEP-FORM.md` records the reasoning here), and the author's disagreements with Adam's
+  (the reasoning moved to the method repo's `path-and-step-form.md` on 2026-08-08, when
+  `paths/STEP-FORM.md` was reduced to the SMTP layer), and the author's disagreements with Adam's
   method — mentioned repeatedly, never captured; a disagreement is a different category from an
   extension.
 - **The three-fates step-6 mismatch**: `state-view-todo-list-decision-model.md` says

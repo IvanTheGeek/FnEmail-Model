@@ -59,8 +59,9 @@ restated its own `Given`'s `forward_path`, and step 13's selected among a popula
 `queue_id` stays, but as payload, because the protocol moves it. Where keys re-materialize is the
 slice layer, as query contracts. Rule 8, again: the value did its job by dying.
 
-*(Steps intentionally do not follow [`STEP-FORM.md`](STEP-FORM.md), which predates these semantics
-and will catch up.)*
+*(The generic form these steps use is the method repo's
+[`path-and-step-form.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/path-and-step-form.md);
+[`STEP-FORM.md`](STEP-FORM.md) carries what SMTP adds, and caught up with this walk 2026-08-08.)*
 
 ---
 
