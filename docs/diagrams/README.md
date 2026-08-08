@@ -5,7 +5,7 @@ and in the Android app. v0.3 as drawn — the model's own banner lists what the 
 queued against it, and these sections rebuild with that reconciliation pass.
 
 **Colors** — 🟧 Event · 🟦 Command · 🟩 Read Model · ⬜ rendered UI (Screen) · ⬛ wire ·
-🟨 external / required-first · 🟥 hotspot · 🟤 nothing, only ever in a `Given` row.
+🟨 external / required-first · 🟥 hotspot · 🟤 nothing, only ever in a `Given`.
 
 **The top row is the Actor row, not the Screen row.** *Screen* names an **element**; *Actor* names
 the **lane**, and the lane is what a row is. The corpus supports the distinction — Dymitruk's step

@@ -135,7 +135,7 @@ cost ever stops mattering.
 
 **Color is carried by emoji chips**, not by markup — every text-coloring alternative was tested and
 fails or diverges between renderers. 🟧 Event · 🟦 Command · 🟩 Read Model · ⬜ rendered UI ·
-⬛ wire · 🟨 external / required-first · 🟥 hotspot · 🟤 nothing, and only ever in a `Given` row.
+⬛ wire · 🟨 external / required-first · 🟥 hotspot · 🟤 nothing, and only ever in a `Given`.
 
 **No Mermaid.** Diagrams are markdown tables — it needs a diagram engine the Android app lacks.
 

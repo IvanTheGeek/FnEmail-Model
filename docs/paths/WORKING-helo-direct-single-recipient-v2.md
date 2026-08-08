@@ -22,7 +22,10 @@ way a GUI takes a dataset and produces the finished page: the wire row is what t
 produces from the view's fields, so every varying value on the wire line must be a field, while
 **the renderer owns the constants and the view owns the facts**. A view read only internally is
 **consulted** and has no top row; a step whose actor is outside the model has no top row either.
-A step is one table, no heading. Dependencies point backward only.
+A step is one table, no heading. The `Given` is a **labeled block, not a row**: the label stands
+alone and its events follow beneath it — the same shape the **Required first** block already uses,
+which is what makes the path-level `Given` and the step-level one read as one device at two scales.
+Dependencies point backward only.
 
 **No *not in the model* markers.** Paths are the source and slices are derived — what a path
 needs, it defines, and the union across paths populates the model
@@ -119,7 +122,8 @@ the values came from, only that a replay must seed them before step 1 can run.
 |:--|:--|
 | | 🟦 **AcceptConnection**&#10;<br>&nbsp;&nbsp;`peer_address`: 203.0.113.20&#10;<br>&nbsp;&nbsp;`local_address`: 192.0.2.10:25 |
 | Event | 🟧 **ConnectionAccepted**&#10;<br>&nbsp;&nbsp;`peer_address`: 203.0.113.20&#10;<br>&nbsp;&nbsp;`local_address`: 192.0.2.10:25 |
-| Given | 🟤 |
+| Given | |
+| | 🟤 |
 
 *No top row — the actor is the transport, outside the model. `peer_address` is "determined from
 the TCP connection" (§4.4); `local_address` is the listening socket's, and H6's question.*
@@ -128,7 +132,8 @@ the TCP connection" (§4.4); `local_address` is the listening socket's, and H6's
 |:--|:--|
 | MTA Client | ⬛ `220` foo.com Simple Mail Transfer Service Ready |
 | | 🟩 **ServiceReady**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready |
-| Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready&#10;<br>🟧 **ConnectionAccepted** |
+| Given | |
+| | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready&#10;<br>🟧 **ConnectionAccepted** |
 
 *Ruled 2026-08-08, both ways at once: `greeting_text` joins the view, `accepting` leaves it. The
 view is the dataset the renderer draws from, so the text the wire shows had to be a field — and a
@@ -177,18 +182,21 @@ for their fold. `ClientIdentified` is the occasion, `ServiceConfigured` the data
 | MTA Client | ⬛ `MAIL FROM:`\<Smith@bar.com> |
 | | 🟦 **MailFrom**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
 | Event | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
-| Given | 🟧 **ClientIdentified** |
+| Given | |
+| | 🟧 **ClientIdentified** |
 
 | 🟩 V · Step 6 | `TransactionState` |
 |:--|:--|
 | MTA Client | ⬛ `250` OK |
 | | 🟩 **TransactionState**&#10;<br>&nbsp;&nbsp;`open`: true&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipient_count`: 0 |
-| Given | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
+| Given | |
+| | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
 
 | 🟩 V · Step 7 | `RecipientDirectory` &nbsp;*(consulted)* |
 |:--|:--|
 | | 🟩 **RecipientDirectory**&#10;<br>&nbsp;&nbsp;`is_local`: true |
-| Given | 🟧 **RecipientResolved**&#10;<br>&nbsp;&nbsp;`is_local`: true&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
+| Given | |
+| | 🟧 **RecipientResolved**&#10;<br>&nbsp;&nbsp;`is_local`: true&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 
 *No top row — consulted. Nothing is drawn to any actor; `RcptTo` declares this dependency in its
 own `Given`.*
@@ -198,7 +206,8 @@ own `Given`.*
 | MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com> |
 | | 🟦 **RcptTo**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 | Event | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
-| Given | 🟧 **MailTransactionStarted**&#10;<br>🟧 **RecipientResolved**&#10;<br>&nbsp;&nbsp;`is_local`: true&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
+| Given | |
+| | 🟧 **MailTransactionStarted**&#10;<br>🟧 **RecipientResolved**&#10;<br>&nbsp;&nbsp;`is_local`: true&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 
 Traversed **once**. No `RecipientRejected` anywhere in this walk.
 
@@ -206,33 +215,38 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 |:--|:--|
 | MTA Client | ⬛ `250` OK |
 | | 🟩 **TransactionState**&#10;<br>&nbsp;&nbsp;`open`: true&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipient_count`: 1 |
-| Given | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>🟧 **RecipientAccepted** |
+| Given | |
+| | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>🟧 **RecipientAccepted** |
 
 | 🟦 C · Step 10 | `BeginData` |
 |:--|:--|
 | MTA Client | ⬛ `DATA` |
 | | 🟦 **BeginData** |
 | Event | 🟧 **DataPhaseEntered**&#10;<br>&nbsp;&nbsp;*no payload* |
-| Given | 🟧 **MailTransactionStarted**&#10;<br>🟧 **RecipientAccepted** |
+| Given | |
+| | 🟧 **MailTransactionStarted**&#10;<br>🟧 **RecipientAccepted** |
 
 | 🟩 V · Step 11 | `DataPrompt` |
 |:--|:--|
 | MTA Client | ⬛ `354` Start mail input; end with `<CRLF>.<CRLF>` |
 | | 🟩 **DataPrompt**&#10;<br>&nbsp;&nbsp;`awaiting_content`: true |
-| Given | 🟧 **DataPhaseEntered** |
+| Given | |
+| | 🟧 **DataPhaseEntered** |
 
 | 🟦 C · Step 12 | `SubmitContent` |
 |:--|:--|
 | MTA Client | ⬛ `Date:` Tue, 19 May 1998 09:14:02 -0700&#10;<br>`From:` Smith \<Smith@bar.com>&#10;<br>`To:` Jones@foo.com&#10;<br>`Subject:` Tuesday&#10;<br>(blank)&#10;<br>Blah blah blah...&#10;<br>`.` |
 | | 🟦 **SubmitContent**&#10;<br>&nbsp;&nbsp;`content`: 194 octets, dot-unstuffed |
 | Event | 🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipients`: [\<Jones@foo.com>]&#10;<br>&nbsp;&nbsp;`content_ref`: blob:sha256:9c1e…&#10;<br>&nbsp;&nbsp;`actual_octets`: 194&#10;<br>&nbsp;&nbsp;`received_at`: 1998-05-19T09:14:07-07:00 |
-| Given | 🟧 **DataPhaseEntered** |
+| Given | |
+| | 🟧 **DataPhaseEntered** |
 
 | 🟩 V · Step 13 | `MessageTrace` &nbsp;🟥 **H6** |
 |:--|:--|
 | Stored message | `Received: from` bar.com ([203.0.113.20])&#10;<br>&nbsp;&nbsp;`by` foo.com `with` SMTP&#10;<br>&nbsp;&nbsp;`id` f2C8D14&#10;<br>&nbsp;&nbsp;`for` \<Jones@foo.com>;&#10;<br>&nbsp;&nbsp;Tue, 19 May 1998 09:14:07 -0700 |
 | | 🟩 **MessageTrace**&#10;<br>&nbsp;&nbsp;`from_domain`: bar.com&#10;<br>&nbsp;&nbsp;`address_literal`: 203.0.113.20&#10;<br>&nbsp;&nbsp;`by`: foo.com&#10;<br>&nbsp;&nbsp;`id`: f2C8D14&#10;<br>&nbsp;&nbsp;`for`: \<Jones@foo.com>&#10;<br>&nbsp;&nbsp;`at`: 1998-05-19T09:14:07-07:00 |
-| Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **ConnectionAccepted**&#10;<br>&nbsp;&nbsp;`peer_address`: 203.0.113.20&#10;<br>🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com>&#10;<br>🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`received_at`: 1998-05-19T09:14:07-07:00 |
+| Given | |
+| | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **ConnectionAccepted**&#10;<br>&nbsp;&nbsp;`peer_address`: 203.0.113.20&#10;<br>🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com>&#10;<br>🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`received_at`: 1998-05-19T09:14:07-07:00 |
 
 The eighth output — §4.4's MUST, fired at receipt, drawn into the **stored message** rather than
 the socket, which is why its top row carries no wire chip. Its `Given` is the walk's deepest —
@@ -244,7 +258,8 @@ instead — which is that field's only candidate consumer in this walk.
 |:--|:--|
 | MTA Client | ⬛ `250` OK |
 | | 🟩 **MessageQueued**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`accepted`: true |
-| Given | 🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14 |
+| Given | |
+| | 🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14 |
 **The responsibility boundary is here.** Left of it, abandoning costs nothing; at `MessageAccepted`
 we have accepted responsibility for delivering or reporting failure — RFC 5321 §2.1. **The `250` is
 the moment the client learns that.**
@@ -254,13 +269,15 @@ the moment the client learns that.**
 | MTA Client | ⬛ `QUIT` |
 | | 🟦 **Quit** |
 | Event | 🟧 **SessionClosed**&#10;<br>&nbsp;&nbsp;`cause`: quit |
-| Given | 🟧 **ConnectionAccepted** |
+| Given | |
+| | 🟧 **ConnectionAccepted** |
 
 | 🟩 V · Step 16 | `SessionClosing` |
 |:--|:--|
 | MTA Client | ⬛ `221` foo.com Service closing transmission channel |
 | | 🟩 **SessionClosing**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`cause`: quit |
-| Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **SessionClosed**&#10;<br>&nbsp;&nbsp;`cause`: quit |
+| Given | |
+| | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **SessionClosed**&#10;<br>&nbsp;&nbsp;`cause`: quit |
 Every reply is 2xx or 3xx. No error branch is taken anywhere.
 
 ---
