@@ -262,7 +262,15 @@ existed only to feed the dataset
 | | 🟦 **SubmitContent**&#10;<br>&nbsp;&nbsp;`content`: 194 octets, dot-unstuffed |
 | Event | 🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipients`: [\<Jones@foo.com>]&#10;<br>&nbsp;&nbsp;`content_ref`: blob:sha256:9c1e…&#10;<br>&nbsp;&nbsp;`actual_octets`: 194&#10;<br>&nbsp;&nbsp;`received_at`: 1998-05-19T09:14:07-07:00 |
 | Given | |
-| | 🟧 **DataPhaseEntered** |
+| | 🟧 **DataPhaseEntered**&#10;<br>🟧 **ReversePathDeclared**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
+
+*The `Given` grew 2026-08-08, seated by the payload check — completeness's third. `reverse_path`
+and `recipients` fold in from the two events now cited; `queue_id` is minted here, the walk's
+only mint; `content_ref` and `actual_octets` derive from `content`; `received_at` is the
+receiver's clock, a boundary fact like the transport's addresses. The hole was found twice
+independently in one day — a docs-review session asked where an emitted event's payload values
+come from, and the steps 6/9 collapse orphaned `reverse_path` because this step's fold was
+undeclared.*
 
 | 🟩 V · Step 13 | `MessageTrace` &nbsp;🟥 **H6** |
 |:--|:--|
@@ -350,6 +358,33 @@ and 9 collapse. The trace's `with` SMTP joined them
 on purpose: §3.1 invites the operator to extend it with software and version, which is why
 `greeting_text` is seeded and those are not.
 
+### Payloads — every emitted value to its origin
+
+The third check, added 2026-08-08. The backward check stops at rendered outputs and the forward
+check counts consumers, so neither asks where an **emitted** event's payload values come from —
+found twice independently in one day: the docs-review session named the gap, and the steps 6/9
+collapse fell into it when `reverse_path` lost its last apparent consumer. An origin is a command
+field, a `Given` fold, a derivation from either, a mint at the step, or a named boundary fact.
+Seeded events are declared, not emitted — the preamble already rules their provenance out of
+scope.
+
+| Event | Value | Origin |
+|:--|:--|:--|
+| `ConnectionAccepted` | `peer_address` · `local_address` | `AcceptConnection` — transport-supplied, per step 1's note |
+| `ClientIdentified` | `claimed_domain` | `Helo.claimed_domain` |
+| `ReversePathDeclared` | `reverse_path` | `MailFrom.reverse_path` |
+| `RecipientAccepted` | `forward_path` | `RcptTo.forward_path` |
+| `DataPhaseEntered` | *no payload* | — |
+| `MessageAccepted` | `reverse_path` · `recipients` | `Given` folds — `ReversePathDeclared.reverse_path`, `RecipientAccepted.forward_path` |
+| | `content_ref` · `actual_octets` | derived from `SubmitContent.content` |
+| | `queue_id` | minted at this step — the walk's only mint |
+| | `received_at` | the receiver's clock — a boundary fact, like the transport's addresses |
+| `SessionClosed` | `cause`: quit | the arriving verb — `cause` records which way the session bracket closed |
+
+Every emitted value has an origin on the page. The check's first run is what seated step 12's
+`Given`: before it, `reverse_path` and `recipients` materialized from a `Given` citing only the
+payload-free `DataPhaseEntered`.
+
 ### Forward — every event to its consumers
 
 | Event | Consumed at |
@@ -358,17 +393,18 @@ on purpose: §3.1 invites the operator to extend it with software and version, w
 | `RecipientResolved` *(seeded)* | steps 7, 8 (`is_local`, `forward_path`) |
 | `ConnectionAccepted` | steps 2, 3, 15 (existence); step 13 (`peer_address`) — `local_address` has **no consumer**, 🟥 H6 |
 | `ClientIdentified` | steps 4, 5 (existence); step 13 (`claimed_domain`) |
-| `ReversePathDeclared` | steps 6, 8, 10 (existence) — `reverse_path` has **no consumer**; see below |
-| `RecipientAccepted` | steps 9, 10 (existence); step 13 (`forward_path`) |
+| `ReversePathDeclared` | steps 6, 8, 10 (existence); step 12 (`reverse_path`) |
+| `RecipientAccepted` | steps 9, 10 (existence); steps 12, 13 (`forward_path`) |
 | `DataPhaseEntered` | steps 11, 12 |
 | `MessageAccepted` | steps 13, 14 (`queue_id`; step 13 also `received_at`) — `reverse_path`, `recipients`, `content_ref`, `actual_octets` are consumed by delivery, right of the responsibility boundary, out of scope |
 | `SessionClosed` | step 16 (`cause`) |
 
-Every event has at least one consumer inside the walk. Two fields are unconsumed:
-`ConnectionAccepted.local_address`, which is H6 rather than an oversight — and
-`ReversePathDeclared.reverse_path`, the collapse's finding: its consumer-in-fact is step 12's
-emitted `MessageAccepted.reverse_path`, which no `Given` declares. Recorded rather than patched
-([`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md)).
+Every event has at least one consumer inside the walk, and the single unconsumed field is again
+`ConnectionAccepted.local_address` — H6, not an oversight. The steps 6/9 collapse had briefly
+made `ReversePathDeclared.reverse_path` a second: its consumer-in-fact was step 12's emitted
+`MessageAccepted.reverse_path`, which no `Given` declared. The payload check seated that `Given`
+— the check working, not the finding patched — and the arc is recorded in
+[`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md).
 
 ### The `Received:` header, clause by clause
 
@@ -397,7 +433,7 @@ walk sources from the seeded event — same fact, now with an origin the complet
 - The preamble replaces two silences: configuration that nothing declared, and a translation the
   original marked yellow mid-walk. Both are seeded events now, cited 🟧 where consumed.
 - `Given` rows are minimal and carry fields exactly where a value, not just existence, is used —
-  steps 2, 4, 7, 8, 13, 14 and 16; existence alone suffices at steps 3, 5, 6, 9, 10, 11, 12
+  steps 2, 4, 7, 8, 12, 13, 14 and 16; existence alone suffices at steps 3, 5, 6, 9, 10, 11
   and 15.
 - The `Where` rows and their session key lived and died inside this file's own history:
   instantiated as a real ULID on 2026-08-07, removed on 2026-08-08 once instantiation exposed
@@ -413,9 +449,11 @@ walk sources from the seeded event — same fact, now with an origin the complet
 
 ## What this walk tested
 
-1. **The completeness check closes in both directions on one page.** Backward: eight outputs,
-   every varying value with an origin. Forward: every event consumed, one field flagged. Neither
-   direction was checkable inside the original form.
+1. **Completeness closes in three checks on one page.** Backward: eight outputs, every varying
+   value with an origin. Payloads: every emitted value with an origin — the check added
+   2026-08-08, after two sessions independently caught step 12 emitting values from nowhere.
+   Forward: every event consumed, one field flagged. None of the three was checkable inside the
+   original form.
 2. **The preamble carries a whole path.** Two seeded events satisfy every `Given` no walked step
    could — including the trace header's, which needs four walked events *and* a seeded one.
 3. **Three scopes are visible without a single key on the page** — `ServiceConfigured` folds in
