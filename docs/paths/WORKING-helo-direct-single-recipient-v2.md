@@ -141,9 +141,16 @@ choice of code, which is scenario selection — a slice-level concern. The same 
 | 🟦 C · Step 3 | `Helo` |
 |:--|:--|
 | MTA Client | ⬛ `HELO` bar.com |
-| | 🟦 **Helo**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP |
-| Event | 🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP |
+| | 🟦 **Helo**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com |
+| Event | 🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com |
 | Given | 🟧 **ConnectionAccepted** |
+
+*Ruled 2026-08-08: `protocol` leaves the command and the event. Unlike `session_id` and
+`queue_id`, the word has RFC grounding — `Protocol` is the `WITH` clause's own grammar term, and
+SMTP its registered value, decided by which hello verb arrived — but in a `HELO`-only charter it
+cannot vary, and a constant is a rule, not a fact. The `WITH` value joins the renderer's
+constants. If the charter ever admits `EHLO`, the field re-enters as a fact originated by the
+verb that actually arrived.*
 
 | 🟩 V · Step 4 | `SessionState` |
 |:--|:--|
@@ -213,8 +220,8 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 | 🟩 V · Step 13 | `MessageTrace` &nbsp;🟥 **H6** |
 |:--|:--|
 | Stored message | `Received: from` bar.com ([203.0.113.20])&#10;<br>&nbsp;&nbsp;`by` foo.com `with` SMTP&#10;<br>&nbsp;&nbsp;`id` f2C8D14&#10;<br>&nbsp;&nbsp;`for` \<Jones@foo.com>;&#10;<br>&nbsp;&nbsp;Tue, 19 May 1998 09:14:07 -0700 |
-| | 🟩 **MessageTrace**&#10;<br>&nbsp;&nbsp;`from_domain`: bar.com&#10;<br>&nbsp;&nbsp;`address_literal`: 203.0.113.20&#10;<br>&nbsp;&nbsp;`by`: foo.com&#10;<br>&nbsp;&nbsp;`with`: SMTP&#10;<br>&nbsp;&nbsp;`id`: f2C8D14&#10;<br>&nbsp;&nbsp;`for`: \<Jones@foo.com>&#10;<br>&nbsp;&nbsp;`at`: 1998-05-19T09:14:07-07:00 |
-| Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **ConnectionAccepted**&#10;<br>&nbsp;&nbsp;`peer_address`: 203.0.113.20&#10;<br>🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP&#10;<br>🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com>&#10;<br>🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`received_at`: 1998-05-19T09:14:07-07:00 |
+| | 🟩 **MessageTrace**&#10;<br>&nbsp;&nbsp;`from_domain`: bar.com&#10;<br>&nbsp;&nbsp;`address_literal`: 203.0.113.20&#10;<br>&nbsp;&nbsp;`by`: foo.com&#10;<br>&nbsp;&nbsp;`id`: f2C8D14&#10;<br>&nbsp;&nbsp;`for`: \<Jones@foo.com>&#10;<br>&nbsp;&nbsp;`at`: 1998-05-19T09:14:07-07:00 |
+| Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **ConnectionAccepted**&#10;<br>&nbsp;&nbsp;`peer_address`: 203.0.113.20&#10;<br>🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com>&#10;<br>🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`received_at`: 1998-05-19T09:14:07-07:00 |
 
 The eighth output — §4.4's MUST, fired at receipt, drawn into the **stored message** rather than
 the socket, which is why its top row carries no wire chip. Its `Given` is the walk's deepest —
@@ -283,9 +290,10 @@ never walked.
 **Every varying output value has an origin on the page** — in the original walk, zero of these
 eight had a step behind them. The two trailing reply texts that carry no field, `354`'s and
 `221`'s, are the RFC's own example texts (§4.2.2), adopted verbatim as implementation constants —
-a constant is a rule, not a fact, so neither needs an origin. The greeting's text is configuration
+a constant is a rule, not a fact, so neither needs an origin. The trace's `with` SMTP joined them
+2026-08-08: in a `HELO`-only charter the value cannot vary. The greeting's text is configuration
 on purpose: §3.1 invites the operator to extend it with software and version, which is why
-`greeting_text` is seeded and those two are not.
+`greeting_text` is seeded and those are not.
 
 ### Forward — every event to its consumers
 
@@ -294,7 +302,7 @@ on purpose: §3.1 invites the operator to extend it with software and version, w
 | `ServiceConfigured` *(seeded)* | steps 2, 4, 13, 16 (`server_domain`; step 2 also `greeting_text`) |
 | `RecipientResolved` *(seeded)* | steps 7, 8 (`is_local`, `forward_path`) |
 | `ConnectionAccepted` | steps 2, 3, 4, 15 (existence); step 13 (`peer_address`) — `local_address` has **no consumer**, 🟥 H6 |
-| `ClientIdentified` | steps 4, 5 (existence); step 13 (`claimed_domain`, `protocol`) |
+| `ClientIdentified` | steps 4, 5 (existence); step 13 (`claimed_domain`) |
 | `MailTransactionStarted` | steps 8, 10 (existence); steps 6, 9 (`reverse_path`) |
 | `RecipientAccepted` | steps 9, 10 (existence); step 13 (`forward_path`) |
 | `DataPhaseEntered` | steps 11, 12 |
@@ -311,7 +319,7 @@ Every event has at least one consumer inside the walk. The single unconsumed fie
 | `FROM` domain | bar.com | `ClientIdentified.claimed_domain` |
 | address literal | 203.0.113.20 | `ConnectionAccepted.peer_address` |
 | `BY` | foo.com | `ServiceConfigured.server_domain` — **the config arm; 🟥 H6 open** |
-| `WITH` | SMTP | `ClientIdentified.protocol` |
+| `WITH` | SMTP | renderer constant — `HELO` is the only hello in this charter |
 | `ID` | f2C8D14 | `MessageAccepted.queue_id` |
 | `FOR` | \<Jones@foo.com> | `RecipientAccepted.forward_path` — emitted, because exactly one |
 | timestamp | 1998-05-19T09:14:07-07:00 | `MessageAccepted.received_at` |
