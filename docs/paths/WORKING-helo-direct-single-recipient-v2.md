@@ -260,6 +260,7 @@ instead — which is that field's only candidate consumer in this walk.
 | | 🟩 **MessageQueued**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`accepted`: true |
 | Given | |
 | | 🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14 |
+
 **The responsibility boundary is here.** Left of it, abandoning costs nothing; at `MessageAccepted`
 we have accepted responsibility for delivering or reporting failure — RFC 5321 §2.1. **The `250` is
 the moment the client learns that.**
@@ -278,6 +279,7 @@ the moment the client learns that.**
 | | 🟩 **SessionClosing**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`cause`: quit |
 | Given | |
 | | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **SessionClosed**&#10;<br>&nbsp;&nbsp;`cause`: quit |
+
 Every reply is 2xx or 3xx. No error branch is taken anywhere.
 
 ---

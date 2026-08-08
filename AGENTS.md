@@ -185,6 +185,18 @@ any table surgery — adding, removing or reordering rows — is verified in the
 before it is called done. Widened from convention changes to all table surgery on 2026-08-08,
 after a row removal fused two tables silently (commit a1dc975).
 
+⚠️ **A table ends at a blank line — not at the first line that stops looking like a table.** A
+following line without pipes does not end it: GFM takes it as a lazy continuation and makes it a
+row, one cell wide. Found 2026-08-08 by re-rendering
+[`docs/paths/WORKING-helo-direct-single-recipient-v2.md`](docs/paths/WORKING-helo-direct-single-recipient-v2.md)
+on GitHub while applying the `Given`-block form — the paragraphs after steps 14 and 16 had no
+blank line before them and had been swallowed into their tables for as long as they had stood,
+with `the moment the client learns that.**` printing its closing asterisks literally, because the
+bold span was cut across a row boundary the author never wrote. **A blank line is required on both
+sides of every table.** The method repo's `rendering.md` stated the opposite as a rule — that a
+table *"continues until the first non-table line"* — and is corrected there. Re-rendering caught
+what re-reading could not: the source looked exactly right.
+
 **To show a backtick inside a code span, use double backticks as the delimiter.** Backslash escapes
 **do not work inside a code span** — the backslash renders literally and the escaped backtick still
 closes the span, splitting the content in half. Write ``` ``**`code`**`` ``` and never
