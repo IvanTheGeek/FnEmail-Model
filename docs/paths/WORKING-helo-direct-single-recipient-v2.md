@@ -17,9 +17,12 @@ the specification.
 `Given`, declaring every event the walk needs but does not walk, with the fields its steps consume.
 🟨 appears only there, and makes exactly one claim: *needed, not walked here* — the path is
 indifferent to provenance. Steps cite every event 🟧, walked or seeded. A server reply is a
-**rendered view**; a view read only internally is **consulted** and has no top row; a step whose
-actor is outside the model has no top row either. A step is one table, no heading. Dependencies
-point backward only.
+**rendered view** — and a view is **the dataset provided to the actor to complete its task**, the
+way a GUI takes a dataset and produces the finished page: the wire row is what the renderer
+produces from the view's fields, so every varying value on the wire line must be a field, while
+**the renderer owns the constants and the view owns the facts**. A view read only internally is
+**consulted** and has no top row; a step whose actor is outside the model has no top row either.
+A step is one table, no heading. Dependencies point backward only.
 
 **No *not in the model* markers.** Paths are the source and slices are derived — what a path
 needs, it defines, and the union across paths populates the model
@@ -124,8 +127,16 @@ the TCP connection" (§4.4); `local_address` is the listening socket's, and H6's
 | 🟩 V · Step 2 | `ServiceReady` |
 |:--|:--|
 | MTA Client | ⬛ `220` foo.com Simple Mail Transfer Service Ready |
-| | 🟩 **ServiceReady**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`accepting`: true |
+| | 🟩 **ServiceReady**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready |
 | Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready&#10;<br>🟧 **ConnectionAccepted** |
+
+*Ruled 2026-08-08, both ways at once: `greeting_text` joins the view, `accepting` leaves it. The
+view is the dataset the renderer draws from, so the text the wire shows had to be a field — and a
+boolean nothing renders had no business being one. `accepting`'s only origin was an existence
+fold standing on the contract this file already flags as wrong (the refused greeting still has a
+session); it is constant-true in every walked path, and the wire carries the decision as the
+choice of code, which is scenario selection — a slice-level concern. The same test now hangs over
+`DataPrompt.awaiting_content` and `MessageQueued.accepted`, left standing for a ruling.*
 
 | 🟦 C · Step 3 | `Helo` |
 |:--|:--|
@@ -137,8 +148,11 @@ the TCP connection" (§4.4); `local_address` is the listening socket's, and H6's
 | 🟩 V · Step 4 | `SessionState` |
 |:--|:--|
 | MTA Client | ⬛ `250` foo.com |
-| | 🟩 **SessionState**&#10;<br>&nbsp;&nbsp;`identified`: true&#10;<br>&nbsp;&nbsp;`transaction_open`: false |
+| | 🟩 **SessionState**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`identified`: true&#10;<br>&nbsp;&nbsp;`transaction_open`: false |
 | Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **ConnectionAccepted**&#10;<br>🟧 **ClientIdentified** |
+
+*`server_domain` joined this view 2026-08-08 by the same ruling as step 2 — the reply renders it,
+so the dataset carries it. This closes the choice the preamble trial had deliberately left open.*
 
 | 🟦 C · Step 5 | `MailFrom` |
 |:--|:--|
@@ -257,8 +271,8 @@ never walked.
 
 | Output | Drawn by | Origin of every varying value |
 |:--|:--|:--|
-| `220` foo.com Simple Mail Transfer Service Ready | `ServiceReady` (step 2) | `ServiceConfigured.server_domain`, `.greeting_text`; `accepting` folds from `ConnectionAccepted`'s existence |
-| `250` foo.com | `SessionState` (step 4) | `ServiceConfigured.server_domain`; booleans fold from `ConnectionAccepted`, `ClientIdentified` |
+| `220` foo.com Simple Mail Transfer Service Ready | `ServiceReady` (step 2) | `ServiceConfigured.server_domain`, `.greeting_text` — both carried by the view; the `220` code itself is this scenario's rendering |
+| `250` foo.com | `SessionState` (step 4) | `ServiceConfigured.server_domain`, carried by the view; booleans fold from `ConnectionAccepted`, `ClientIdentified` |
 | `250` OK | `TransactionState` (step 6) | `MailTransactionStarted.reverse_path` |
 | `250` OK | `TransactionState` (step 9) | `MailTransactionStarted`, `RecipientAccepted` |
 | `354` prompt | `DataPrompt` (step 11) | `DataPhaseEntered`'s existence |
