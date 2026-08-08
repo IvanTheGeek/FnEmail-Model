@@ -34,6 +34,9 @@ by intent, so extensions can be measured against it.
 >   here is pending. H8 (`SessionClosed` — `model-altitude.md` Q6) is proposed but never
 >   registered in the hotspot list below.
 > - The walk defines six views and two seeded events this document does not yet carry.
+> - The entry mechanism for `ServiceConfigured` is undecided — two candidate shapes recorded,
+>   neither chosen (`paths/EXPLORE-rewalk-cadence.md`, *two shapes, neither chosen*;
+>   commit 6ed62cf).
 
 ---
 

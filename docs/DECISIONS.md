@@ -54,7 +54,8 @@ already flowed there and are cited rather than restated:
 > ⚠️ The walk-vs-workflow relation was long held as *probably* distinct, flagged untested (in
 > `HANDOFF.md` until it dissolved 2026-08-08). The layering ruling answered it: **a path is a
 > workflow with the data filled in** — the same shape at two layers, not two concepts. A single
-> walk still crosses several workflows, and a workflow contains slices a given walk never touches.
+> walk still crosses several workflows — the direct walk's steps would sit across roughly four —
+> and a workflow contains slices a given walk never touches.
 
 The rest were settled here before that repo existed and its documents do not yet carry them. They
 stay recorded in full until they flow (AGENTS.md rule 11):
