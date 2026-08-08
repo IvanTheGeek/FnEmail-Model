@@ -118,6 +118,9 @@ Status is tracked at its sources, deliberately — a parallel ledger drifts (thi
 - **Code, if this repository ever comes to hold any** (checks, scripts), is licensed
   [AGPL-3.0](LICENSE-code) — the license the future modeling tool and the future `FnEmail` code
   repo will take.
-- **Not relicensed:** the IETF RFC texts in [`docs/rfc/`](docs/rfc/) are reproduced verbatim and
-  stay under the IETF Trust's own terms (BCP 78), and brief quotations from the method corpus
-  remain their authors' — AGENTS.md rules 2 and 7.
+- **Not relicensed:** third-party material included here retains its original license and is not
+  covered by either grant — currently the IETF RFC texts in [`docs/rfc/`](docs/rfc/), reproduced
+  verbatim under the IETF Trust's own terms (BCP 78). Brief quotations from the method corpus
+  likewise remain their authors' — AGENTS.md rules 2 and 7. Beyond brief quotation, third-party
+  material enters only when its own terms permit redistribution, always attributed, its terms
+  named where it sits.

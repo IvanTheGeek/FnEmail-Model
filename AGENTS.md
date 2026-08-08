@@ -214,15 +214,23 @@ Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
 Do not copy the trailer from an earlier commit — earlier commits name earlier models. State what is
 true for *this* commit.
 
-## 7. Nothing third-party enters this repository
+## 7. Third-party material enters only on terms that allow it
+
+Three constraints, not a blanket ban: never republish material that copyright or licensing does
+not permit; never use material without attribution; and for code, dependencies must be
+license-compatible with AGPL-3.0 — a concern that mostly waits for the code repos.
 
 The Event Modeling research lives in a **separate private repo**,
 `git@github.com:IvanTheGeek/event-modeling-research.git`. It holds two commercial books, a mostly
-unlicensed mirrored corpus, and machine transcripts of copyrighted speech.
+unlicensed mirrored corpus, and machine transcripts of copyrighted speech — almost none of it may
+be republished, so for corpus material the practice is unchanged and not negotiable:
+**cite, quote briefly with attribution, link — never reproduce.** That is what keeps this
+repository releasable.
 
-**FnEmail-Model cites, quotes briefly with attribution, and links. It never reproduces.** This is
-what keeps this repository releasable, and it is not negotiable. *(The bare name `FnEmail` now
-designates the future code repo — see rule 11.)*
+Third-party material whose own terms allow redistribution may enter. It keeps its original
+license, always attributed, its terms named where it sits, and the README's *License* section
+carves it out of the repository's own grant — the IETF RFCs in `docs/rfc/` (BCP 78) are the
+standing example.
 
 ## 8. Walk paths with real data
 

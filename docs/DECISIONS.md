@@ -26,8 +26,9 @@ specifics stay here and cite the method repo.** The repo was renamed from `FnEma
 now **main**.
 
 The split also settles licensing, the question `NOTICE.md` had left open: everything in the two
-public repos is the author's own work plus IETF RFCs, which are freely redistributable; everything
-third-party lives in the private repo. That is what keeps the public repos releasable.
+public repos is the author's own work plus third-party material whose own terms permit
+redistribution (currently the IETF RFCs); the unredistributable corpus lives in the private repo.
+That is what keeps the public repos releasable.
 
 *(The 2026-08-06 two-repo split — research out of the model repo — is superseded in count but not
 in reasoning; its record survives in git history, in `HANDOFF.md` as of commit 94bed9d.)*
@@ -41,8 +42,9 @@ modeling tool will live in repos of its own — so CC BY-SA 4.0 holds the bare n
 AGPL-3.0 as `LICENSE-code`. *(The first naming left AGPL under `EventModeling`'s bare name,
 assuming the tool would live there; superseded the same day — retrieve with
 `git log -F --grep='The bare LICENSE carries what the repository holds: documents'`.)*
-Not relicensed by either grant: the RFC texts in `docs/rfc/` (IETF Trust, BCP 78) and quoted
-third-party material (rules 2 and 7). The reasoning — why two licenses, why share-alike, what was rejected —
+Not relicensed by either grant: included third-party material, which keeps its own terms —
+currently the RFC texts in `docs/rfc/` (IETF Trust, BCP 78) — and quoted material (rules 2
+and 7). The reasoning — why two licenses, why share-alike, what was rejected —
 is in the ruling commits, one per repo, titled so that
 `git log -F --grep='Code is AGPL-3.0, documents are CC BY-SA 4.0'` retrieves them.
 
