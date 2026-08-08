@@ -182,16 +182,22 @@ for their fold. `ClientIdentified` is the occasion, `ServiceConfigured` the data
 |:--|:--|
 | MTA Client | ⬛ `MAIL FROM:`\<Smith@bar.com> |
 | | 🟦 **MailFrom**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
-| Event | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
+| Event | 🟧 **ReversePathDeclared**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
 | Given | |
 | | 🟧 **ClientIdentified** |
+
+*Renamed, adopted 2026-08-08: the event is the client's declaration, not our state change. The
+candidates were screened in [`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md)
+— `Declared` over `Specified` and `Accepted` — and that file stays the citation while its prefix
+holds (rule 13). The old name's register, `MailTransactionStarted`, is §3.3's own; where that
+altitude belongs is part of what the exploration leaves open.*
 
 | 🟩 V · Step 6 | `TransactionState` |
 |:--|:--|
 | MTA Client | ⬛ `250` OK |
 | | 🟩 **TransactionState**&#10;<br>&nbsp;&nbsp;`open`: true&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipient_count`: 0 |
 | Given | |
-| | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
+| | 🟧 **ReversePathDeclared**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
 
 | 🟩 V · Step 7 | `RecipientDirectory` &nbsp;*(consulted)* |
 |:--|:--|
@@ -208,7 +214,7 @@ own `Given`.*
 | | 🟦 **RcptTo**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 | Event | 🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 | Given | |
-| | 🟧 **MailTransactionStarted**&#10;<br>🟧 **RecipientResolved**&#10;<br>&nbsp;&nbsp;`is_local`: true&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
+| | 🟧 **ReversePathDeclared**&#10;<br>🟧 **RecipientResolved**&#10;<br>&nbsp;&nbsp;`is_local`: true&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 
 Traversed **once**. No `RecipientRejected` anywhere in this walk.
 
@@ -217,7 +223,7 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 | MTA Client | ⬛ `250` OK |
 | | 🟩 **TransactionState**&#10;<br>&nbsp;&nbsp;`open`: true&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipient_count`: 1 |
 | Given | |
-| | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>🟧 **RecipientAccepted** |
+| | 🟧 **ReversePathDeclared**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>🟧 **RecipientAccepted** |
 
 | 🟦 C · Step 10 | `BeginData` |
 |:--|:--|
@@ -225,7 +231,7 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 | | 🟦 **BeginData** |
 | Event | 🟧 **DataPhaseEntered**&#10;<br>&nbsp;&nbsp;*no payload* |
 | Given | |
-| | 🟧 **MailTransactionStarted**&#10;<br>🟧 **RecipientAccepted** |
+| | 🟧 **ReversePathDeclared**&#10;<br>🟧 **RecipientAccepted** |
 
 | 🟩 V · Step 11 | `DataPrompt` |
 |:--|:--|
@@ -311,8 +317,8 @@ never walked.
 |:--|:--|:--|
 | `220` foo.com Simple Mail Transfer Service Ready | `ServiceReady` (step 2) | `ServiceConfigured.server_domain`, `.greeting_text` — both carried by the view; the `220` code itself is this scenario's rendering |
 | `250` foo.com | `SessionReady` (step 4) | `ServiceConfigured.server_domain`, carried by the view; the `250` code is this scenario's rendering |
-| `250` OK | `TransactionState` (step 6) | `MailTransactionStarted.reverse_path` |
-| `250` OK | `TransactionState` (step 9) | `MailTransactionStarted`, `RecipientAccepted` |
+| `250` OK | `TransactionState` (step 6) | `ReversePathDeclared.reverse_path` |
+| `250` OK | `TransactionState` (step 9) | `ReversePathDeclared`, `RecipientAccepted` |
 | `354` prompt | `DataPrompt` (step 11) | `DataPhaseEntered`'s existence |
 | `Received:` trace line | `MessageTrace` (step 13) | four walked events and the seeded `server_domain` — see the step |
 | `250` OK | `MessageQueued` (step 14) | `MessageAccepted.queue_id` |
@@ -334,7 +340,7 @@ on purpose: §3.1 invites the operator to extend it with software and version, w
 | `RecipientResolved` *(seeded)* | steps 7, 8 (`is_local`, `forward_path`) |
 | `ConnectionAccepted` | steps 2, 3, 15 (existence); step 13 (`peer_address`) — `local_address` has **no consumer**, 🟥 H6 |
 | `ClientIdentified` | steps 4, 5 (existence); step 13 (`claimed_domain`) |
-| `MailTransactionStarted` | steps 8, 10 (existence); steps 6, 9 (`reverse_path`) |
+| `ReversePathDeclared` | steps 8, 10 (existence); steps 6, 9 (`reverse_path`) |
 | `RecipientAccepted` | steps 9, 10 (existence); step 13 (`forward_path`) |
 | `DataPhaseEntered` | steps 11, 12 |
 | `MessageAccepted` | steps 13, 14 (`queue_id`; step 13 also `received_at`) — `reverse_path`, `recipients`, `content_ref`, `actual_octets` are consumed by delivery, right of the responsibility boundary, out of scope |
