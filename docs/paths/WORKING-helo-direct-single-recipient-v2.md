@@ -9,9 +9,10 @@ recipient, with `HELO` substituted for `EHLO`. Verified against
 [`../rfc/rfc5321.txt`](../rfc/rfc5321.txt).
 
 ⚠️ **The dialogue is ours, the topology is the RFC's.** D.1 sends to three recipients and rejects
-one; no appendix scenario is *both* direct and single-recipient. This walk is RFC-derived in
-structure and RFC-conformant in every reply code, but the exchange as written does not appear in
-the specification.
+one; no appendix scenario is *stated* to be both direct and single-recipient — D.4 has one
+recipient and every reply succeeds, but it carries no prose, so its topology is unstated. This
+walk is RFC-derived in structure and RFC-conformant in every reply code, but the exchange as
+written does not appear in the specification.
 
 **The form, in one paragraph.** A path opens with a **Required first** block — the path-level
 `Given`, declaring every event the walk needs but does not walk, with the fields its steps consume.
@@ -23,8 +24,9 @@ produces from the view's fields, so every varying value on the wire line must be
 **the renderer owns the constants and the view owns the facts**. A view read only internally is
 **consulted** and has no top row; a step whose actor is outside the model has no top row either.
 A step is one table, no heading. The `Given` is a **labeled block, not a row**: the label stands
-alone and its events follow beneath it — the same shape the **Required first** block already uses,
-which is what makes the path-level `Given` and the step-level one read as one device at two scales.
+alone and its events follow beneath it. The **Required first** block shares half that shape — the
+empty left label on content rows, the label read as a sub-header above its events — which is what
+makes the path-level `Given` and the step-level one read as one device at two scales.
 Dependencies point backward only.
 
 **No *not in the model* markers.** Paths are the source and slices are derived — what a path
@@ -44,6 +46,13 @@ with the data filled in. Three layers, three concerns: the **path** speaks proto
 values and scopes by position on its own timeline; the **slice** aggregates across walks, which is
 where selection among many instances becomes real and query keys become contracts; the **store**
 is where H4 rules on streams and envelopes. A path carries only values the protocol itself moves.
+
+⚠️ **"Ruled" was retracted the same day.** The method repo's
+[`layering.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/layering.md) now opens
+with a status banner: the layering is a working hypothesis, not settled — calling it ruled
+overstated it (method repo commit fe0891e, 2026-08-08). The paragraph above stands as the frame
+this walk worked under; read "ruled" as the hypothesis walks like this one are still testing, not
+a closed decision.
 
 ⚠️ **The `Where` rows and the session ULID are gone, and the removal is the finding.** The first
 draft of this file instantiated `session_id` as a real ULID — 00T22SDG4R9FQ3ZK7VWX2M5N8P, its
@@ -75,7 +84,7 @@ slice layer, as query contracts. Rule 8, again: the value did its job by dying.
 | Recipient | \<Jones@foo.com> — one, local |
 | Time | Tue, 19 May 1998 09:14:07 -0700 |
 
-**The alignment is the point.** `claimed_domain` and the `reverse_path` domain are both `bar.com`,
+**The alignment is the point.** `claimed_domain` and the `reverse_path` domain are both bar.com,
 and the model still does not relate them — see *What this walk tested* in the
 [original](helo-direct-single-recipient.md), which this file inherits rather than restates.
 
@@ -142,7 +151,11 @@ boolean nothing renders had no business being one. `accepting`'s only origin was
 fold standing on the contract this file already flags as wrong (the refused greeting still has a
 session); it is constant-true in every walked path, and the wire carries the decision as the
 choice of code, which is scenario selection — a slice-level concern. The same test now hangs over
-`DataPrompt.awaiting_content` and `MessageQueued.accepted`, left standing for a ruling.*
+four sites, left standing for one ruling: `DataPrompt.awaiting_content` and
+`MessageQueued.accepted`, constants on `accepting`'s own footing, and — the open half, since
+neither is a constant — `MessageQueued.queue_id` and `SessionClosing.cause`, whose wire lines
+render nothing of them. Whether render-failure alone removes a non-constant field from a view is
+the deciding question; all four sites resolve under it.*
 
 | 🟦 C · Step 3 | `Helo` |
 |:--|:--|
@@ -259,8 +272,8 @@ existed only to feed the dataset
 | 🟦 C · Step 12 | `SubmitContent` |
 |:--|:--|
 | MTA Client | ⬛ `Date:` Tue, 19 May 1998 09:14:02 -0700&#10;<br>`From:` Smith \<Smith@bar.com>&#10;<br>`To:` Jones@foo.com&#10;<br>`Subject:` Tuesday&#10;<br>(blank)&#10;<br>Blah blah blah...&#10;<br>`.` |
-| | 🟦 **SubmitContent**&#10;<br>&nbsp;&nbsp;`content`: 194 octets, dot-unstuffed |
-| Event | 🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipients`: [\<Jones@foo.com>]&#10;<br>&nbsp;&nbsp;`content_ref`: blob:sha256:9c1e…&#10;<br>&nbsp;&nbsp;`actual_octets`: 194&#10;<br>&nbsp;&nbsp;`received_at`: 1998-05-19T09:14:07-07:00 |
+| | 🟦 **SubmitContent**&#10;<br>&nbsp;&nbsp;`content`: 126 octets, dot-unstuffed |
+| Event | 🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipients`: [\<Jones@foo.com>]&#10;<br>&nbsp;&nbsp;`content_ref`: blob:sha256:9c1e…&#10;<br>&nbsp;&nbsp;`actual_octets`: 126&#10;<br>&nbsp;&nbsp;`received_at`: 1998-05-19T09:14:07-07:00 |
 | Given | |
 | | 🟧 **DataPhaseEntered**&#10;<br>🟧 **ReversePathDeclared**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 
@@ -271,6 +284,12 @@ receiver's clock, a boundary fact like the transport's addresses. The hole was f
 independently in one day — a docs-review session asked where an emitted event's payload values
 come from, and the steps 6/9 collapse orphaned `reverse_path` because this step's fold was
 undeclared.*
+
+⚠️ **The count read 194 until 2026-08-08, and 194 was never the message's length.** The number was
+asserted at the walk's creation and never recomputed against the message shown. The six content
+lines above, each CRLF-terminated, terminating dot line excluded, total **126** octets —
+dot-unstuffing is a no-op here, since no line begins with a dot. Rule 8's point in miniature: a
+value posing as real data hid in the one field the walk itself declares derived from `content`.
 
 | 🟩 V · Step 13 | `MessageTrace` &nbsp;🟥 **H6** |
 |:--|:--|
@@ -283,7 +302,7 @@ The eighth output — §4.4's MUST, fired at receipt, drawn into the **stored me
 the socket, which is why its top row carries no wire chip. Its `Given` is the walk's deepest —
 four walked events and a seeded one, each field a value the header renders. **🟥 H6 bites here**: the `by` clause renders from `ServiceConfigured.server_domain`
 (the config arm); on the multi-homed arm it would render from `ConnectionAccepted.local_address`
-instead — which is that field's only candidate consumer in this walk.
+instead — one of that field's two candidate consumers; H6 under *Hotspots* names both.
 
 | 🟩 V · Step 14 | `MessageQueued` |
 |:--|:--|
@@ -292,9 +311,21 @@ instead — which is that field's only candidate consumer in this walk.
 | Given | |
 | | 🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14 |
 
-**The responsibility boundary is here.** Left of it, abandoning costs nothing; at `MessageAccepted`
-we have accepted responsibility for delivering or reporting failure — RFC 5321 §2.1. **The `250` is
-the moment the client learns that.**
+**The responsibility boundary is here — at the issuance of this `250`.** Left of it, abandoning
+costs nothing. §2.1 places the handoff on the reply itself: *"once the server has issued a
+success response at the end of the mail data, a formal handoff of responsibility for the message
+occurs: the protocol requires that a server MUST accept responsibility for either delivering the
+message or properly reporting the failure to do so"*. §6.1 says the same from the server's side —
+accepting a piece of mail *is* the sending of the `250` in response to `DATA`. `MessageAccepted`
+records the decision; issuing the reply is what makes the handoff formal.
+
+⚠️ **This note originally placed the boundary at the event, not the reply.** It read: "at
+`MessageAccepted` we have accepted responsibility for delivering or reporting failure — RFC 5321
+§2.1. The `250` is the moment the client learns that." That demotes the reply to a notification,
+and §2.1 makes it constitutive — the handoff occurs when the success response is issued. The
+failure case is concrete: the server writes `MessageAccepted` and crashes before the `250`
+leaves; under §2.1 no handoff occurred and the client legitimately retries, while the old
+placement had this server owning a message the client still owned. Corrected 2026-08-08.
 
 | 🟦 C · Step 15 | `Quit` |
 |:--|:--|
@@ -418,8 +449,10 @@ made `ReversePathDeclared.reverse_path` a second: its consumer-in-fact was step 
 | `FOR` | \<Jones@foo.com> | `RecipientAccepted.forward_path` — emitted, because exactly one |
 | timestamp | 1998-05-19T09:14:07-07:00 | `MessageAccepted.received_at` |
 
-Unchanged from the original except `BY`, which the original sourced from unmodeled config and this
-walk sources from the seeded event — same fact, now with an origin the completeness check can see.
+Unchanged from the original except `BY` and `WITH`. `BY` the original sourced from unmodeled
+config and this walk sources from the seeded event — same fact, now with an origin the
+completeness check can see. `WITH` the original sourced from `ClientIdentified.protocol`, and the
+ruling that removed `protocol` (commit 2673b1b, recorded at step 3) made it a renderer constant.
 
 ---
 
@@ -472,9 +505,10 @@ walk sources from the seeded event — same fact, now with an origin the complet
 
 ## Hotspots
 
-Only what is open or new. H3 and H5 are resolved and therefore absent; the six path-defined views
-and two seeded events carry no markers, because *paths are the source* — they are this path's
-contribution, not doubts about it.
+Only what is open or new. H3 is resolved and therefore absent. H5's classification is settled but
+its residue is H7's decision — the two close together, so H5 carries no entry of its own here.
+The six path-defined views and two seeded events carry no markers, because *paths are the source*
+— they are this path's contribution, not doubts about it.
 
 **🟥 H6 — open, and it bites at step 13.** Is `Received:`'s `BY` sourced from configuration or
 from `local_address`? This walk renders the config arm. `local_address` has two candidate
@@ -494,10 +528,19 @@ pages. What the walk hands the ruling:
 2. **No transaction identifier exists anywhere in the model.** At most one transaction is open
    per session, so position suffices even across two traversals of `TransactionState`;
    per-transaction streams would mint an id no step consumes.
-3. **§4.3.1 serializes each session** — the client MUST wait for every reply — so there is never
-   write contention inside one, and stream-splitting buys no concurrency inbound.
+3. **§4.3.1 serializes each session.** *"Unless other arrangements are negotiated through
+   service extensions, the sender MUST wait for this response before sending further commands"*
+   — and for the greeting, the walk's own step 2, the sender only *"SHOULD wait"*. This charter
+   negotiates no extensions, so inside one session there is never write contention, and
+   stream-splitting buys no concurrency inbound.
 4. **The responsibility boundary is the natural stream boundary**: step 13 is the walk's only
    message-scoped element, and delivery must read the message long after the connection is gone.
+
+⚠️ **Evidence item 3 originally read "the client MUST wait for every reply."** That overreached
+twice: the greeting reply is a SHOULD, not a MUST — and the greeting is this walk's own step 2 —
+and even the command-reply MUST is conditioned on no service extensions being negotiated, which
+the flat paraphrase erased. The serialization conclusion survives restated, because this charter
+negotiates no extensions; the citation as written did not. Corrected 2026-08-08.
 
 Pending at model level: **(i)** a per-session stream or envelope metadata — either way the key
 lives above the path; **(ii)** transaction as stream or as phase, for which the
@@ -507,7 +550,8 @@ aborted-transaction walk (D.2, `Reset`) is the test; **(iii)** the message as it
 **And on names: `queue_id` is manufactured, like `session_id` was.** Verified 2026-08-08: queue
 appears in the RFC only as retry behavior, never as an identifier; the value f2C8D14 appears
 nowhere in it; and even the `ID` clause the value feeds is optional —
-`Opt-info = [Via] [With] [ID] [For]` (§4.4). What keeps `queue_id` in the walk when `session_id`
+`Opt-info = [Via] [With] [ID] [For] [Additional-Registered-Clauses]` (§4.4; the RFC wraps the
+production across two lines). What keeps `queue_id` in the walk when `session_id`
 fell is the completeness check, not the specification: this server chooses to emit the optional
 clause, and once emitted the value has an origin and a destination on the page. A chosen
 destination, not a mandated one — the same footing as `peer_address`, whose clause is
