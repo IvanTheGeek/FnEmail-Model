@@ -107,3 +107,17 @@ Status is tracked at its sources, deliberately — a parallel ledger drifts (thi
   long on purpose (AGENTS.md rules 6 and 14): documents carry the present, git history carries
   the why, and ruling-bearing commits are titled for verbatim retrieval with
   `git log -F --grep='<title>'`.
+
+## License
+
+**Code is AGPL-3.0, documents are CC BY-SA 4.0** — the family ruling, registered in
+[`docs/DECISIONS.md`](docs/DECISIONS.md); the ruling commit carries the reasoning. Applied here:
+
+- **The documents — everything this repository currently holds** — are licensed
+  [CC BY-SA 4.0](LICENSE).
+- **Code, if this repository ever comes to hold any** (checks, scripts), is licensed
+  [AGPL-3.0](LICENSE-code) — the same license as the method repo's future modeling tool and the
+  future `FnEmail` code repo.
+- **Not relicensed:** the IETF RFC texts in [`docs/rfc/`](docs/rfc/) are reproduced verbatim and
+  stay under the IETF Trust's own terms (BCP 78), and brief quotations from the method corpus
+  remain their authors' — AGENTS.md rules 2 and 7.

@@ -32,6 +32,17 @@ third-party lives in the private repo. That is what keeps the public repos relea
 *(The 2026-08-06 two-repo split — research out of the model repo — is superseded in count but not
 in reasoning; its record survives in git history, in `HANDOFF.md` as of commit 94bed9d.)*
 
+## Licensing — ruled 2026-08-08
+
+**Code is AGPL-3.0, documents are CC BY-SA 4.0**, across both public repos. Each repo carries
+both license texts, and each README's *License* section maps scope to file. The bare `LICENSE`
+name goes to what the repo *is*: CC BY-SA 4.0 here, a repository of documents; AGPL-3.0 in
+`EventModeling`, whose long-run point is the tool. Not relicensed by either grant: the RFC texts
+in `docs/rfc/` (IETF Trust, BCP 78) and quoted third-party material (rules 2 and 7). The
+reasoning — why two licenses, why share-alike, what was rejected — is in the ruling commits, one
+per repo, both titled so that
+`git log -F --grep='Code is AGPL-3.0, documents are CC BY-SA 4.0'` retrieves them.
+
 ## Model decisions
 
 | Decision | Where |
