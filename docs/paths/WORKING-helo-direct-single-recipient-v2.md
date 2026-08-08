@@ -125,7 +125,9 @@ the TCP connection" (§4.4); `local_address` is the listening socket's, and H6's
 |:--|:--|
 | MTA Client | ⬛ `220` foo.com Simple Mail Transfer Service Ready |
 | | 🟩 **ServiceReady**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`accepting`: true |
-| Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready&#10;<br>🟧 **ConnectionAccepted** || 🟦 C · Step 3 | `Helo` |
+| Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready&#10;<br>🟧 **ConnectionAccepted** |
+
+| 🟦 C · Step 3 | `Helo` |
 |:--|:--|
 | MTA Client | ⬛ `HELO` bar.com |
 | | 🟦 **Helo**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP |
@@ -137,6 +139,7 @@ the TCP connection" (§4.4); `local_address` is the listening socket's, and H6's
 | MTA Client | ⬛ `250` foo.com |
 | | 🟩 **SessionState**&#10;<br>&nbsp;&nbsp;`identified`: true&#10;<br>&nbsp;&nbsp;`transaction_open`: false |
 | Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **ConnectionAccepted**&#10;<br>🟧 **ClientIdentified** |
+
 | 🟦 C · Step 5 | `MailFrom` |
 |:--|:--|
 | MTA Client | ⬛ `MAIL FROM:`\<Smith@bar.com> |
@@ -149,6 +152,7 @@ the TCP connection" (§4.4); `local_address` is the listening socket's, and H6's
 | MTA Client | ⬛ `250` OK |
 | | 🟩 **TransactionState**&#10;<br>&nbsp;&nbsp;`open`: true&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipient_count`: 0 |
 | Given | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
+
 | 🟩 V · Step 7 | `RecipientDirectory` &nbsp;*(consulted)* |
 |:--|:--|
 | | 🟩 **RecipientDirectory**&#10;<br>&nbsp;&nbsp;`is_local`: true |
@@ -171,6 +175,7 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 | MTA Client | ⬛ `250` OK |
 | | 🟩 **TransactionState**&#10;<br>&nbsp;&nbsp;`open`: true&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipient_count`: 1 |
 | Given | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>🟧 **RecipientAccepted** |
+
 | 🟦 C · Step 10 | `BeginData` |
 |:--|:--|
 | MTA Client | ⬛ `DATA` |
@@ -183,6 +188,7 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 | MTA Client | ⬛ `354` Start mail input; end with `<CRLF>.<CRLF>` |
 | | 🟩 **DataPrompt**&#10;<br>&nbsp;&nbsp;`awaiting_content`: true |
 | Given | 🟧 **DataPhaseEntered** |
+
 | 🟦 C · Step 12 | `SubmitContent` |
 |:--|:--|
 | MTA Client | ⬛ `Date:` Tue, 19 May 1998 09:14:02 -0700&#10;<br>`From:` Smith \<Smith@bar.com>&#10;<br>`To:` Jones@foo.com&#10;<br>`Subject:` Tuesday&#10;<br>(blank)&#10;<br>Blah blah blah...&#10;<br>`.` |
