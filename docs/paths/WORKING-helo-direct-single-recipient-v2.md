@@ -27,6 +27,32 @@ needs, it defines, and the union across paths populates the model
 beyond the current model are simply part of this path; reconciling the model is model work.
 Hotspots appear only where open — see *Hotspots* at the end.
 
+**The layering — ruled by Ivan, 2026-08-08.** A **step** is an instance of a slice, carrying
+example data. The example shown is one *selected* for display — where Dymitruk and Dilger
+typically show a single set of example data on a model, the true slice here composes **many**:
+every walk that traverses it contributes its scenarios, and a step that revisits a slice —
+`TransactionState`, steps 6 and 9 — extends the composed slice's GWT set rather than repeating it.
+A **path** is an instance of a composed timeline part with specific data: a specific timeline. A
+**workflow** is that composed, generic part of the model; a path of a workflow is the workflow
+with the data filled in. Three layers, three concerns: the **path** speaks protocol with real
+values and scopes by position on its own timeline; the **slice** aggregates across walks, which is
+where selection among many instances becomes real and query keys become contracts; the **store**
+is where H4 rules on streams and envelopes. A path carries only values the protocol itself moves.
+
+⚠️ **The `Where` rows and the session ULID are gone, and the removal is the finding.** The first
+draft of this file instantiated `session_id` as a real ULID — 00T22SDG4R9FQ3ZK7VWX2M5N8P, its
+first ten characters encoding the scene's instant — and keyed seven `Where` rows with it.
+Instantiating it is what exposed it, in four moves: no payload originates it; the RFC names no
+session identifier at all, because while a session lives the channel is its identity; no emitted
+output ever carries it, so it can never have a destination; and on a path even the *selection* it
+powers is vacuous — a key exists to pick among interleaved sessions, interleaving cannot occur on
+a single timeline, and the page is already the selection. Scoping on a path is **positional**:
+everything between `ConnectionAccepted` and `SessionClosed` is the session, and `cause` enumerates
+every way that bracket closes. The two non-session `Where` rows dissolved with it — step 7's
+restated its own `Given`'s `forward_path`, and step 13's selected among a population of one.
+`queue_id` stays, but as payload, because the protocol moves it. Where keys re-materialize is the
+slice layer, as query contracts. Rule 8, again: the value did its job by dying.
+
 *(Steps intentionally do not follow [`STEP-FORM.md`](STEP-FORM.md), which predates these semantics
 and will catch up.)*
 
@@ -41,7 +67,6 @@ and will catch up.)*
 | Sender | \<Smith@bar.com> — **same domain as the client** |
 | Recipient | \<Jones@foo.com> — one, local |
 | Time | Tue, 19 May 1998 09:14:07 -0700 |
-| Session | `session_id`: 00T22SDG4R9FQ3ZK7VWX2M5N8P — a ULID whose first ten characters encode the scene's instant |
 
 **The alignment is the point.** `claimed_domain` and the `reverse_path` domain are both `bar.com`,
 and the model still does not relate them — see *What this walk tested* in the
@@ -100,18 +125,7 @@ the TCP connection" (§4.4); `local_address` is the listening socket's, and H6's
 |:--|:--|
 | MTA Client | ⬛ `220` foo.com Simple Mail Transfer Service Ready |
 | | 🟩 **ServiceReady**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`accepting`: true |
-| Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready&#10;<br>🟧 **ConnectionAccepted** |
-| Where | `session_id` = 00T22SDG4R9FQ3ZK7VWX2M5N8P |
-
-*The `Where` key appears in no `Given` payload, deliberately. The RFC names no session identifier
-anywhere — while a session lives, the TCP channel is its identity — so `session_id` is ours:
-minted at `AcceptConnection` (the ULID's first ten characters encode that instant) and carried by
-every later event either as envelope metadata or as the name of the stream they append to. Which
-of those two is H4's question — see* Hotspots. *A payload home is ruled out by the completeness
-check itself: no output the server ever emits carries a session id, so the field could never have
-a destination, and a fact needs both.*
-
-| 🟦 C · Step 3 | `Helo` |
+| Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`greeting_text`: Simple Mail Transfer Service Ready&#10;<br>🟧 **ConnectionAccepted** || 🟦 C · Step 3 | `Helo` |
 |:--|:--|
 | MTA Client | ⬛ `HELO` bar.com |
 | | 🟦 **Helo**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP |
@@ -123,8 +137,6 @@ a destination, and a fact needs both.*
 | MTA Client | ⬛ `250` foo.com |
 | | 🟩 **SessionState**&#10;<br>&nbsp;&nbsp;`identified`: true&#10;<br>&nbsp;&nbsp;`transaction_open`: false |
 | Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **ConnectionAccepted**&#10;<br>🟧 **ClientIdentified** |
-| Where | `session_id` = 00T22SDG4R9FQ3ZK7VWX2M5N8P |
-
 | 🟦 C · Step 5 | `MailFrom` |
 |:--|:--|
 | MTA Client | ⬛ `MAIL FROM:`\<Smith@bar.com> |
@@ -137,13 +149,10 @@ a destination, and a fact needs both.*
 | MTA Client | ⬛ `250` OK |
 | | 🟩 **TransactionState**&#10;<br>&nbsp;&nbsp;`open`: true&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipient_count`: 0 |
 | Given | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
-| Where | `session_id` = 00T22SDG4R9FQ3ZK7VWX2M5N8P |
-
 | 🟩 V · Step 7 | `RecipientDirectory` &nbsp;*(consulted)* |
 |:--|:--|
 | | 🟩 **RecipientDirectory**&#10;<br>&nbsp;&nbsp;`is_local`: true |
 | Given | 🟧 **RecipientResolved**&#10;<br>&nbsp;&nbsp;`is_local`: true&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
-| Where | `forward_path` = \<Jones@foo.com> |
 
 *No top row — consulted. Nothing is drawn to any actor; `RcptTo` declares this dependency in its
 own `Given`.*
@@ -162,8 +171,6 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 | MTA Client | ⬛ `250` OK |
 | | 🟩 **TransactionState**&#10;<br>&nbsp;&nbsp;`open`: true&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipient_count`: 1 |
 | Given | 🟧 **MailTransactionStarted**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>🟧 **RecipientAccepted** |
-| Where | `session_id` = 00T22SDG4R9FQ3ZK7VWX2M5N8P |
-
 | 🟦 C · Step 10 | `BeginData` |
 |:--|:--|
 | MTA Client | ⬛ `DATA` |
@@ -176,8 +183,6 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 | MTA Client | ⬛ `354` Start mail input; end with `<CRLF>.<CRLF>` |
 | | 🟩 **DataPrompt**&#10;<br>&nbsp;&nbsp;`awaiting_content`: true |
 | Given | 🟧 **DataPhaseEntered** |
-| Where | `session_id` = 00T22SDG4R9FQ3ZK7VWX2M5N8P |
-
 | 🟦 C · Step 12 | `SubmitContent` |
 |:--|:--|
 | MTA Client | ⬛ `Date:` Tue, 19 May 1998 09:14:02 -0700&#10;<br>`From:` Smith \<Smith@bar.com>&#10;<br>`To:` Jones@foo.com&#10;<br>`Subject:` Tuesday&#10;<br>(blank)&#10;<br>Blah blah blah...&#10;<br>`.` |
@@ -190,7 +195,6 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 | Stored message | `Received: from` bar.com ([203.0.113.20])&#10;<br>&nbsp;&nbsp;`by` foo.com `with` SMTP&#10;<br>&nbsp;&nbsp;`id` f2C8D14&#10;<br>&nbsp;&nbsp;`for` \<Jones@foo.com>;&#10;<br>&nbsp;&nbsp;Tue, 19 May 1998 09:14:07 -0700 |
 | | 🟩 **MessageTrace**&#10;<br>&nbsp;&nbsp;`from_domain`: bar.com&#10;<br>&nbsp;&nbsp;`address_literal`: 203.0.113.20&#10;<br>&nbsp;&nbsp;`by`: foo.com&#10;<br>&nbsp;&nbsp;`with`: SMTP&#10;<br>&nbsp;&nbsp;`id`: f2C8D14&#10;<br>&nbsp;&nbsp;`for`: \<Jones@foo.com>&#10;<br>&nbsp;&nbsp;`at`: 1998-05-19T09:14:07-07:00 |
 | Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **ConnectionAccepted**&#10;<br>&nbsp;&nbsp;`peer_address`: 203.0.113.20&#10;<br>🟧 **ClientIdentified**&#10;<br>&nbsp;&nbsp;`claimed_domain`: bar.com&#10;<br>&nbsp;&nbsp;`protocol`: SMTP&#10;<br>🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com>&#10;<br>🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`received_at`: 1998-05-19T09:14:07-07:00 |
-| Where | `queue_id` = f2C8D14 |
 
 The eighth output — §4.4's MUST, fired at receipt, drawn into the **stored message** rather than
 the socket, which is why its top row carries no wire chip. Its `Given` is the walk's deepest —
@@ -203,8 +207,6 @@ instead — which is that field's only candidate consumer in this walk.
 | MTA Client | ⬛ `250` OK |
 | | 🟩 **MessageQueued**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`accepted`: true |
 | Given | 🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14 |
-| Where | `session_id` = 00T22SDG4R9FQ3ZK7VWX2M5N8P |
-
 **The responsibility boundary is here.** Left of it, abandoning costs nothing; at `MessageAccepted`
 we have accepted responsibility for delivering or reporting failure — RFC 5321 §2.1. **The `250` is
 the moment the client learns that.**
@@ -221,8 +223,6 @@ the moment the client learns that.**
 | MTA Client | ⬛ `221` foo.com Service closing transmission channel |
 | | 🟩 **SessionClosing**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`cause`: quit |
 | Given | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **SessionClosed**&#10;<br>&nbsp;&nbsp;`cause`: quit |
-| Where | `session_id` = 00T22SDG4R9FQ3ZK7VWX2M5N8P |
-
 Every reply is 2xx or 3xx. No error branch is taken anywhere.
 
 ---
@@ -313,9 +313,12 @@ walk sources from the seeded event — same fact, now with an origin the complet
 - `Given` rows are minimal and carry fields exactly where a value, not just existence, is used —
   steps 2, 4, 6, 7, 8, 9, 13, 14 and 16; existence alone suffices at steps 3, 5, 10, 11, 12
   and 15.
-- The `session_id` the `Where` rows always needed is instantiated at last — the original never
-  named one, and the explorations carried the placeholder 01J8Z…, called a rule 8 break when it
-  first appeared in [`EXPLORE-view-slice.md`](EXPLORE-view-slice.md).
+- The `Where` rows and their session key lived and died inside this file's own history:
+  instantiated as a real ULID on 2026-08-07, removed on 2026-08-08 once instantiation exposed
+  them as slice-level apparatus — the block under *The layering* records the arc. The
+  explorations' placeholder 01J8Z… had been called a rule 8 break in
+  [`EXPLORE-view-slice.md`](EXPLORE-view-slice.md); the fix turned out to be deletion, not a
+  value.
 - Nothing this file asserts contradicts the original's findings; the original's *What this walk
   tested* items (field independence, the `FOR` clause rule, happy-for-every-actor) all still hold
   and are not restated.
@@ -329,9 +332,10 @@ walk sources from the seeded event — same fact, now with an origin the complet
    direction was checkable inside the original form.
 2. **The preamble carries a whole path.** Two seeded events satisfy every `Given` no walked step
    could — including the trace header's, which needs four walked events *and* a seeded one.
-3. **Three stream scopes are visible in one walk** — the `Where` rows select by `session_id`
-   (session scope) and `queue_id` (message scope), while `ServiceConfigured` folds in from service
-   lifetime. Evidence for H4, found by walking rather than argued.
+3. **Three scopes are visible without a single key on the page** — `ServiceConfigured` folds in
+   from service lifetime, the session is the positional bracket from `ConnectionAccepted` to
+   `SessionClosed`, and the message is `queue_id`, payload born at `MessageAccepted`. Evidence for
+   H4, found by walking rather than argued — and passed upward, where it belongs.
 
 ## What it did not test
 
@@ -354,30 +358,36 @@ consumers — the multi-homed `BY` arm at step 13, and the nameless-server greet
 identity slot admits an address literal (§4.2). This walk exercises neither, so the field stays
 its one unconsumed value.
 
-**🟥 H4 — open, and this walk sharpened what needs ruling.** A stream is the unit of ordering,
-of atomic invariants, and of a fold's scope — so H4 decides every `Where` key on this page. Five
-pieces of evidence this walk adds:
+**🟥 H4 — open, and it is a store-level ruling; this path's evidence passes upward.** A stream
+is the unit of ordering, of atomic invariants, and of a fold's scope — concerns of the layer that
+stores many conversations at once, which is exactly why no stream machinery survives on these
+pages. What the walk hands the ruling:
 
-1. **Three scopes appear side by side**: service lifetime (`ServiceConfigured`), session
-   (`session_id` = 00T22SDG4R9FQ3ZK7VWX2M5N8P), and message (`queue_id` = f2C8D14) — in one
-   sixteen-step conversation.
-2. **`session_id` has no protocol existence.** The RFC names no session identifier; the channel
-   is the identity. So the key is either envelope metadata or the session stream's name — it can
-   never be payload, because no emitted output carries it: no destination, and a fact needs both.
-3. **No transaction identifier exists anywhere.** Every session-scoped `Where` uses `session_id`;
-   `TransactionState` included. That works because at most one transaction is open per session at
-   a time — but it means per-transaction streams would require minting an id no step consumes.
-4. **Step 13 is the only non-session `Where`.** The message, keyed by the RFC's own trace
-   identifier, is the one thing that outlives the session — the responsibility boundary is the
-   natural stream boundary.
-5. **§4.3.1 serializes the session** — the client MUST wait for each reply — so there is never
-   write contention inside one session, and splitting streams buys no concurrency inbound.
+1. **Three scopes in one conversation, none needing a key on the page**: service lifetime
+   (`ServiceConfigured`, folded in from before the timeline), the session (the positional bracket
+   from `ConnectionAccepted` to `SessionClosed`), and the message (`queue_id`, payload born at
+   `MessageAccepted` — the only identity that outlives the session).
+2. **No transaction identifier exists anywhere in the model.** At most one transaction is open
+   per session, so position suffices even across two traversals of `TransactionState`;
+   per-transaction streams would mint an id no step consumes.
+3. **§4.3.1 serializes each session** — the client MUST wait for every reply — so there is never
+   write contention inside one, and stream-splitting buys no concurrency inbound.
+4. **The responsibility boundary is the natural stream boundary**: step 13 is the walk's only
+   message-scoped element, and delivery must read the message long after the connection is gone.
 
-What needs ruling, in order: **(i)** is `session_id` the session stream's name or envelope
-metadata; **(ii)** does the transaction get its own stream — and therefore a minted identifier —
-or is it a phase inside the session stream, which the aborted-transaction walk (D.2, `Reset`) is
-the test for; **(iii)** does the message become its own stream at `MessageAccepted`, named
-`queue_id`, crossing the boundary into delivery's scope.
+Pending at model level: **(i)** a per-session stream or envelope metadata — either way the key
+lives above the path; **(ii)** transaction as stream or as phase, for which the
+aborted-transaction walk (D.2, `Reset`) is the test; **(iii)** the message as its own stream from
+`MessageAccepted` onward.
+
+**And on names: `queue_id` is manufactured, like `session_id` was.** Verified 2026-08-08: queue
+appears in the RFC only as retry behavior, never as an identifier; the value f2C8D14 appears
+nowhere in it; and even the `ID` clause the value feeds is optional —
+`Opt-info = [Via] [With] [ID] [For]` (§4.4). What keeps `queue_id` in the walk when `session_id`
+fell is the completeness check, not the specification: this server chooses to emit the optional
+clause, and once emitted the value has an origin and a destination on the page. A chosen
+destination, not a mandated one — the same footing as `peer_address`, whose clause is
+MUST-supplied but whose contents are SHOULD.
 
 **Ruled 2026-08-08: this path carries no `correlation_id`.** No step consumes such a value, so
 under this path's own discipline it does not appear — *needed* is the only claim that seats a
@@ -386,6 +396,8 @@ table carries `session_id`, `correlation_id` and `queue_id` — three correlatio
 its own warning that the RFC's `ID` clause and `queue_id` *"are one mechanism, not two"* — and
 with session = connection verified 1:1, `correlation_id` duplicates `session_id` inside this
 scope while `queue_id` supersedes it beyond. Something to deal with at a higher level, not here.
+`session_id` followed the same day — no key survives on a path; the block under *The layering*
+records it.
 
 **🟥 H7 — open, product.** Does FnEmail ever refuse mail entirely (RFC 7504 `521`)? It decides
 whether `ServiceReady` ever renders anything but `220` at connection time beyond the `554`
