@@ -176,7 +176,7 @@ Ours. The corpus has no such taxonomy (§0).
 |---|---|---|
 | **Domain** | The charter is *about* this fact. Passes G1–G4. Survives any conformant reimplementation. | Yes — first-class event |
 | **Product** | A fact produced by a decision we made and could remake while staying conformant. Passes G1, G2, G4; fails G3. | Yes — event, flagged as ours, expected to churn |
-| **Protocol** | Exists only as an artefact of the wire encoding of the conversation. Fails G4's second form. | Only if the charter names the protocol *and* G1 passes — otherwise collapsed at translation |
+| **Protocol** | Exists only as an artifact of the wire encoding of the conversation. Fails G4's second form. | Only if the charter names the protocol *and* G1 passes — otherwise collapsed at translation |
 | **Infrastructure** | Exists because of how we run the software. Fails G4's first form. | Never an event. May be metadata. |
 
 **The single most important consequence:** *Protocol* is a tier only relative to a charter. For an
@@ -295,7 +295,7 @@ consumer can read the disposition without knowing SMTP.
 ### DataPhaseEntered — the H1 resolution
 
 As currently drawn: empty payload, one candidate consumer (the transcript rendering `354`).
-G4's second form fails — a phase transition is an artefact of SMTP's line-oriented
+G4's second form fails — a phase transition is an artifact of SMTP's line-oriented
 command/response encoding, not of the conversation. G2 passes narrowly (it does change which input
 is legal). G1 is the live question, and `event-model.md` already frames it correctly: *"its only
 candidate consumer is the transcript rendering `354`."*
@@ -419,7 +419,7 @@ schema, the board carries *"the translated name, not the external event name."*
 
 | Boundary | Split? | Interface |
 |---|---|---|
-| **Directory / provisioning** (H3) | **Yes** — different room (ops/provisioning), different language (mailbox ≠ forward path) | Inbound. `RecipientDirectory` is a typed hole; the upstream model publishes mailbox and relay-authorisation facts, we translate them into the read model. `event-model.md` is right that the hole *"names a slice that must exist upstream"* — this is the split, already correctly identified. |
+| **Directory / provisioning** (H3) | **Yes** — different room (ops/provisioning), different language (mailbox ≠ forward path) | Inbound. `RecipientDirectory` is a typed hole; the upstream model publishes mailbox and relay-authorization facts, we translate them into the read model. `event-model.md` is right that the hole *"names a slice that must exist upstream"* — this is the split, already correctly identified. |
 | **Outbound delivery / relay** | **Yes** — the roles invert (already documented: *"they command, we reply"* becomes *"we command, they reply"*, and the automation lives there) | Outbound. `MessageAccepted` is the integration event. Responsibility transfers with it, per §2.1. |
 | **Any consuming business** (e-commerce, notifications) | **Yes**, trivially | Outbound. `MessageAccepted` again — collapsed to one event on their board. §5. |
 
@@ -524,3 +524,9 @@ Two consequences worth keeping:
   slices? Not yet walked.
 - **Q10.** H5 is answerable now (`ConnectionAccepted` = infrastructure in shape, domain by
   consumer) but the reasoning should be written into `event-model.md`, because the event's claim to
+  exist rests on a single field and a future reader will not reconstruct that.
+  ✅ **Done 2026-08-06** — commit 9d967e6 wrote the H5 argument into `event-model.md`, and
+  corrected the tier it rests on while doing so. *(The line above ending "claim to exist rests on
+  a single field" was lost in the 2026-08-06 repo split, commit 49b6d71, which truncated this file
+  mid-sentence; restored 2026-08-08 from commit 0edeb96 — an accident repaired, not a claim
+  changed.)*
