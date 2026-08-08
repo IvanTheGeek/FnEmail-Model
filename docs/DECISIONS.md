@@ -15,7 +15,7 @@ and the repo README carries the operational map with clone instructions.
 
 | Repo | Layer | Holds |
 |---|---|---|
-| [`EventModeling`](https://github.com/IvanTheGeek/EventModeling) (public, AGPL) | method | generic modeling material; future home of the modeling tool. Modeled systems appear there only as examples |
+| [`EventModeling`](https://github.com/IvanTheGeek/EventModeling) (public) | method | generic modeling material; the modeling tool's own model and code will live in repos of their own. Modeled systems appear there only as examples |
 | **`FnEmail-Model`** (this repo, public-bound) | model | the SMTP model, walks, RFCs, SMTP-specific references. Cites the method repo |
 | `FnEmail` (future — the bare name is reserved for it) | code | what the model generates; not yet created |
 | `event-modeling-research` (private) | sources | the third-party corpus — cite, never reproduce (rule 7) |
@@ -36,11 +36,14 @@ in reasoning; its record survives in git history, in `HANDOFF.md` as of commit 9
 
 **Code is AGPL-3.0, documents are CC BY-SA 4.0**, across both public repos. Each repo carries
 both license texts, and each README's *License* section maps scope to file. The bare `LICENSE`
-name goes to what the repo *is*: CC BY-SA 4.0 here, a repository of documents; AGPL-3.0 in
-`EventModeling`, whose long-run point is the tool. Not relicensed by either grant: the RFC texts
-in `docs/rfc/` (IETF Trust, BCP 78) and quoted third-party material (rules 2 and 7). The
-reasoning — why two licenses, why share-alike, what was rejected — is in the ruling commits, one
-per repo, both titled so that
+name goes to what the repo *is*, and both public repos are repositories of documents — the
+modeling tool will live in repos of its own — so CC BY-SA 4.0 holds the bare name in both, with
+AGPL-3.0 as `LICENSE-code`. *(The first naming left AGPL under `EventModeling`'s bare name,
+assuming the tool would live there; superseded the same day — retrieve with
+`git log -F --grep='The bare LICENSE carries what the repository holds: documents'`.)*
+Not relicensed by either grant: the RFC texts in `docs/rfc/` (IETF Trust, BCP 78) and quoted
+third-party material (rules 2 and 7). The reasoning — why two licenses, why share-alike, what was rejected —
+is in the ruling commits, one per repo, titled so that
 `git log -F --grep='Code is AGPL-3.0, documents are CC BY-SA 4.0'` retrieves them.
 
 ## Model decisions

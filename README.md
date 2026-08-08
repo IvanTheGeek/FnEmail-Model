@@ -29,7 +29,7 @@ The repos mirror the modeling layers. Canonical ruling record:
 
 | Repo | Layer | Holds |
 |---|---|---|
-| [`EventModeling`](https://github.com/IvanTheGeek/EventModeling) (public, AGPL) | method | generic modeling material — layering, path/step form, the three-fates split, rendering, altitude, the parked extensions; future home of the modeling tool |
+| [`EventModeling`](https://github.com/IvanTheGeek/EventModeling) (public) | method | generic modeling material — layering, path/step form, the three-fates split, rendering, altitude, the parked extensions; the modeling tool it works toward will live in repos of its own |
 | **`FnEmail-Model`** (this repo — renamed from `FnEmail` 2026-08-08, old URLs redirect) | model | the SMTP model, walks, RFCs, SMTP-specific references. Cites the method repo |
 | `FnEmail` (future) | code | what the model generates — not yet created |
 | `event-modeling-research` (private) | sources | the mirrored corpus — cite, never reproduce |
@@ -116,8 +116,8 @@ Status is tracked at its sources, deliberately — a parallel ledger drifts (thi
 - **The documents — everything this repository currently holds** — are licensed
   [CC BY-SA 4.0](LICENSE).
 - **Code, if this repository ever comes to hold any** (checks, scripts), is licensed
-  [AGPL-3.0](LICENSE-code) — the same license as the method repo's future modeling tool and the
-  future `FnEmail` code repo.
+  [AGPL-3.0](LICENSE-code) — the license the future modeling tool and the future `FnEmail` code
+  repo will take.
 - **Not relicensed:** the IETF RFC texts in [`docs/rfc/`](docs/rfc/) are reproduced verbatim and
   stay under the IETF Trust's own terms (BCP 78), and brief quotations from the method corpus
   remain their authors' — AGENTS.md rules 2 and 7.
