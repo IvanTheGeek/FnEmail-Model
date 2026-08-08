@@ -99,6 +99,16 @@ that the process works.
 
 This applies to your own work in the same session.
 
+Where the record lives depends on the document class (rule 14 names the classes). Exploration and
+walk material keeps the block in place — the `EXPLORE-` records, the walked paths, and the
+`EXPERIMENT-` files are read for their trail, and that holds for superseded rulings too. A
+normative document records the correction in the commit that fixes it (rule 6) and keeps a block
+in-document only while it changes how the current text must be read — a status banner that
+reframes the whole document qualifies (`event-model.md` and `STEP-FORM.md` each carry one); a
+superseded position does not. And in a normative document, a **ruling that changes is not a
+correction**: the old position was the accepted one until it was superseded, and it goes to
+history (rule 14), not to a ⚠️ block.
+
 ## 5. Markdown conventions
 
 **The canonical rule set is the method repo's
@@ -189,7 +199,8 @@ is a fact, "slice 4" is a handle that moves. The method repo states the same dis
 
 They are long here on purpose. State what changed, **why**, and what was rejected. A commit that
 records a correction should say what the old claim was — the message is often the only place the
-superseded reasoning survives.
+superseded reasoning survives. A commit that establishes or supersedes a ruling follows the
+ruling-record form in rule 14.
 
 End with a `Co-Authored-By` trailer naming **the agent and model that actually wrote the commit**.
 The point of the rule is disclosure — that AI helped, and which agent and model it was — not any
@@ -257,3 +268,98 @@ deliberately lag it — **cite the active EXPLORE file, not `event-model.md`**, 
 exploration governs. A `WORKING-` prefix marks a path still being walked through; its contents may
 move, and nothing else is reconciled to it until the prefix drops. Defined in commit 9aa2578;
 the [README](README.md) names the currently active files.
+
+## 14. Documents carry the present. Git history carries the why
+
+Adopted 2026-08-08 from the method repo, where the ruling of the same title established it —
+retrieve it there with `git log -F --grep='Documents carry the present. Git history carries the why'`.
+The two repos share the convention, and a cited ruling title means the same thing in both.
+
+A **normative document** says only what is currently accepted. Normative means the reader applies
+it, whatever its lag or confidence status: this file, the README, `docs/event-model.md`,
+`docs/model-altitude.md`, `docs/smtp-path-vs-mailbox.md`, `docs/diagrams/README.md`, and
+`docs/paths/STEP-FORM.md`. **Exploration and walk material** is read for its trail — the
+`EXPLORE-` records, the walked paths (`WORKING-` included), and the `EXPERIMENT-` files; rule 4
+governs those, not this rule. **Discovery indexes** — `docs/DECISIONS.md` and
+`docs/FOLLOW-UPS.md` — are exempt in the other direction: their rows are pointers to commits and
+documents, and retrieval is their content (the method rows DECISIONS holds in full are cargo
+awaiting flow to the method repo, not narrative).
+
+In a normative document, superseded positions, rejected alternatives, and the road here live in
+the commits that changed it, never as a narrative accumulating inside it — the one exception is
+rule 4's: a ⚠️ block stays while it changes how the current text must be read. The division of
+labor: the current file answers *what is accepted now*; the commit that changed it answers *why
+this became accepted*; earlier commits answer *what was accepted before, and why*; a superseding
+commit answers *why the old ruling fell*. Keep in the document only the rationale a reader needs
+to apply the rule correctly — history is never an excuse for an ambiguous or incomplete current
+state, and the incident records in this file stay for exactly that reason. Existing documents
+come under this rule as they are next materially changed, not by a sweep.
+
+**Read the history before changing a ruling.** Before materially changing a normative document,
+inspect what stood and why:
+
+```bash
+git log --follow -p -- <path>          # the sequence of changes and their reasoning
+git blame <path>                       # which commit last touched the lines in question
+git show <commit>                      # that commit's full message and diff
+git log -S'<exact text>' -p -- <path>  # commits that added or removed specific wording
+git log -G'<pattern>' -p -- <path>     # the same, by regex
+git log -F --grep='<title or path>'    # rulings from commits that never touched the file
+```
+
+`git blame` names only the **latest** commit behind each surviving line — a starting point, not
+the decision history; `git log --follow -p` gives the sequence. Wording that was deleted or
+replaced is invisible to blame and to the current file; `-S`/`-G` find it. A ruling whose commit
+never touched the file is invisible to every file-scoped command — the unscoped `--grep` and the
+`docs/DECISIONS.md` register are how those are found. A rule stated without rationale does
+**not** mean no ruling exists — under this convention that is the normal case. Before reversing
+or materially altering a ruling, find and read the commit that established it: rule 3's
+discipline, applied to our own history, and rule 9's precondition for genuinely reopening
+anything settled. The trail crosses repositories both ways: three documents moved to
+`EventModeling` (`extensions.md`, the generic halves of `altitude.md`, and
+`state-view-todo-list-decision-model.md`), so their later history continues in that repo's git
+while their drafting history stays here under the old paths — `--follow` stops at the move in
+either direction. Deleted files still answer: `git log -p -- docs/HANDOFF.md` walks the
+dissolved handoff, and the pre-rename history of the repo itself is intact.
+
+**A ruling-bearing commit is focused and self-describing.** One ruling per commit, unmixed with
+cleanup, mass formatting, or unrelated work — a tangled diff makes both the change and the
+reasoning unretrievable. The message opens by naming the ruling with a short title used
+**verbatim** wherever the ruling is cited, so `git log -F --grep='<title>'` retrieves it (`-F`
+matches the title as text — bare `--grep` is regex, and a title's punctuation would break it).
+A cited title never wraps across lines: `--grep` matches within a line, and a wrapped citation
+is unfindable. Rulings are identified by descriptive title, never by serial number —
+`docs/DECISIONS.md` set the precedent. Beyond rule 6's baseline, cover whichever of these
+actually carry information: the context that forced the decision; the rationale; the
+alternatives materially considered and why each was rejected; the costs accepted; an
+`Applies-To:` trailer listing affected paths when the ruling governs more than the commit
+touches; a `Supersedes:` trailer naming the replaced ruling's title (and commit, when known).
+Typos, formatting, and mechanical changes need none of this — rule 6 alone covers them.
+
+**Supersede; never rewrite.** A changed ruling is a new commit that names what it replaces. The
+old commit is the archive: never amended, rebased away, or reworded to make history look
+inevitable. And `git log --follow` on one file cannot surface a ruling from a commit that never
+touched that file — when a ruling's scope exceeds its diff, the `Applies-To:` trailer records
+the scope, and a cross-cutting, long-lived, or externally cited ruling additionally earns a row
+in `docs/DECISIONS.md`, where rule 9 already guards it from re-litigation.
+
+## 15. History is preserved by how branches land
+
+Work here commits directly to `main`, one focused commit at a time — that already preserves the
+trail. When work does go through a branch, it lands with an explicit merge commit:
+
+```bash
+git merge --no-ff <branch>
+```
+
+`--no-ff` keeps the branch boundary — the merge commit records that those commits were one
+reviewed unit of work, where a fast-forward loses that boundary while keeping the commits. But
+`--no-ff` alone is not preservation: a **squash merge replaces the branch's commits with one
+combined commit** on the target, destroying ruling-bearing messages outright, and a rebase-merge
+or force-push rewrites them. So: never squash-merge a branch whose commits carry rulings; never
+rebase accepted work; never force-push rewritten history to `main` — rule 1 already records this
+repo's precedent, where even a one-commit-old typo was left standing rather than force-pushed
+over. A wrong accepted ruling is replaced by a superseding commit (rule 14), not by rewriting
+the commit that made it. If a platform ever forces a squash, the squash commit's message must
+carry, complete, every ruling record that would otherwise be lost — but the standing preference
+is `--no-ff` and the individual commits, kept.

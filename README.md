@@ -103,5 +103,7 @@ Status is tracked at its sources, deliberately — a parallel ledger drifts (thi
 - **Hotspots** — [`docs/event-model.md`](docs/event-model.md) → *Hotspots*; the active walk's own
   *Hotspots* section is the live ledger for the ones it touches.
 - **Work only other repos can do** — [`docs/FOLLOW-UPS.md`](docs/FOLLOW-UPS.md).
-- **Everything else** — the commit messages, long on purpose (AGENTS.md rule 6): `git log` is the
-  project's status record.
+- **Everything else, including why any current statement is what it is** — the commit messages,
+  long on purpose (AGENTS.md rules 6 and 14): documents carry the present, git history carries
+  the why, and ruling-bearing commits are titled for verbatim retrieval with
+  `git log -F --grep='<title>'`.
