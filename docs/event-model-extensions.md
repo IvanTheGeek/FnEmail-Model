@@ -34,7 +34,9 @@ Open questions this raises:
 - Does this multiply the ownership swimlanes, or replace them?
 
 Prior art to check: whether Dilger's *Dynamic Consistency Boundary* chapter (p626) is addressing
-a related problem from a different direction.
+a related problem from a different direction. *(Dated note, 2026-08-08: aggregates and DCB were
+ruled out of scope on 2026-08-07 as a DDD import, not an Event Modeling question — see
+`DECISIONS.md`. This check stays unrun unless that ruling is reopened under rule 4.)*
 
 ⚠️ **Correction.** An earlier note held that FnEmail's H3 (`RecipientDirectory` unsourced) was the
 strongest motivation for this extension. It is not. H3 resolved as a **separate context** —
@@ -63,6 +65,13 @@ all, or does it become purely a consumer of the system model's read models?
 ## 3. Steps, Paths and Treks — example data as the test suite
 
 The largest of the three, and the one with the clearest payoff.
+
+> ✅ **Dated note, 2026-08-08: this section has graduated in part.** Steps and paths went from
+> parked extension to working architecture — the generic form now lives in the method repo's
+> `layering.md` and `path-and-step-form.md`, and every walk in [`paths/`](paths/) instantiates
+> it. Rule 10 still governs the rest of this document. What remains live *in this section* is
+> what has not been built or ruled: trek bounding and promotion (question 3), test-level mapping
+> (question 4), per-actor outcomes (question 3's open tail), and the RFC-testbed reading below.
 
 ### The idea
 
@@ -144,7 +153,8 @@ has found coupling the method says should not exist. No current artifact surface
    Open sub-question: **when are two steps the same step?** Without an answer, every distinct data
    value spawns a node and the catalog stops being navigable.
 2. **What makes composition legal?** Step contracts are the obvious answer, but they must
-   actually exist first. Nothing in `event-model.md` v0.2 has them yet.
+   actually exist first. Nothing in `event-model.md` v0.2 has them yet. *(Dated note: they landed
+   in v0.3 — commit 4f6379a, 2026-08-05, every slice — so this precondition is met.)*
 3. **What bounds the trek space?** Free composition explodes combinatorially. "Meaningful" needs
    a promotion criterion — coverage-driven, risk-driven, or explicit curation.
    **Terminology, settled:** *happy* is descriptive (the path reaches its intended successful
@@ -173,11 +183,17 @@ has found coupling the method says should not exist. No current artifact surface
    slices, chapters need extending from "contiguous group" to "named semantic group" — at which
    point it may be a fourth construct rather than a reuse.
 
+   ⚠️ **Superseded 2026-08-07, the other way — questions 6 and 7 both.** The settled terminology
+   is **workflow** for a named group of slices, never *chapter*: workflow is Dymitruk's word 241×
+   to 10× in the corpus, *chapter* is Dilger's, and workflow nesting has no fixed depth — which
+   absorbs the "three distinct things" concern without minting a new name. Commit 429be8e;
+   register rows in `DECISIONS.md`. The table above keeps its original reasoning per rule 4.
+
 ### Prerequisite
 
 Step contracts must be added to the orthodox model before any of this can be built. That is
 already listed under *Deferred* in `event-model.md` — this extension is the reason to prioritize
-it.
+it. ✅ *Met in v0.3 (commit 4f6379a): every slice carries a contract.*
 
 ## 4. Two classes of rule: normative vs. operator
 
