@@ -529,12 +529,22 @@ rendering `354`. A question about what the operator needs to see. See `model-alt
 resolves this through the destination gate rather than by argument about protocol purity.
 
 **H2 — Are protocol errors events?** `RecipientRejected` is; a `503` is not. The line drawn is
-"policy decisions are facts, protocol slips are not" — defensible, unverified.
+"policy decisions are facts, protocol slips are not" — defensible, unverified. The corpus answer
+is a **size test, not a kind test**: a large sad-path divergence becomes its own workflow to the
+right with a cross-reference back, a small one stays a red scenario on the slice
+(`event-modeling-research:research/TALKS-FINDINGS.md`). Close kin, also open:
+**store-first or validate-first** — the corpus contradicts itself, and this model's
+validate-first stance (`ClientIdentified` on success; `501`/`500` produce no event) was assumed
+rather than decided (`event-modeling-research:research/TALKS-FINDINGS-CORPUS.md` §3).
 
 **H3 — RESOLVED. Directory is a separate context.** See below.
 
 **H4 — Stream design.** One stream per session, per transaction, or per message? The session
-outlives the transaction, which argues they are not one stream.
+outlives the transaction, which argues they are not one stream. The spoken corpus has nothing on
+it — swept 2026-08-06, 982,637 words across both transcript bodies, zero hits — so it is reasoned
+out, not looked up. The v2 walk passes four findings and three pending sub-rulings upward; see
+its *Hotspots* section, and D.2 (the aborted-transaction scenario) is the designated test for the
+transaction question.
 
 **H6 — Is `BY` config or `local_address`?** Decides whether `local_address` is an orphan field or
 load-bearing. Turns on whether FnEmail will ever be multi-homed with per-address hostnames.

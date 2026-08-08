@@ -26,7 +26,7 @@ A step is one table, no heading. Dependencies point backward only.
 
 **No *not in the model* markers.** Paths are the source and slices are derived — what a path
 needs, it defines, and the union across paths populates the model
-([`../HANDOFF.md`](../HANDOFF.md) §1). The six views and two seeded events this walk defines
+([`../DECISIONS.md`](../DECISIONS.md)). The six views and two seeded events this walk defines
 beyond the current model are simply part of this path; reconciling the model is model work.
 Hotspots appear only where open — see *Hotspots* at the end.
 

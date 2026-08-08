@@ -285,7 +285,7 @@ where the spec is visible below; in a scrolling document the jump is much longer
    carries its local set; those sets are then combined and deduplicated across every walk, and that
    union *is* the slice. So a specification is authored at the step and **accumulates** at the slice.
    Nothing is duplicated, because the slice's set is derived rather than copied — see
-   `../HANDOFF.md` §1, *Paths are the source; slices are derived*.
+   [`../DECISIONS.md`](../DECISIONS.md), *Paths are the source; slices are derived*.
 3. **Is the walk itself already a timeline?** ✅ **Yes.** Which weakens V12: a per-step timeline
    would restate inside one step the ordering the ten steps already express. V13 survives the
    objection because it only ever writes the **delta**, never the accumulated history.
@@ -302,7 +302,7 @@ region of the model, and one walk crosses several. Untested, and flagged rather 
 emitted by a modeling tool rather than written by hand, so the question is not *which form is
 pleasant to type* but **which form is right to read** — the typing cost disappears when a generator
 does it. A form that is tedious by hand and correct on the page beats a form that is quick to write
-and ambiguous. See `../HANDOFF.md` §1.
+and ambiguous. See the repo [`README.md`](../../README.md).
 
 ---
 

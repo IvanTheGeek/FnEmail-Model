@@ -1,9 +1,9 @@
 # Working rules for agents in this repository
 
-Operating instructions. For what the project *is* — scope, state, open items, reading order — see
-[`docs/HANDOFF.md`](docs/HANDOFF.md). For decisions already settled, see
-[`docs/DECISIONS.md`](docs/DECISIONS.md). This file is only the rules that produce bad work when
-broken.
+Operating instructions. For what the project *is* — scope, setup, reading order, and where status
+lives — see the [README](README.md). For decisions already settled, see
+[`docs/DECISIONS.md`](docs/DECISIONS.md). Status itself is tracked at its sources, never in a
+parallel ledger. This file is only the rules that produce bad work when broken.
 
 ---
 
@@ -256,4 +256,4 @@ An `EXPLORE-` document is an exploration in progress: while one is open, other d
 deliberately lag it — **cite the active EXPLORE file, not `event-model.md`**, for anything the
 exploration governs. A `WORKING-` prefix marks a path still being walked through; its contents may
 move, and nothing else is reconciled to it until the prefix drops. Defined in commit 9aa2578;
-`docs/HANDOFF.md` names the currently active files.
+the [README](README.md) names the currently active files.

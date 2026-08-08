@@ -134,8 +134,8 @@ from instantiating a field and seeing that nothing consumed it, or that its valu
 replay.
 
 **A step carries only its own walk's scenarios.** Not the 5–20 a command handler may have. Those
-accumulate at the *slice*, which is the union of what every walk contributed — see `../HANDOFF.md`
-§1, *Paths are the source; slices are derived*.
+accumulate at the *slice*, which is the union of what every walk contributed — see
+[`../DECISIONS.md`](../DECISIONS.md), *Paths are the source; slices are derived*.
 
 **Hotspots travel with the step.** A slice under an open question carries its marker inline —
 `🟥 H1` — so a reader walking the path meets the doubt at the point where it matters rather than in

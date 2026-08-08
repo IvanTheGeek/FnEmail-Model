@@ -11,7 +11,7 @@ now, so the handle cannot be silently renumbered.
 
 **The repositories mirror the modeling layers, and insight flows in one direction.** This is the
 canonical record of the ruling (commit fd8b2e4); AGENTS.md rule 11 states it as a working rule,
-and `HANDOFF.md` carries the operational map with clone instructions.
+and the repo README carries the operational map with clone instructions.
 
 | Repo | Layer | Holds |
 |---|---|---|
@@ -50,6 +50,11 @@ already flowed there and are cited rather than restated:
 | **Paths are the source; slices are derived** — and a path is a workflow with the data filled in | `EventModeling/docs/layering.md` |
 | **One fold, three consumers** — state view, todo list, or decision model, decided by who consumes the fold | `EventModeling/docs/state-view-todo-list-decision-model.md` |
 | **The rendering conventions** — measured against all three renderers | `EventModeling/docs/rendering.md`; the evidence experiments live here, in `docs/diagrams/` |
+
+> ⚠️ The walk-vs-workflow relation was long held as *probably* distinct, flagged untested (in
+> `HANDOFF.md` until it dissolved 2026-08-08). The layering ruling answered it: **a path is a
+> workflow with the data filled in** — the same shape at two layers, not two concepts. A single
+> walk still crosses several workflows, and a workflow contains slices a given walk never touches.
 
 The rest were settled here before that repo existed and its documents do not yet carry them. They
 stay recorded in full until they flow (AGENTS.md rule 11):
