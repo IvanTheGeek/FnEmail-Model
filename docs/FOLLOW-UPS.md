@@ -15,10 +15,6 @@ Absorbed from `HANDOFF.md`'s open items when that file dissolved, 2026-08-08.
   `paths/STEP-FORM.md` was reduced to the SMTP layer), and the author's disagreements with Adam's
   method — mentioned repeatedly, never captured; a disagreement is a different category from an
   extension.
-- **The three-fates step-6 mismatch**: `state-view-todo-list-decision-model.md` says
-  `TransactionState`'s empty-dataset question is *"parked with the walk's step 6"*, but the walk
-  does not yet record it there. Reconcile when the walk-through reaches step 6 — and make the
-  note this repo's first method-repo citation.
 - **Flow candidates when ripe**: the cadence verdict (`paths/EXPLORE-rewalk-cadence.md`); the
   GWT-vs-timeline analysis and the view-`When` corpus contradiction (`paths/EXPLORE-gwt-form.md`,
   `paths/EXPLORE-view-slice.md`); `diagrams/README.md`'s generic halves (slice anatomy, chairs,

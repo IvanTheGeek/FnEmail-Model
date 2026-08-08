@@ -195,9 +195,20 @@ altitude belongs is part of what the exploration leaves open.*
 | 🟩 V · Step 6 | `TransactionState` |
 |:--|:--|
 | MTA Client | ⬛ `250` OK |
-| | 🟩 **TransactionState**&#10;<br>&nbsp;&nbsp;`open`: true&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipient_count`: 0 |
+| | 🟩 **TransactionState** |
 | Given | |
-| | 🟧 **ReversePathDeclared**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com> |
+| | 🟧 **ReversePathDeclared** |
+
+*Emptied and collapsed, adopted 2026-08-08 with the rename. The dataset restated the `Given`
+(`open`, `reverse_path`) and encoded position as data (`recipient_count`, 0 against 1 — the
+`session_id` finding again); the `250` OK carries no varying value, so the view renders from
+existence, the `354`'s own shape. Empty here is not empty forever: §3.3 gives this occasion a
+550/553 branch, and the rejection walk seats whatever selects the reply code at the slice layer.
+The method repo parked exactly this question here — "whose dataset is empty, a question parked
+with the walk's step 6" —
+[`state-view-todo-list-decision-model.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/state-view-todo-list-decision-model.md),
+this repo's first citation of it, discharged by this note. The view's own name is still open in
+the exploration: `TransactionState` describes state it no longer carries.*
 
 | 🟩 V · Step 7 | `RecipientDirectory` &nbsp;*(consulted)* |
 |:--|:--|
@@ -221,9 +232,14 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 | 🟩 V · Step 9 | `TransactionState` &nbsp;*(second traversal)* |
 |:--|:--|
 | MTA Client | ⬛ `250` OK |
-| | 🟩 **TransactionState**&#10;<br>&nbsp;&nbsp;`open`: true&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipient_count`: 1 |
+| | 🟩 **TransactionState** |
 | Given | |
-| | 🟧 **ReversePathDeclared**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>🟧 **RecipientAccepted** |
+| | 🟧 **RecipientAccepted** |
+
+*Collapsed with step 6, same adoption: the traversals are distinguished by which event occasioned
+them, not by field values. `ReversePathDeclared` leaves this `Given` entirely, its citation having
+existed only to feed the dataset
+([`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md)).*
 
 | 🟦 C · Step 10 | `BeginData` |
 |:--|:--|
@@ -317,17 +333,19 @@ never walked.
 |:--|:--|:--|
 | `220` foo.com Simple Mail Transfer Service Ready | `ServiceReady` (step 2) | `ServiceConfigured.server_domain`, `.greeting_text` — both carried by the view; the `220` code itself is this scenario's rendering |
 | `250` foo.com | `SessionReady` (step 4) | `ServiceConfigured.server_domain`, carried by the view; the `250` code is this scenario's rendering |
-| `250` OK | `TransactionState` (step 6) | `ReversePathDeclared.reverse_path` |
-| `250` OK | `TransactionState` (step 9) | `ReversePathDeclared`, `RecipientAccepted` |
+| `250` OK | `TransactionState` (step 6) | `ReversePathDeclared`'s existence |
+| `250` OK | `TransactionState` (step 9) | `RecipientAccepted`'s existence |
 | `354` prompt | `DataPrompt` (step 11) | `DataPhaseEntered`'s existence |
 | `Received:` trace line | `MessageTrace` (step 13) | four walked events and the seeded `server_domain` — see the step |
 | `250` OK | `MessageQueued` (step 14) | `MessageAccepted.queue_id` |
 | `221` foo.com Service closing transmission channel | `SessionClosing` (step 16) | `ServiceConfigured.server_domain`; `SessionClosed.cause` |
 
 **Every varying output value has an origin on the page** — in the original walk, zero of these
-eight had a step behind them. The two trailing reply texts that carry no field, `354`'s and
-`221`'s, are the RFC's own example texts (§4.2.2), adopted verbatim as implementation constants —
-a constant is a rule, not a fact, so neither needs an origin. The trace's `with` SMTP joined them
+eight had a step behind them. The reply texts that carry no field — the two `250`s' OK, the
+`354`'s and the `221`'s — are the RFC's own example texts (§4.2.2; OK is Appendix D's own
+abbreviation), adopted verbatim as implementation constants — a constant is a rule, not a fact,
+so none needs an origin. The two `250`s joined 2026-08-08, their datasets emptied by the steps 6
+and 9 collapse. The trace's `with` SMTP joined them
 2026-08-08: in a `HELO`-only charter the value cannot vary. The greeting's text is configuration
 on purpose: §3.1 invites the operator to extend it with software and version, which is why
 `greeting_text` is seeded and those are not.
@@ -340,14 +358,17 @@ on purpose: §3.1 invites the operator to extend it with software and version, w
 | `RecipientResolved` *(seeded)* | steps 7, 8 (`is_local`, `forward_path`) |
 | `ConnectionAccepted` | steps 2, 3, 15 (existence); step 13 (`peer_address`) — `local_address` has **no consumer**, 🟥 H6 |
 | `ClientIdentified` | steps 4, 5 (existence); step 13 (`claimed_domain`) |
-| `ReversePathDeclared` | steps 8, 10 (existence); steps 6, 9 (`reverse_path`) |
+| `ReversePathDeclared` | steps 6, 8, 10 (existence) — `reverse_path` has **no consumer**; see below |
 | `RecipientAccepted` | steps 9, 10 (existence); step 13 (`forward_path`) |
 | `DataPhaseEntered` | steps 11, 12 |
 | `MessageAccepted` | steps 13, 14 (`queue_id`; step 13 also `received_at`) — `reverse_path`, `recipients`, `content_ref`, `actual_octets` are consumed by delivery, right of the responsibility boundary, out of scope |
 | `SessionClosed` | step 16 (`cause`) |
 
-Every event has at least one consumer inside the walk. The single unconsumed field is
-`ConnectionAccepted.local_address` — that is H6, not an oversight.
+Every event has at least one consumer inside the walk. Two fields are unconsumed:
+`ConnectionAccepted.local_address`, which is H6 rather than an oversight — and
+`ReversePathDeclared.reverse_path`, the collapse's finding: its consumer-in-fact is step 12's
+emitted `MessageAccepted.reverse_path`, which no `Given` declares. Recorded rather than patched
+([`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md)).
 
 ### The `Received:` header, clause by clause
 
@@ -376,7 +397,7 @@ walk sources from the seeded event — same fact, now with an origin the complet
 - The preamble replaces two silences: configuration that nothing declared, and a translation the
   original marked yellow mid-walk. Both are seeded events now, cited 🟧 where consumed.
 - `Given` rows are minimal and carry fields exactly where a value, not just existence, is used —
-  steps 2, 4, 6, 7, 8, 9, 13, 14 and 16; existence alone suffices at steps 3, 5, 10, 11, 12
+  steps 2, 4, 7, 8, 13, 14 and 16; existence alone suffices at steps 3, 5, 6, 9, 10, 11, 12
   and 15.
 - The `Where` rows and their session key lived and died inside this file's own history:
   instantiated as a real ULID on 2026-08-07, removed on 2026-08-08 once instantiation exposed

@@ -1,6 +1,11 @@
 # Explore — declaration events versus status-log events
 
-**Open. Nothing here is adopted.** Started 2026-08-08 on branch `explore/declaration-vs-status`,
+**Open, with the step 5 package adopted.** On 2026-08-08 Ivan adopted the rename and the
+steps 6/9 collapse; the walk carries both. The adopting commits are titled
+*ReversePathDeclared names the step 5 event* and
+*Position replaces state at steps 6 and 9*. Still open: `DataPhaseEntered`'s name (H1), the
+acknowledgment view's name, the step 8 symmetry, the third-category question, and the
+command-naming rule. Started 2026-08-08 on branch `explore/declaration-vs-status`,
 during the step-by-step walk-through of
 [`WORKING-helo-direct-single-recipient-v2.md`](WORKING-helo-direct-single-recipient-v2.md). Under
 rule 13 the walk lags this file for anything this exploration governs, and nothing else is
