@@ -86,7 +86,23 @@ the two men worth tracking.
 divergence — two tooling artifacts treat the aggregate as a primitive while the podcast opens with
 two episodes titled *Destroying the Aggregate* — and it is not one.
 
-### Two repositories, and why
+### Now four repositories, and why — updated 2026-08-08
+
+The architecture grew a layer, ruled by the author: the repos now mirror the modeling layers.
+
+| Repo | Layer | Holds |
+|---|---|---|
+| [`EventModeling`](https://github.com/IvanTheGeek/EventModeling) (public, AGPL) | method | generic modeling material — layering, path/step form, the three-fates split, rendering requirements; future home of the modeling tool. Modeled systems appear only as examples |
+| **`FnEmail-Model`** (this repo — renamed from `FnEmail` 2026-08-08, history intact, old URLs redirect) | model | the SMTP model, walks, RFCs, SMTP-specific references. Cites the method repo |
+| `FnEmail` (future) | code | what the model generates — not yet created |
+| `event-modeling-research` (private) | sources | the mirrored corpus — cite, never reproduce |
+
+Method-generic insight goes to `EventModeling` with FnEmail demoted to example; SMTP specifics
+stay here. The first extraction moved `state-view-todo-list-decision-model.md` there on
+2026-08-08 (its FnEmail history survives in git). This repo's default branch is now **main**
+(promoted from the long-lived working branch the same day).
+
+### Two repositories, and why *(the 2026-08-06 split — superseded in count by the above, not in reasoning)*
 
 **FnEmail uses Event Modeling but is not about it.** As of 2026-08-06 the method research lives in
 a separate private repo, and this one keeps only email and RFC material.
