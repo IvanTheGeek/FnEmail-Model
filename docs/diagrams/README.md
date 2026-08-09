@@ -4,8 +4,8 @@ Renderings of `../event-model.md` v0.3, as **markdown tables**. They render on G
 and in the Android app. Sections 4–6 were reconciled 2026-08-08 to the walked timeline of
 [`WORKING-helo-direct-single-recipient-v2.md`](../paths/WORKING-helo-direct-single-recipient-v2.md),
 on the owner's waiver of the rule-13 hold. What stays open is flagged where it sits: the
-consulted-view reading at `RecipientDirectory`, the dataset-cascade fields, and the open names
-(`DataPhaseEntered`, `TransactionState`).
+consulted-view reading at `RecipientDirectory` and the open names (`DataPhaseEntered`,
+`TransactionState`). The dataset cascade closed 2026-08-09; §6 reflects the emptied views.
 
 **Colors** — 🟧 Event · 🟦 Command · 🟩 Read Model · ⬜ rendered UI (Screen) · ⬛ wire ·
 🟨 external / required-first · 🟥 hotspot · 🟤 nothing, only ever in a `Given`.
@@ -226,13 +226,14 @@ pending, and the event's *name* is the open question
 | | **BeginData** | **DataPrompt** | **SubmitContent** | **MessageTrace** | **MessageQueued** | **Quit** | **SessionClosing** |
 |:--|:--|:--|:--|:--|:--|:--|:--|
 | ⬜ **Actor** | `DATA` | ⬛ `354` Start mail input; end with `<CRLF>.<CRLF>` | content · then dot | **Stored message**&#10;<br>the `Received:` header | ⬛ `250` OK | `QUIT` | ⬛ `221` foo.com Service closing transmission channel |
-| **Cmd / View** | 🟦 **BeginData** | 🟩 **DataPrompt**&#10;<br>`awaiting_content` ⚠️ | 🟦 **SubmitContent** | 🟩 **MessageTrace** 🟥 H6&#10;<br>`from_domain` · `address_literal` · `by` · `id` · `for` · `at` | 🟩 **MessageQueued**&#10;<br>`queue_id` ⚠️ · `accepted` ⚠️ | 🟦 **Quit** | 🟩 **SessionClosing**&#10;<br>`server_domain` · `cause` ⚠️ |
-| **Event** | 🟥 **DataPhaseEntered**&#10;<br>H1 — consumers verified on the v2 walk; *name* open | — | 🟧 **MessageAccepted**&#10;<br>`queue_id` ⚠️ · `reverse_path` · `recipients` · `content_ref` · `actual_octets` · `received_at` | — | — | 🟧 **SessionClosed**&#10;<br>`cause` ⚠️ | — |
+| **Cmd / View** | 🟦 **BeginData** | 🟩 **DataPrompt**&#10;<br>*(existence-fold, no dataset)* | 🟦 **SubmitContent** | 🟩 **MessageTrace** 🟥 H6&#10;<br>`from_domain` · `address_literal` · `by` · `id` · `for` · `at` | 🟩 **MessageQueued**&#10;<br>*(existence-fold, no dataset)* | 🟦 **Quit** | 🟩 **SessionClosing** 🟥 H8&#10;<br>`server_domain` |
+| **Event** | 🟥 **DataPhaseEntered**&#10;<br>H1 — consumers verified on the v2 walk; *name* open | — | 🟧 **MessageAccepted**&#10;<br>`queue_id` · `reverse_path` · `recipients` · `content_ref` · `actual_octets` · `received_at` | — | — | 🟧 **SessionClosed**&#10;<br>`cause` 🟥 H8 | — |
 
-**⚠️ marks the dataset-cascade fields** — `awaiting_content`, `accepted`, `queue_id`, `cause` —
-under the open render-failure test for a field the wire never shows. They are drawn as the walk
-draws them, flagged for a ruling rather than ruled on here; the test is stated in the walk's
-`ServiceReady` step note.
+**The dataset cascade closed 2026-08-09** — ruled: "Don't invent a new test — the view's own
+definition already decides it." `awaiting_content`, `accepted` and the `queue_id` copy left
+their views, and `cause` left `SessionClosing` — surviving on `SessionClosed`, where 🟥 H8
+flags it unconsumed until a closure-branch walk consumes it. The grounds are in the walk's
+steps 11, 14 and 16 notes.
 
 **🟥 H6 bites at `MessageTrace`**: the `by` clause renders from `ServiceConfigured.server_domain`
 on the config arm, and would render from `ConnectionAccepted.local_address` on the multi-homed

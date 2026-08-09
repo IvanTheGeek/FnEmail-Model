@@ -5,8 +5,9 @@ steps 6/9 collapse; the walk carries both. The adopting commits are titled
 *ReversePathDeclared names the step 5 event* and
 *Position replaces state at steps 6 and 9*. Still open: `DataPhaseEntered`'s name (H1), the
 acknowledgment view's name, the step 8 symmetry, the third-category question, the
-command-naming rule, and the dataset cascade the collapse spawned (tracked in
-[`../FOLLOW-UPS.md`](../FOLLOW-UPS.md)). Started 2026-08-08 on branch
+command-naming rule. The dataset cascade the collapse spawned closed 2026-08-09 — ruled: "Don't
+invent a new test — the view's own definition already decides it"; the walk's steps 11, 14 and
+16 notes carry the grounds. Started 2026-08-08 on branch
 `explore/declaration-vs-status`, during the step-by-step walk-through of
 [`WORKING-helo-direct-single-recipient-v2.md`](WORKING-helo-direct-single-recipient-v2.md). Under
 rule 13 the walk lags this file for anything this exploration governs, and nothing else is

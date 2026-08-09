@@ -150,12 +150,11 @@ view is the dataset the renderer draws from, so the text the wire shows had to b
 boolean nothing renders had no business being one. `accepting`'s only origin was an existence
 fold standing on the contract this file already flags as wrong (the refused greeting still has a
 session); it is constant-true in every walked path, and the wire carries the decision as the
-choice of code, which is scenario selection — a slice-level concern. The same test now hangs over
-four sites, left standing for one ruling: `DataPrompt.awaiting_content` and
-`MessageQueued.accepted`, constants on `accepting`'s own footing, and — the open half, since
-neither is a constant — `MessageQueued.queue_id` and `SessionClosing.cause`, whose wire lines
-render nothing of them. Whether render-failure alone removes a non-constant field from a view is
-the deciding question; all four sites resolve under it.*
+choice of code, which is scenario selection — a slice-level concern. The same test hung over four
+more sites until it closed 2026-08-09 — ruled: "Don't invent a new test — the view's own
+definition already decides it" — and all four fell with it: `DataPrompt.awaiting_content`,
+`MessageQueued.accepted`, `MessageQueued.queue_id` and `SessionClosing.cause`. The notes at
+steps 11, 14 and 16 record the grounds.*
 
 | 🟦 C · Step 3 | `Helo` |
 |:--|:--|
@@ -265,9 +264,13 @@ existed only to feed the dataset
 | 🟩 V · Step 11 | `DataPrompt` |
 |:--|:--|
 | MTA Client | ⬛ `354` Start mail input; end with `<CRLF>.<CRLF>` |
-| | 🟩 **DataPrompt**&#10;<br>&nbsp;&nbsp;`awaiting_content`: true |
+| | 🟩 **DataPrompt** |
 | Given | |
 | | 🟧 **DataPhaseEntered** |
+
+*Emptied under the step 16 ruling — `awaiting_content` was a constant-true boolean on
+`accepting`'s footing; the `354` renders from `DataPhaseEntered`'s existence, as the backward
+table has said since the collapse.*
 
 | 🟦 C · Step 12 | `SubmitContent` |
 |:--|:--|
@@ -307,9 +310,19 @@ instead — one of that field's two candidate consumers; H6 under *Hotspots* nam
 | 🟩 V · Step 14 | `MessageQueued` |
 |:--|:--|
 | MTA Client | ⬛ `250` OK |
-| | 🟩 **MessageQueued**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`accepted`: true |
+| | 🟩 **MessageQueued** |
 | Given | |
-| | 🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14 |
+| | 🟧 **MessageAccepted** |
+
+*Emptied under the step 16 ruling. `accepted` was a constant-true boolean on `accepting`'s own
+footing. `queue_id` needed the ruling: it is no constant, but the `250` OK's task — telling the
+client the handoff occurred — consumes no id, and position suffices for which message (at most
+one transaction per session, H4). The constitutive weight §2.1 gives this reply lives in its
+issuance, which is the renderer's territory, not the dataset's. The value keeps its origin and
+its step 13 destination, so nothing orphans. One product option recorded, not held for: real
+MTAs often echo the id in the reply text — `250` Ok: queued as F2C8D14 — and reply text is
+operator territory like `greeting_text`, so if FnEmail ever chooses that text the field
+re-enters with a real consumer, exactly as `protocol` re-enters under `EHLO`.*
 
 **The responsibility boundary is here — at the issuance of this `250`.** Left of it, abandoning
 costs nothing. §2.1 places the handoff on the reply itself: *"once the server has issued a
@@ -335,12 +348,21 @@ placement had this server owning a message the client still owned. Corrected 202
 | Given | |
 | | 🟧 **ConnectionAccepted** |
 
-| 🟩 V · Step 16 | `SessionClosing` |
+| 🟩 V · Step 16 | `SessionClosing` &nbsp;🟥 **H8** |
 |:--|:--|
 | MTA Client | ⬛ `221` foo.com Service closing transmission channel |
-| | 🟩 **SessionClosing**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>&nbsp;&nbsp;`cause`: quit |
+| | 🟩 **SessionClosing**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com |
 | Given | |
-| | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **SessionClosed**&#10;<br>&nbsp;&nbsp;`cause`: quit |
+| | 🟧 **ServiceConfigured**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com&#10;<br>🟧 **SessionClosed** |
+
+*Ruled 2026-08-09: "Don't invent a new test — the view's own definition already decides it." A
+view is the dataset provided to the actor to complete its task; the `221`'s task consumes
+`server_domain` and nothing else (§4.2.2 varies only the domain), so `cause` was never part of
+this dataset. Render-failure for a non-constant field removes it from the view but never from
+its originating event — the fact survives on `SessionClosed`, where its unconsumed-ness is
+flagged (🟥 H8). Its consumers wait on the unwalked closure branches, where `cause` selects
+which closure renders at all — scenario selection, the slice layer's: the `session_id` arc
+again, a value dying on the path to re-materialize at the slice as a selection contract.*
 
 Every reply is 2xx or 3xx. No error branch is taken anywhere.
 
@@ -376,8 +398,8 @@ never walked.
 | `250` OK | `TransactionState` (step 9) | `RecipientAccepted`'s existence |
 | `354` prompt | `DataPrompt` (step 11) | `DataPhaseEntered`'s existence |
 | `Received:` trace line | `MessageTrace` (step 13) | four walked events and the seeded `server_domain` — see the step |
-| `250` OK | `MessageQueued` (step 14) | `MessageAccepted.queue_id` |
-| `221` foo.com Service closing transmission channel | `SessionClosing` (step 16) | `ServiceConfigured.server_domain`; `SessionClosed.cause` |
+| `250` OK | `MessageQueued` (step 14) | `MessageAccepted`'s existence |
+| `221` foo.com Service closing transmission channel | `SessionClosing` (step 16) | `ServiceConfigured.server_domain`, carried by the view; `SessionClosed`'s existence |
 
 **Every varying output value has an origin on the page** — in the original walk, zero of these
 eight had a step behind them. The reply texts that carry no field — the two `250`s' OK, the
@@ -427,15 +449,16 @@ payload-free `DataPhaseEntered`.
 | `ReversePathDeclared` | steps 6, 8, 10 (existence); step 12 (`reverse_path`) |
 | `RecipientAccepted` | steps 9, 10 (existence); steps 12, 13 (`forward_path`) |
 | `DataPhaseEntered` | steps 11, 12 |
-| `MessageAccepted` | steps 13, 14 (`queue_id`; step 13 also `received_at`) — `reverse_path`, `recipients`, `content_ref`, `actual_octets` are consumed by delivery, right of the responsibility boundary, out of scope |
-| `SessionClosed` | step 16 (`cause`) |
+| `MessageAccepted` | step 13 (`queue_id`, `received_at`); step 14 (existence) — `reverse_path`, `recipients`, `content_ref`, `actual_octets` are consumed by delivery, right of the responsibility boundary, out of scope |
+| `SessionClosed` | step 16 (existence) — `cause` has **no consumer on this walk**, 🟥 H8 |
 
-Every event has at least one consumer inside the walk, and the single unconsumed field is again
-`ConnectionAccepted.local_address` — H6, not an oversight. The steps 6/9 collapse had briefly
-made `ReversePathDeclared.reverse_path` a second: its consumer-in-fact was step 12's emitted
-`MessageAccepted.reverse_path`, which no `Given` declared. The payload check seated that `Given`
-— the check working, not the finding patched — and the arc is recorded in
-[`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md).
+Every event has at least one consumer inside the walk. Two fields are unconsumed, each flagged
+where it bites: `ConnectionAccepted.local_address` (🟥 H6) and `SessionClosed.cause` (🟥 H8) —
+the second is the cascade ruling's accepted cost, its consumers waiting on the closure branches.
+The steps 6/9 collapse had briefly made `ReversePathDeclared.reverse_path` another: its
+consumer-in-fact was step 12's emitted `MessageAccepted.reverse_path`, which no `Given` declared.
+The payload check seated that `Given` — the check working, not the finding patched — and the arc
+is recorded in [`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md).
 
 ### The `Received:` header, clause by clause
 
@@ -466,7 +489,7 @@ ruling that removed `protocol` (commit 2673b1b, recorded at step 3) made it a re
 - The preamble replaces two silences: configuration that nothing declared, and a translation the
   original marked yellow mid-walk. Both are seeded events now, cited 🟧 where consumed.
 - `Given` rows are minimal and carry fields exactly where a value, not just existence, is used —
-  steps 2, 4, 7, 8, 12, 13, 14 and 16; existence alone suffices at steps 3, 5, 6, 9, 10, 11
+  steps 2, 4, 7, 8, 12, 13 and 16; existence alone suffices at steps 3, 5, 6, 9, 10, 11, 14
   and 15.
 - The `Where` rows and their session key lived and died inside this file's own history:
   instantiated as a real ULID on 2026-08-07, removed on 2026-08-08 once instantiation exposed
@@ -566,6 +589,14 @@ with session = connection verified 1:1, `correlation_id` duplicates `session_id`
 scope while `queue_id` supersedes it beyond. Something to deal with at a higher level, not here.
 `session_id` followed the same day — no key survives on a path; the block under *The layering*
 records it.
+
+**🟥 H8 — open, and the cascade ruling sharpened it.** Registered in the model from
+`model-altitude.md` Q6 — does `SessionClosed` earn its place? The event is consumed: step 16
+folds its existence for the `221`. But `cause` now has no consumer on this walk — the 2026-08-09
+ruling removed it from `SessionClosing`'s dataset, and its consumers-in-waiting are the closure
+branches this walk does not take, the `421` shutdown and the timeout close, where `cause` selects
+which closure renders at all. Scenario selection is the slice layer's; the D.2 and error walks
+are where H8 closes.
 
 **🟥 H7 — open, product.** Does FnEmail ever refuse mail entirely (RFC 7504 `521`)? It decides
 whether `ServiceReady` ever renders anything but `220` at connection time beyond the `554`

@@ -22,7 +22,8 @@ by intent, so extensions can be measured against it.
 > after that pass, flagged where each bites below:
 >
 > - The six path-defined views are absorbed by name only; full contracts wait on the open
->   dataset-cascade and step-8 symmetry rulings
+>   step-8 symmetry ruling (the dataset cascade closed 2026-08-09 — see the ⚠️ under
+>   *Path-defined views*)
 >   ([`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-status.md)).
 > - The entry mechanism for `ServiceConfigured` — two candidate shapes recorded, neither chosen
 >   (`paths/EXPLORE-rewalk-cadence.md`, *two shapes, neither chosen*; commit 6ed62cf).
@@ -31,7 +32,8 @@ by intent, so extensions can be measured against it.
 > - `SessionState`'s fate — pending the consulted-view question; see the slice's ⚠️.
 > - The scenario-form questions — the view-`When` form and its missing key
 >   ([`paths/EXPLORE-view-slice.md`](paths/EXPLORE-view-slice.md)).
-> - H8's resolution — registered under *Hotspots*, blocked on the dataset cascade.
+> - H8's resolution — registered under *Hotspots*; the cascade ruling left `cause` flagged
+>   unconsumed, and H8 now waits on the closure-branch walks.
 
 ---
 
@@ -156,9 +158,11 @@ response to DATA"*.
 
 `MessageAccepted` records the acceptance decision; obligation transfers when the success reply is
 issued. Left of that reply, abandoning costs nothing. Right of it is delivery — out of scope.
-Whether the `250` is thereby constitutive — the `MessageQueued` view's `queue_id` copy — is part
-of the open dataset cascade the walk leaves standing for a ruling (its notes, and
-`FOLLOW-UPS.md`); flagged here, not settled.
+The `MessageQueued` view's `queue_id` copy fell with the dataset cascade, ruled 2026-08-09
+("Don't invent a new test — the view's own definition already decides it"): the reply's
+constitutive weight lives in its issuance, which is the renderer's territory, and the `250` OK's
+task consumes no id. The walk's step 14 note records the grounds and the product option that
+would re-seat the field.
 
 A domain observation about SMTP, **not** Event Modeling vocabulary.
 
@@ -338,9 +342,8 @@ Structurally the **"right chair"** — one read model, many events. Expected; wo
 ### Path-defined views — absorbed by name; contracts pending
 
 The v2 walk defines six View Slices the scoping pass predates. They are carried here by name,
-occasioning event, and rendered output only; full contracts wait on the open dataset-cascade and
-step-8 symmetry rulings
-([`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-status.md)).
+occasioning event, and rendered output only; full contracts wait on the open step-8 symmetry
+ruling ([`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-status.md)).
 
 | View | Occasioned by | Renders |
 |:--|:--|:--|
@@ -351,11 +354,16 @@ step-8 symmetry rulings
 | `MessageQueued` | `MessageAccepted` | the `250` after the final dot |
 | `SessionClosing` | `SessionClosed` | the `221` closing line |
 
-⚠️ **The open dataset cascade bites four values, flagged rather than settled**:
-`DataPrompt.awaiting_content` and `MessageQueued.accepted` — each a boolean nothing renders, over
-which the constant test hangs — `MessageQueued`'s `queue_id` copy, and `SessionClosing.cause`,
-the deciding case because it is the one non-constant among them. The cascade is tracked in the
-walk's notes and `FOLLOW-UPS.md`.
+⚠️ **The dataset cascade closed 2026-08-09** — ruled: "Don't invent a new test — the view's own
+definition already decides it." A view is the dataset the actor's task consumes, so a value the
+rendering task never uses was never part of the dataset; render-failure removes a non-constant
+field from the *view* but never from its originating event. All four flagged values fell:
+`DataPrompt.awaiting_content` and `MessageQueued.accepted` (constants on `accepting`'s footing),
+`MessageQueued`'s `queue_id` copy (the reply's constitutive weight is its issuance — renderer
+territory), and `SessionClosing.cause`, the deciding non-constant case. `DataPrompt` and
+`MessageQueued` render from existence; `SessionClosing` keeps `server_domain` alone.
+`SessionClosed.cause` is now flagged unconsumed on the direct walk — 🟥 H8, consumers waiting on
+the closure branches. The walk's steps 11, 14 and 16 notes carry the grounds.
 
 **Two seeded events.** The walk's preamble declares `ServiceConfigured{server_domain,
 greeting_text}` and `RecipientResolved{is_local, forward_path}` — path-local placeholders whose
@@ -650,10 +658,12 @@ the operator — after `521` the server **MAY** keep replying `521` or **MAY** j
 connection. A normative frame with an operator choice inside it.
 
 **H8 — Does `SessionClosed` earn its place?** Registered from `model-altitude.md` Q6, where it
-was proposed. The walk gives `SessionClosed.cause` a consumer — `SessionClosing` folds it to
-render the `221` — but `SessionClosing.cause` is the deciding case of the open dataset cascade:
-if it dies there, `cause` becomes a second flagged-unconsumed value. Resolution is blocked on
-that cascade; decide jointly with `Quit`'s postcondition.
+was proposed. The event is consumed — step 16 folds its existence for the `221` — but the
+cascade ruling of 2026-08-09 removed `cause` from `SessionClosing`'s dataset, so the field is
+now flagged unconsumed on the direct walk. Its consumers-in-waiting are the closure branches no
+walk has taken: the `421` shutdown and the timeout close, where `cause` selects which closure
+renders at all — scenario selection, the slice layer's. The D.2 and error walks are where H8
+closes; decide jointly with `Quit`'s postcondition.
 
 **H5 — `AcceptConnection` altitude.** *Domain fact or infrastructure noise?* The question is
 malformed, and answering it properly reclassifies the event.

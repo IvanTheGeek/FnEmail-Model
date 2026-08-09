@@ -101,16 +101,6 @@ a ledger.
 
 **Ruling-gated — the walk-through owner's, in order of leverage:**
 
-- **The dataset cascade, three sites remaining, only two on the walk's own pending list.**
-  `DataPrompt.awaiting_content` (step 11) and `MessageQueued.accepted` (step 14) are
-  constant-true booleans arguably dead under the existing constant precedent.
-  `SessionClosing.cause` (step 16) is the deciding case: the first *non-constant* field that
-  renders nothing — killing it makes `SessionClosed.cause` a second flagged-unconsumed value;
-  keeping it concedes render-failure alone does not kill. `MessageQueued.queue_id` is fully
-  originated and consumed at steps 12/13, making step 14's copy destination-free — but §2.1's
-  constitutive `250` (first item above) is the strongest argument that step 14 is not a mere
-  copy. One ruling can settle all four; the backward table's step 14 and 16 rows correct in the
-  same motion.
 - **What is step 7 for?** `RecipientDirectory` has no top row and no reader — no `Given` can
   cite a view, so a consulted view is invisible to all three completeness checks, and
   "consulted" is a category with exactly one instance that nothing consumes. Load-bearing at
