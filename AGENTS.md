@@ -271,12 +271,10 @@ moved there 2026-08-08 from this repo's `docs/event-model-extensions.md` (histor
 deliberately not applied, so the orthodox model stays measurable against them — learn the method
 before extending it. Do not fold extension ideas into the model without being asked.
 
-## 11. Five repositories, one direction of flow
+## 11. Four repositories, one direction of flow
 
 The repos mirror the modeling layers — method (`EventModeling`, public), model (this repo), code
-(`FnEmail`, future), sources (`event-modeling-research`, private), and the modeling tool's own
-model (`ModelingTool-Model`, public, created 2026-08-09 and pre-model: it holds ideas for the tool,
-not a model of one). **Method-generic insight flows
+(`FnEmail`, future), sources (`event-modeling-research`, private). **Method-generic insight flows
 to `EventModeling`, with FnEmail demoted to worked example; SMTP specifics stay here and cite the
 method repo rather than restating it.** Research material is cited, never reproduced, into either
 public repo. The ruling and the full map are in [`docs/DECISIONS.md`](docs/DECISIONS.md).
@@ -363,6 +361,27 @@ alternatives materially considered and why each was rejected; the costs accepted
 touches; a `Supersedes:` trailer naming the replaced ruling's title (and commit, when known).
 Typos, formatting, and mechanical changes need none of this — rule 6 alone covers them.
 
+**A standing change is a third motion, and it needs a commit of its own.** *Supersede* replaces a
+ruling; rule 4's *correction* says it was wrong. Demoting, promoting or retiring a position says
+neither — the position stands unchanged and is held more or less firmly than before. It is a
+decision about a decision, and it vanishes if it rides inside a commit about something else. So:
+the subject line carries the affected ruling's title **verbatim**, so `-F --grep` on the bare title
+still finds it (the matcher looks anywhere in the message, so a suffix is safe), and a `Standing:`
+trailer names the ruling and its new grade. A standing change is **not** a correction and takes no
+⚠️: calling it one asserts the position was an error, when it was accepted and is now held
+provisionally.
+
+⚠️ **Three cited ruling handles are dead, and `docs/DECISIONS.md` mislabels the demotion that
+caused the first.** Verified 2026-08-09: `git log --all -F --grep` returns nothing in either public
+repo for *Paths are the source; slices are derived*, nothing for *The repository architecture —
+ruled 2026-08-08*, and nothing in `EventModeling` — its canonical home — for *One fold, three
+consumers*. All three are cross-repo or standing-change commits, which is exactly where this
+mechanism had no title discipline. The register row at `docs/DECISIONS.md` calls the first a
+correction, which asserts it was wrong; it was not. What would settle it: a repair commit per
+handle carrying the title verbatim, and a re-worded register row — noting that the row and
+`README.md`'s pointer to it must move together, since the README currently says the register
+"carries the correction".
+
 **Supersede; never rewrite.** A changed ruling is a new commit that names what it replaces. The
 old commit is the archive: never amended, rebased away, or reworded to make history look
 inevitable. And `git log --follow` on one file cannot surface a ruling from a commit that never
@@ -390,3 +409,4 @@ over. A wrong accepted ruling is replaced by a superseding commit (rule 14), not
 the commit that made it. If a platform ever forces a squash, the squash commit's message must
 carry, complete, every ruling record that would otherwise be lost — but the standing preference
 is `--no-ff` and the individual commits, kept.
+

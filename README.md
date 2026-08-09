@@ -22,7 +22,9 @@ walked paths look like instances of it; the flow of authority is the opposite. H
 hypothesis, not a settled ruling — the statement is the method repo's
 [`layering.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/layering.md), whose
 status banner records the demotion from "ruled"; the register row in
-[`docs/DECISIONS.md`](docs/DECISIONS.md) carries the correction.
+[`docs/DECISIONS.md`](docs/DECISIONS.md) carries the standing change. It is a change of standing,
+not a correction — the position was accepted and is now held provisionally, which is a different
+thing from having been wrong (AGENTS.md rule 14).
 
 ## Five repositories
 
@@ -32,7 +34,7 @@ The repos mirror the modeling layers. Canonical ruling record:
 | Repo | Layer | Holds |
 |---|---|---|
 | [`EventModeling`](https://github.com/IvanTheGeek/EventModeling) (public) | method | generic modeling material — the canon primer, layering, path/step form, the three-fates split, rendering, altitude, the parked extensions; the modeling tool it works toward will live in repos of its own |
-| **`FnEmail-Model`** (this repo — renamed from `FnEmail` 2026-08-08, old URLs redirect) | model | the SMTP model, walks, RFCs, SMTP-specific references. Cites the method repo |
+| `FnEmail-Model` — **this repo** (renamed from `FnEmail` 2026-08-08, old URLs redirect) | model | the SMTP model, walks, RFCs, SMTP-specific references. Cites the method repo |
 | `FnEmail` (future) | code | what the model generates — not yet created |
 | [`ModelingTool-Model`](https://github.com/IvanTheGeek/ModelingTool-Model) (public) | the tool's model | ideas for the modeling tool now, its model later — pre-model, and nothing in it is a decision |
 | `event-modeling-research` (private) | sources | the mirrored corpus — cite, never reproduce |
