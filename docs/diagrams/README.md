@@ -4,9 +4,10 @@ Renderings of `../event-model.md` v0.3, as **markdown tables**. They render on G
 and in the Android app. Sections 4–6 were reconciled 2026-08-08 to the walked timeline of
 [`WORKING-helo-direct-single-recipient-v2.md`](../paths/WORKING-helo-direct-single-recipient-v2.md),
 on the owner's waiver of the rule-13 hold. What stays open is flagged where it sits: the
-consulted-view reading at `RecipientDirectory` and the open names (`DataPhaseEntered`, and the
-step 9 view — step 6 was named `ReversePathAllowed` 2026-08-09). The dataset cascade closed
-2026-08-09; §6 reflects the emptied views.
+open names (`DataPhaseEntered`, and the `RecipientAccepted`-occasioned view — its sibling was
+named `ReversePathAllowed` 2026-08-09). The dataset cascade closed and the consulted box at
+`RecipientDirectory` dissolved, both 2026-08-09; §§5–6 reflect the emptied views and the
+dissolution.
 
 **Colors** — 🟧 Event · 🟦 Command · 🟩 Read Model · ⬜ rendered UI (Screen) · ⬛ wire ·
 🟨 external / required-first · 🟥 hotspot · 🟤 nothing, only ever in a `Given`.
@@ -189,15 +190,15 @@ greeting, and the walk exercises neither; no arm is picked here.
 
 ## 5. Inbound timeline — the transaction
 
-`MailFrom` → `RcptTo`. `RecipientDirectory` is the Translation boundary onto the Directory context
-(H3 resolved), so its source is outside this model — shown 🟨 **yellow**: the seeded
-`RecipientResolved`.
+`MailFrom` → `RcptTo`. The Translation boundary onto the Directory context (H3 resolved) enters
+as the seeded, 🟨 **yellow** `RecipientResolved` — a source outside this model, folded directly
+by `RcptTo`'s handler.
 
-| | **MailFrom** | **ReversePathAllowed** | **RecipientDirectory** | **RcptTo** |
-|:--|:--|:--|:--|:--|
-| ⬜ **Actor** | `MAIL FROM` | ⬛ `250` OK | *consulted — no top row on the walk; form pending* | `RCPT TO` |
-| **Cmd / View** | 🟦 **MailFrom** | 🟩 **ReversePathAllowed** | 🟩 **RecipientDirectory**&#10;<br>`is_local` | 🟦 **RcptTo** |
-| **Event** | 🟧 **ReversePathDeclared**&#10;<br>`reverse_path` | — | 🟨 **RecipientResolved**&#10;<br>translated — external | 🟧 **RecipientAccepted**&#10;<br>🟧 **RecipientRejected** `550` |
+| | **MailFrom** | **ReversePathAllowed** | **RcptTo** |
+|:--|:--|:--|:--|
+| ⬜ **Actor** | `MAIL FROM` | ⬛ `250` OK | `RCPT TO` |
+| **Cmd / View** | 🟦 **MailFrom** | 🟩 **ReversePathAllowed** | 🟦 **RcptTo** |
+| **Event** | 🟧 **ReversePathDeclared**&#10;<br>`reverse_path` | — | 🟨 **RecipientResolved**&#10;<br>translated — external, folded by the handler&#10;<br>🟧 **RecipientAccepted**&#10;<br>🟧 **RecipientRejected** `550` |
 
 The 🟨 **yellow** cell is what distinguishes Translation from Automation — the source event belongs
 to another context.
@@ -206,14 +207,14 @@ to another context.
 the walked path (commit cd06274), and the 2026-08-09 naming — a view names the server's response
 to its occasioning event — split what was one view traversed twice. The walk's second
 acknowledgment, after `RcptTo`, is now its own view (occasioned by `RecipientAccepted`), its
-name still open and riding the step 8 symmetry
+name still open and riding the `RcptTo` symmetry
 ([`EXPLORE-declaration-vs-status.md`](../paths/EXPLORE-declaration-vs-status.md)); it is not
 drawn as a second column here until named.
 
-`RecipientDirectory` is *consulted*: on the walk nothing is drawn to any actor, and `RcptTo`
-declares the dependency in its own `Given`. How a consulted view is read on a path is an open
-question — the walk's `RecipientDirectory` step carries it — so the Actor cell above is a flag,
-not a settled form.
+The consulted `RecipientDirectory` box that stood between `ReversePathAllowed` and `RcptTo`
+**dissolved 2026-08-09**: no `Given` can cite a view, the box performed no fold, and the
+three-fates discipline gives a handler's fold no box. The translation boundary survives in the
+seeded event above; in the expanded model the consultation returns as a processing slice.
 
 ---
 

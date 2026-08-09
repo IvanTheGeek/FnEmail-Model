@@ -56,7 +56,8 @@ is in the ruling commits, one per repo, titled so that
 | **Golden path deliberately unassigned** — *happy* is descriptive, *golden* is a designation | `paths/helo-multi-recipient.md` |
 | **One event per command** is a design target, stronger than the corpus's "keep an eye on it" | `diagrams/README.md` §1 |
 | **ReversePathDeclared names the step 5 event** — the declaration reading replaced `MailTransactionStarted`'s status-log reading; the companion ruling *Position replaces state at steps 6 and 9* emptied `TransactionState`'s dataset (commits d19f91d, cd06274) | `paths/EXPLORE-declaration-vs-status.md` |
-| **ReversePathAllowed names the step 6 view** — a view names the server's response to its occasioning event, the pattern the other rendered views already followed; the naming split the slice, leaving the step 9 view's name open on the step 8 symmetry (2026-08-09) | `paths/EXPLORE-declaration-vs-status.md` |
+| **ReversePathAllowed names the step 6 view** — a view names the server's response to its occasioning event, the pattern the other rendered views already followed; the naming split the slice, leaving the `RecipientAccepted`-occasioned view's name open on the `RcptTo` symmetry (2026-08-09) | `paths/EXPLORE-declaration-vs-status.md` |
+| **A consulted view is a decision-model fold; step 7 dissolves** — no `Given` can cite a view, the box performed no fold, and the three-fates discipline gives a handler's fold no box; the walk renumbered, the translation boundary survives in the seeded event, and the consultation returns as a processing slice in the expanded model. The cadence half of *One-row Givens, a query predicate, and the cadence that explains both* is refined: alternation is descriptive, not doctrine — the wave is FM or square, not sine, and VV+/CC+ runs are legal (2026-08-09) | `paths/EXPLORE-declaration-vs-status.md` |
 
 ## Method decisions
 

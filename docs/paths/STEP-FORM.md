@@ -20,9 +20,10 @@ move (rule 13).
 
 A reply is a **rendered view**: the wire line is what the renderer produces from the view's fields.
 So each of the seven replies in a walk gets its own view step, and none of them appear as text
-inside the wire row of the command that provoked them. A view read only internally —
-`RecipientDirectory`, which `RcptTo` consults and which is rendered to nobody — has no top row at
-all, and its readers declare it in their own `Given`.
+inside the wire row of the command that provoked them. There is no internally-read view step:
+consultation is the command handler's fold, done on events the `Given` cites directly — the walk's
+one consulted box (`RecipientDirectory`) dissolved 2026-08-09 under the method's fold discipline,
+and real consultation returns as a processing slice in an expanded model.
 
 The eighth output is not a reply and still gets a step: the `Received:` trace line, drawn into the
 stored message rather than the socket, which is why its top row carries no wire chip.

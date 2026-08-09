@@ -4,11 +4,13 @@
 steps 6/9 collapse; the walk carries both. The adopting commits are titled
 *ReversePathDeclared names the step 5 event* and
 *Position replaces state at steps 6 and 9*. On 2026-08-09 the step 6 view was named
-`ReversePathAllowed`, splitting the slice (see *Second pass* under the view-name screen). Still
-open: `DataPhaseEntered`'s name (H1), the step 9 view's name, the step 8 symmetry, the
-refusal-shape fork, the third-category question, the command-naming rule. The dataset cascade the collapse spawned closed 2026-08-09 — ruled: "Don't
-invent a new test — the view's own definition already decides it"; the walk's steps 11, 14 and
-16 notes carry the grounds. Started 2026-08-08 on branch
+`ReversePathAllowed`, splitting the slice, and the consulted box at `RecipientDirectory`
+dissolved, renumbering the walk (see *Second pass* and *The consulted box dissolves*). Still
+open: `DataPhaseEntered`'s name (H1), the `RecipientAccepted`-occasioned view's name, the
+`RcptTo` symmetry, the refusal-shape fork, the third-category question, the command-naming
+rule. The dataset cascade the collapse spawned closed 2026-08-09 — ruled: "Don't invent a new
+test — the view's own definition already decides it"; the walk's steps 10, 13 and 15 notes
+carry the grounds. Started 2026-08-08 on branch
 `explore/declaration-vs-status`, during the step-by-step walk-through of
 [`WORKING-helo-direct-single-recipient-v2.md`](WORKING-helo-direct-single-recipient-v2.md). Under
 rule 13 the walk lags this file for anything this exploration governs, and nothing else is
@@ -331,6 +333,39 @@ Recorded open, not settled, from the same pass:
   next command, which is what the model's old command-screen drawings drew. The unfused case —
   kind two with an internal actor — is `RecipientDirectory`, the open consulted-view question
   at step 7, arrived at from a new direction.
+
+#### The consulted box dissolves — ruled 2026-08-09
+
+The two-kinds fusion answered the step 7 question a day after posing it. `RcptTo`'s actor is
+the MTA client, whose kind-two need is already served by the fused reply view; what would read
+`RecipientDirectory` is the handler — and the three-fates discipline, checked verbatim, says
+*"The handler still never reads a view"*: a command handler's fold gets no box, and when
+outside data is genuinely needed *"a processor fetches it and puts it on the command as a
+parameter"*. The box performed no fold (`is_local`: true was a verbatim pass-through of the
+seeded event), had no reader (no `Given` can cite a view), and was invisible to all three
+completeness checks. **Dissolved.** The walk renumbered — steps 8–16 became 7–15 — and the
+translation boundary survives in the seeded `RecipientResolved`, exactly where `RcptTo`'s
+`Given` already cited it. In the expanded model the consultation returns as a processing slice,
+the same shape as the `ReversePathRefused` policy processing above. "Consulted" is now a
+category with no walked instance; the method repo's sanction of it is qualified accordingly.
+
+*(Step numbers in this log's earlier sections predate the renumbering and are kept as written —
+they were true at the time; rule 14 reads this file for its trail.)*
+
+**And the cadence is descriptive, not doctrine.** Ivan, on where the box came from:
+
+> I think this came from trying to enforce the CVCVCV cadence and while that is the general
+> idea it is not doctrine that it must match that. I think Adam's saying that the event model
+> is like a sine wave and i think it is really more of a fm frequency wave or a digital block
+> wave even and there could be VV+ or CC+ sequences
+
+The record supports him twice over: the cadence exploration's own renderer sweep found that
+*"all three agree that long adjacent same-type runs are present in both directions"*, and the
+cadence ruling (commit 89ac5fd) is precisely what legitimized `RecipientDirectory` — "slices
+hide between a command and its reply" was the argument that put the box on the page. This
+refines that ruling's cadence half: alternation is the carrier idea, the wave is FM or square
+rather than sine, and VV+ and CC+ runs are legal. Flows to the method repo with the cadence
+verdict when that flow-candidate ripens (`FOLLOW-UPS.md`).
 
 ---
 

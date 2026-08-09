@@ -21,8 +21,8 @@ indifferent to provenance. Steps cite every event 🟧, walked or seeded. A serv
 **rendered view** — and a view is **the dataset provided to the actor to complete its task**, the
 way a GUI takes a dataset and produces the finished page: the wire row is what the renderer
 produces from the view's fields, so every varying value on the wire line must be a field, while
-**the renderer owns the constants and the view owns the facts**. A view read only internally is
-**consulted** and has no top row; a step whose actor is outside the model has no top row either.
+**the renderer owns the constants and the view owns the facts**. A step whose actor is outside
+the model has no top row.
 A step is one table, no heading. The `Given` is a **labeled block, not a row**: the label stands
 alone and its events follow beneath it. The **Required first** block shares half that shape — the
 empty left label on content rows, the label read as a sub-header above its events — which is what
@@ -39,9 +39,9 @@ Hotspots appear only where open — see *Hotspots* at the end.
 example data. The example shown is one *selected* for display — where Dymitruk and Dilger
 typically show a single set of example data on a model, the true slice here composes **many**:
 every walk that traverses it contributes its scenarios, and a step that revisits a slice extends
-the composed slice's GWT set rather than repeating it — steps 6 and 9 were this walk's example
-until the response-to-occasion naming split them into two views (2026-08-09); the multi-recipient
-walk's repeated `RcptTo` remains the standing case.
+the composed slice's GWT set rather than repeating it — the two acknowledgment steps were this
+walk's example until the response-to-occasion naming split them into two views (2026-08-09); the
+multi-recipient walk's repeated `RcptTo` remains the standing case.
 A **path** is an instance of a composed timeline part with specific data: a specific timeline. A
 **workflow** is that composed, generic part of the model; a path of a workflow is the workflow
 with the data filled in. Three layers, three concerns: the **path** speaks protocol with real
@@ -65,8 +65,9 @@ output ever carries it, so it can never have a destination; and on a path even t
 powers is vacuous — a key exists to pick among interleaved sessions, interleaving cannot occur on
 a single timeline, and the page is already the selection. Scoping on a path is **positional**:
 everything between `ConnectionAccepted` and `SessionClosed` is the session, and `cause` enumerates
-every way that bracket closes. The two non-session `Where` rows dissolved with it — step 7's
-restated its own `Given`'s `forward_path`, and step 13's selected among a population of one.
+every way that bracket closes. The two non-session `Where` rows dissolved with it —
+`RecipientDirectory`'s restated its own `Given`'s `forward_path`, and `MessageTrace`'s selected
+among a population of one.
 `queue_id` stays, but as payload, because the protocol moves it. Where keys re-materialize is the
 slice layer, as query contracts. Rule 8, again: the value did its job by dying.
 
@@ -109,7 +110,7 @@ S: 221 foo.com Service closing transmission channel
 ```
 
 Seven server replies, each a rendered view — and one eighth output that never crosses the wire,
-written into the stored message at step 13.
+written into the stored message at step 12.
 
 ---
 
@@ -156,7 +157,7 @@ choice of code, which is scenario selection — a slice-level concern. The same 
 more sites until it closed 2026-08-09 — ruled: "Don't invent a new test — the view's own
 definition already decides it" — and all four fell with it: `DataPrompt.awaiting_content`,
 `MessageQueued.accepted`, `MessageQueued.queue_id` and `SessionClosing.cause`. The notes at
-steps 11, 14 and 16 record the grounds.*
+steps 10, 13 and 15 record the grounds.*
 
 | 🟦 C · Step 3 | `Helo` |
 |:--|:--|
@@ -225,20 +226,11 @@ this repo's first citation of it, discharged by this note. The view's own name i
 the exploration until 2026-08-09, when Ivan named it: `ReversePathAllowed` — a view names the
 server's response to its occasioning event, the pattern the walk's other rendered views already
 follow, and *allowed* claims permission to proceed, not final judgment, keeping §3.3's
-report-problems-later door open in the name itself. The naming split the slice: step 9's view
-responds to `RecipientAccepted` and its own name stays open, riding the step 8 symmetry
+report-problems-later door open in the name itself. The naming split the slice: the
+`RecipientAccepted`-occasioned view's own name stays open, riding the `RcptTo` symmetry
 ([`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md)).*
 
-| 🟩 V · Step 7 | `RecipientDirectory` &nbsp;*(consulted)* |
-|:--|:--|
-| | 🟩 **RecipientDirectory**&#10;<br>&nbsp;&nbsp;`is_local`: true |
-| Given | |
-| | 🟧 **RecipientResolved**&#10;<br>&nbsp;&nbsp;`is_local`: true&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
-
-*No top row — consulted. Nothing is drawn to any actor; `RcptTo` declares this dependency in its
-own `Given`.*
-
-| 🟦 C · Step 8 | `RcptTo` |
+| 🟦 C · Step 7 | `RcptTo` |
 |:--|:--|
 | MTA Client | ⬛ `RCPT TO:`\<Jones@foo.com> |
 | | 🟦 **RcptTo**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
@@ -248,7 +240,15 @@ own `Given`.*
 
 Traversed **once**. No `RecipientRejected` anywhere in this walk.
 
-| 🟩 V · Step 9 | `TransactionState` &nbsp;*(name open)* |
+*The directory consultation happens here, as the handler's fold — `RecipientDirectory`'s box
+dissolved 2026-08-09. No `Given` can cite a view, so a consulted view is invisible to all three
+completeness checks; its one field was a verbatim pass-through, and the three-fates discipline
+says a handler's fold gets no box. The translation boundary survives where it actually lives —
+in the seeded `RecipientResolved` this `Given` cites. In the expanded model the consultation
+returns as a processing slice
+([`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md)).*
+
+| 🟩 V · Step 8 | `TransactionState` &nbsp;*(name open)* |
 |:--|:--|
 | MTA Client | ⬛ `250` OK |
 | | 🟩 **TransactionState** |
@@ -261,9 +261,9 @@ existed only to feed the dataset
 ([`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md)). The 2026-08-09 naming
 then split the slice — step 6 is `ReversePathAllowed`; this view, the response to
 `RecipientAccepted`, keeps the incumbent name only until its own is chosen, the candidates riding
-the step 8 symmetry (`ForwardPathAllowed`, if the mirror lands).*
+the `RcptTo` symmetry (`ForwardPathAllowed`, if the mirror lands).*
 
-| 🟦 C · Step 10 | `BeginData` |
+| 🟦 C · Step 9 | `BeginData` |
 |:--|:--|
 | MTA Client | ⬛ `DATA` |
 | | 🟦 **BeginData** |
@@ -271,18 +271,18 @@ the step 8 symmetry (`ForwardPathAllowed`, if the mirror lands).*
 | Given | |
 | | 🟧 **ReversePathDeclared**&#10;<br>🟧 **RecipientAccepted** |
 
-| 🟩 V · Step 11 | `DataPrompt` |
+| 🟩 V · Step 10 | `DataPrompt` |
 |:--|:--|
 | MTA Client | ⬛ `354` Start mail input; end with `<CRLF>.<CRLF>` |
 | | 🟩 **DataPrompt** |
 | Given | |
 | | 🟧 **DataPhaseEntered** |
 
-*Emptied under the step 16 ruling — `awaiting_content` was a constant-true boolean on
+*Emptied under the step 15 ruling — `awaiting_content` was a constant-true boolean on
 `accepting`'s footing; the `354` renders from `DataPhaseEntered`'s existence, as the backward
 table has said since the collapse.*
 
-| 🟦 C · Step 12 | `SubmitContent` |
+| 🟦 C · Step 11 | `SubmitContent` |
 |:--|:--|
 | MTA Client | ⬛ `Date:` Tue, 19 May 1998 09:14:02 -0700&#10;<br>`From:` Smith \<Smith@bar.com>&#10;<br>`To:` Jones@foo.com&#10;<br>`Subject:` Tuesday&#10;<br>(blank)&#10;<br>Blah blah blah...&#10;<br>`.` |
 | | 🟦 **SubmitContent**&#10;<br>&nbsp;&nbsp;`content`: 126 octets, dot-unstuffed |
@@ -304,7 +304,7 @@ lines above, each CRLF-terminated, terminating dot line excluded, total **126** 
 dot-unstuffing is a no-op here, since no line begins with a dot. Rule 8's point in miniature: a
 value posing as real data hid in the one field the walk itself declares derived from `content`.
 
-| 🟩 V · Step 13 | `MessageTrace` &nbsp;🟥 **H6** |
+| 🟩 V · Step 12 | `MessageTrace` &nbsp;🟥 **H6** |
 |:--|:--|
 | Stored message | `Received: from` bar.com ([203.0.113.20])&#10;<br>&nbsp;&nbsp;`by` foo.com `with` SMTP&#10;<br>&nbsp;&nbsp;`id` f2C8D14&#10;<br>&nbsp;&nbsp;`for` \<Jones@foo.com>;&#10;<br>&nbsp;&nbsp;Tue, 19 May 1998 09:14:07 -0700 |
 | | 🟩 **MessageTrace**&#10;<br>&nbsp;&nbsp;`from_domain`: bar.com&#10;<br>&nbsp;&nbsp;`address_literal`: 203.0.113.20&#10;<br>&nbsp;&nbsp;`by`: foo.com&#10;<br>&nbsp;&nbsp;`id`: f2C8D14&#10;<br>&nbsp;&nbsp;`for`: \<Jones@foo.com>&#10;<br>&nbsp;&nbsp;`at`: 1998-05-19T09:14:07-07:00 |
@@ -317,19 +317,19 @@ four walked events and a seeded one, each field a value the header renders. **�
 (the config arm); on the multi-homed arm it would render from `ConnectionAccepted.local_address`
 instead — one of that field's two candidate consumers; H6 under *Hotspots* names both.
 
-| 🟩 V · Step 14 | `MessageQueued` |
+| 🟩 V · Step 13 | `MessageQueued` |
 |:--|:--|
 | MTA Client | ⬛ `250` OK |
 | | 🟩 **MessageQueued** |
 | Given | |
 | | 🟧 **MessageAccepted** |
 
-*Emptied under the step 16 ruling. `accepted` was a constant-true boolean on `accepting`'s own
+*Emptied under the step 15 ruling. `accepted` was a constant-true boolean on `accepting`'s own
 footing. `queue_id` needed the ruling: it is no constant, but the `250` OK's task — telling the
 client the handoff occurred — consumes no id, and position suffices for which message (at most
 one transaction per session, H4). The constitutive weight §2.1 gives this reply lives in its
 issuance, which is the renderer's territory, not the dataset's. The value keeps its origin and
-its step 13 destination, so nothing orphans. One product option recorded, not held for: real
+its step 12 destination, so nothing orphans. One product option recorded, not held for: real
 MTAs often echo the id in the reply text — `250` Ok: queued as F2C8D14 — and reply text is
 operator territory like `greeting_text`, so if FnEmail ever chooses that text the field
 re-enters with a real consumer, exactly as `protocol` re-enters under `EHLO`.*
@@ -350,7 +350,7 @@ failure case is concrete: the server writes `MessageAccepted` and crashes before
 leaves; under §2.1 no handoff occurred and the client legitimately retries, while the old
 placement had this server owning a message the client still owned. Corrected 2026-08-08.
 
-| 🟦 C · Step 15 | `Quit` |
+| 🟦 C · Step 14 | `Quit` |
 |:--|:--|
 | MTA Client | ⬛ `QUIT` |
 | | 🟦 **Quit** |
@@ -358,7 +358,7 @@ placement had this server owning a message the client still owned. Corrected 202
 | Given | |
 | | 🟧 **ConnectionAccepted** |
 
-| 🟩 V · Step 16 | `SessionClosing` &nbsp;🟥 **H8** |
+| 🟩 V · Step 15 | `SessionClosing` &nbsp;🟥 **H8** |
 |:--|:--|
 | MTA Client | ⬛ `221` foo.com Service closing transmission channel |
 | | 🟩 **SessionClosing**&#10;<br>&nbsp;&nbsp;`server_domain`: foo.com |
@@ -380,19 +380,20 @@ Every reply is 2xx or 3xx. No error branch is taken anywhere.
 
 ## Accounting
 
-**16 steps over 16 distinct views and commands** — none traversed twice since the steps 6/9
-split: they were one view (`TransactionState`) until the response-to-occasion naming made them
-two. Two seeded events, never walked.
+**15 steps over 15 distinct views and commands** — none traversed twice since the acknowledgment
+split: the two `250`-after-envelope steps were one view (`TransactionState`) until the
+response-to-occasion naming made them two. `RecipientDirectory` dissolved 2026-08-09 — the
+consultation is the handler's fold. Two seeded events, never walked.
 
 | | Original walk | This walk |
 |:--|:--|:--|
-| Steps | 10 | **16** |
+| Steps | 10 | **15** |
 | Command steps | 7 | 7 |
-| View steps | 3 | **9** |
+| View steps | 3 | **8** |
 | Replies shown as wire text inside a command | 7 | **0** |
 | Outputs with a step behind them | 0 of 8 | **8 of 8** |
 | Events seeded by the preamble | — | 2 |
-| Model slices touched (of 12) | 10 | **9** — `Reset`, `SessionTranscript`, and now `SessionState`: no `Given` here ever consults it |
+| Model slices touched (of 12) | 10 | **8** — `Reset`, `SessionTranscript`, `SessionState` (no `Given` here ever consults it), and now `RecipientDirectory` (dissolved 2026-08-09 — the consultation is the handler's fold) |
 | Slices this path defines beyond the model | 0 | 6 views + 2 seeded events |
 
 ---
@@ -406,11 +407,11 @@ two. Two seeded events, never walked.
 | `220` foo.com Simple Mail Transfer Service Ready | `ServiceReady` (step 2) | `ServiceConfigured.server_domain`, `.greeting_text` — both carried by the view; the `220` code itself is this scenario's rendering |
 | `250` foo.com | `SessionReady` (step 4) | `ServiceConfigured.server_domain`, carried by the view; the `250` code is this scenario's rendering |
 | `250` OK | `ReversePathAllowed` (step 6) | `ReversePathDeclared`'s existence |
-| `250` OK | `TransactionState` (step 9) | `RecipientAccepted`'s existence |
-| `354` prompt | `DataPrompt` (step 11) | `DataPhaseEntered`'s existence |
-| `Received:` trace line | `MessageTrace` (step 13) | four walked events and the seeded `server_domain` — see the step |
-| `250` OK | `MessageQueued` (step 14) | `MessageAccepted`'s existence |
-| `221` foo.com Service closing transmission channel | `SessionClosing` (step 16) | `ServiceConfigured.server_domain`, carried by the view; `SessionClosed`'s existence |
+| `250` OK | `TransactionState` (step 8) | `RecipientAccepted`'s existence |
+| `354` prompt | `DataPrompt` (step 10) | `DataPhaseEntered`'s existence |
+| `Received:` trace line | `MessageTrace` (step 12) | four walked events and the seeded `server_domain` — see the step |
+| `250` OK | `MessageQueued` (step 13) | `MessageAccepted`'s existence |
+| `221` foo.com Service closing transmission channel | `SessionClosing` (step 15) | `ServiceConfigured.server_domain`, carried by the view; `SessionClosed`'s existence |
 
 **Every varying output value has an origin on the page** — in the original walk, zero of these
 eight had a step behind them. The reply texts that carry no field — the two `250`s' OK, the
@@ -445,7 +446,7 @@ scope.
 | | `received_at` | the receiver's clock — a boundary fact, like the transport's addresses |
 | `SessionClosed` | `cause`: quit | the arriving verb — `cause` records which way the session bracket closed |
 
-Every emitted value has an origin on the page. The check's first run is what seated step 12's
+Every emitted value has an origin on the page. The check's first run is what seated step 11's
 `Given`: before it, `reverse_path` and `recipients` materialized from a `Given` citing only the
 payload-free `DataPhaseEntered`.
 
@@ -453,21 +454,21 @@ payload-free `DataPhaseEntered`.
 
 | Event | Consumed at |
 |:--|:--|
-| `ServiceConfigured` *(seeded)* | steps 2, 4, 13, 16 (`server_domain`; step 2 also `greeting_text`) |
-| `RecipientResolved` *(seeded)* | steps 7, 8 (`is_local`, `forward_path`) |
-| `ConnectionAccepted` | steps 2, 3, 15 (existence); step 13 (`peer_address`) — `local_address` has **no consumer**, 🟥 H6 |
-| `ClientIdentified` | steps 4, 5 (existence); step 13 (`claimed_domain`) |
-| `ReversePathDeclared` | steps 6, 8, 10 (existence); step 12 (`reverse_path`) |
-| `RecipientAccepted` | steps 9, 10 (existence); steps 12, 13 (`forward_path`) |
-| `DataPhaseEntered` | steps 11, 12 |
-| `MessageAccepted` | step 13 (`queue_id`, `received_at`); step 14 (existence) — `reverse_path`, `recipients`, `content_ref`, `actual_octets` are consumed by delivery, right of the responsibility boundary, out of scope |
-| `SessionClosed` | step 16 (existence) — `cause` has **no consumer on this walk**, 🟥 H8 |
+| `ServiceConfigured` *(seeded)* | steps 2, 4, 12, 15 (`server_domain`; step 2 also `greeting_text`) |
+| `RecipientResolved` *(seeded)* | step 7 (`is_local`, `forward_path`) |
+| `ConnectionAccepted` | steps 2, 3, 14 (existence); step 12 (`peer_address`) — `local_address` has **no consumer**, 🟥 H6 |
+| `ClientIdentified` | steps 4, 5 (existence); step 12 (`claimed_domain`) |
+| `ReversePathDeclared` | steps 6, 7, 9 (existence); step 11 (`reverse_path`) |
+| `RecipientAccepted` | steps 8, 9 (existence); steps 11, 12 (`forward_path`) |
+| `DataPhaseEntered` | steps 10, 11 |
+| `MessageAccepted` | step 12 (`queue_id`, `received_at`); step 13 (existence) — `reverse_path`, `recipients`, `content_ref`, `actual_octets` are consumed by delivery, right of the responsibility boundary, out of scope |
+| `SessionClosed` | step 15 (existence) — `cause` has **no consumer on this walk**, 🟥 H8 |
 
 Every event has at least one consumer inside the walk. Two fields are unconsumed, each flagged
 where it bites: `ConnectionAccepted.local_address` (🟥 H6) and `SessionClosed.cause` (🟥 H8) —
 the second is the cascade ruling's accepted cost, its consumers waiting on the closure branches.
 The steps 6/9 collapse had briefly made `ReversePathDeclared.reverse_path` another: its
-consumer-in-fact was step 12's emitted `MessageAccepted.reverse_path`, which no `Given` declared.
+consumer-in-fact was step 11's emitted `MessageAccepted.reverse_path`, which no `Given` declared.
 The payload check seated that `Given` — the check working, not the finding patched — and the arc
 is recorded in [`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md).
 
@@ -500,8 +501,8 @@ ruling that removed `protocol` (commit 2673b1b, recorded at step 3) made it a re
 - The preamble replaces two silences: configuration that nothing declared, and a translation the
   original marked yellow mid-walk. Both are seeded events now, cited 🟧 where consumed.
 - `Given` rows are minimal and carry fields exactly where a value, not just existence, is used —
-  steps 2, 4, 7, 8, 12, 13 and 16; existence alone suffices at steps 3, 5, 6, 9, 10, 11, 14
-  and 15.
+  steps 2, 4, 7, 11, 12 and 15; existence alone suffices at steps 3, 5, 6, 8, 9, 10, 13
+  and 14.
 - The `Where` rows and their session key lived and died inside this file's own history:
   instantiated as a real ULID on 2026-08-07, removed on 2026-08-08 once instantiation exposed
   them as slice-level apparatus — the block under *The layering* records the arc. The
@@ -518,7 +519,7 @@ ruling that removed `protocol` (commit 2673b1b, recorded at step 3) made it a re
 
 1. **Completeness closes in three checks on one page.** Backward: eight outputs, every varying
    value with an origin. Payloads: every emitted value with an origin — the check added
-   2026-08-08, after two sessions independently caught step 12 emitting values from nowhere.
+   2026-08-08, after two sessions independently caught step 11 emitting values from nowhere.
    Forward: every event consumed, one field flagged. None of the three was checkable inside the
    original form.
 2. **The preamble carries a whole path.** Two seeded events satisfy every `Given` no walked step
@@ -544,9 +545,9 @@ its residue is H7's decision — the two close together, so H5 carries no entry 
 The six path-defined views and two seeded events carry no markers, because *paths are the source*
 — they are this path's contribution, not doubts about it.
 
-**🟥 H6 — open, and it bites at step 13.** Is `Received:`'s `BY` sourced from configuration or
+**🟥 H6 — open, and it bites at step 12.** Is `Received:`'s `BY` sourced from configuration or
 from `local_address`? This walk renders the config arm. `local_address` has two candidate
-consumers — the multi-homed `BY` arm at step 13, and the nameless-server greeting, since the `220`
+consumers — the multi-homed `BY` arm at step 12, and the nameless-server greeting, since the `220`
 identity slot admits an address literal (§4.2). This walk exercises neither, so the field stays
 its one unconsumed value.
 
@@ -560,14 +561,14 @@ pages. What the walk hands the ruling:
    from `ConnectionAccepted` to `SessionClosed`), and the message (`queue_id`, payload born at
    `MessageAccepted` — the only identity that outlives the session).
 2. **No transaction identifier exists anywhere in the model.** At most one transaction is open
-   per session, so position suffices even across steps 6 and 9, one view until the naming split;
+   per session, so position suffices even across steps 6 and 8, one view until the naming split;
    per-transaction streams would mint an id no step consumes.
 3. **§4.3.1 serializes each session.** *"Unless other arrangements are negotiated through
    service extensions, the sender MUST wait for this response before sending further commands"*
    — and for the greeting, the walk's own step 2, the sender only *"SHOULD wait"*. This charter
    negotiates no extensions, so inside one session there is never write contention, and
    stream-splitting buys no concurrency inbound.
-4. **The responsibility boundary is the natural stream boundary**: step 13 is the walk's only
+4. **The responsibility boundary is the natural stream boundary**: step 12 is the walk's only
    message-scoped element, and delivery must read the message long after the connection is gone.
 
 ⚠️ **Evidence item 3 originally read "the client MUST wait for every reply."** That overreached
@@ -602,7 +603,7 @@ scope while `queue_id` supersedes it beyond. Something to deal with at a higher 
 records it.
 
 **🟥 H8 — open, and the cascade ruling sharpened it.** Registered in the model from
-`model-altitude.md` Q6 — does `SessionClosed` earn its place? The event is consumed: step 16
+`model-altitude.md` Q6 — does `SessionClosed` earn its place? The event is consumed: step 15
 folds its existence for the `221`. But `cause` now has no consumer on this walk — the 2026-08-09
 ruling removed it from `SessionClosing`'s dataset, and its consumers-in-waiting are the closure
 branches this walk does not take, the `421` shutdown and the timeout close, where `cause` selects

@@ -29,7 +29,8 @@ by intent, so extensions can be measured against it.
 >   (`paths/EXPLORE-rewalk-cadence.md`, *two shapes, neither chosen*; commit 6ed62cf).
 > - The metadata ruling — the walk passed the correlation-scheme question upward; see the ⚠️
 >   under *Metadata*.
-> - `SessionState`'s fate — pending the consulted-view question; see the slice's ⚠️.
+> - `SessionState`'s fate — the consulted-view question resolved 2026-08-09 against boxes;
+>   dissolution follows in its own pass; see the slice's ⚠️.
 > - The scenario-form questions — the view-`When` form and its missing key
 >   ([`paths/EXPLORE-view-slice.md`](paths/EXPLORE-view-slice.md)).
 > - H8's resolution — registered under *Hotspots*; the cascade ruling left `cause` flagged
@@ -223,11 +224,12 @@ Post      SessionState{identified: bool, transaction_open: bool}
 Placed here because `MailFrom`'s `Pre` consumes it (`Reset`'s does too, below) — not next to its
 sources.
 
-⚠️ **Survival flagged, not ruled.** No `Given` in the v2 walk ever consults this view, and its
-rendering role went to the path-defined `SessionReady{server_domain}` (commit cf3227d) — which
-weakens even the consumers named above. Whether the slice survives, and how any command `Pre`
-consults a view at all, is the open consulted-view question; nothing here is deleted until it
-rules.
+⚠️ **Survival flagged, not ruled — and the question that gated it has since ruled.** No `Given`
+in the v2 walk ever consults this view, and its rendering role went to the path-defined
+`SessionReady{server_domain}` (commit cf3227d). The consulted-view question resolved 2026-08-09:
+a consulted box is the handler's fold, and the walk's `RecipientDirectory` dissolved under it.
+`SessionState`'s dissolution follows the same logic; recorded here, executed in its own pass,
+not silently.
 
 ### `MailFrom` — C
 
@@ -245,19 +247,19 @@ The event names the client's declaration, not our state change — candidates sc
 [`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-status.md), which stays
 the citation for what that exploration still leaves open.
 
-### `RecipientDirectory` — V  *(translation boundary — H3 resolved)*
+### `RecipientDirectory` — *(dissolved 2026-08-09; translation boundary — H3 resolved)*
 
-```
-Sources   RecipientResolved, translated from the Directory context (deferred)
-Answers   Is this address a local mailbox?
-Post      RecipientDirectory{is_local: bool}
-```
-**No longer a hole.** H3 asked whether Directory has its own charter. It does — see *H3 resolved*
-below — so this is an ordinary **Translation** boundary: the Directory context's events arrive as
-external (yellow), are translated into our vocabulary, and this read model projects from the
-translated event — the walk seeds it as `RecipientResolved{is_local, forward_path}` — rather than
-from foreign ones directly. The event's name is walked fact; how a consulted view is read by a
-command's `Pre` stays open (the consulted-view question).
+⚠️ **The box dissolved; the boundary stands.** The walk removed its `RecipientDirectory` step
+under the consulted-view ruling: no `Given` can cite a view, so a consulted box is invisible to
+all three completeness checks; its one field was a verbatim pass-through of the seeded event;
+and the three-fates discipline says a handler's fold gets no box — *"a processor fetches it and
+puts it on the command as a parameter"*. What H3 resolved is untouched: the Directory context's
+events arrive as external (yellow), are translated into our vocabulary as
+`RecipientResolved{is_local, forward_path}`, and `RcptTo`'s handler folds that event directly —
+its `Given` already cited it. In the expanded model the consultation returns as a processing
+slice between `RcptTo` and its decision events
+([`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-status.md), *The
+consulted box dissolves*).
 
 The translation slice itself is deferred with the Directory model. What is *not* deferred is that
 the boundary is now typed and orthodox rather than unexplained.
@@ -269,7 +271,7 @@ Under G1 nothing varies and nothing consumes the variation.
 
 ```
 Pre    ReversePathDeclared exists for this session
-       RecipientDirectory available
+       RecipientResolved exists for this forward-path (translated — see the boundary above)
 Post   RecipientAccepted{forward_path}
        OR  RecipientRejected{forward_path, reply_code, reason}
 ```
@@ -293,7 +295,7 @@ empty here is not empty forever — §3.3's 550/553 branch seats whatever select
 at the slice layer. The refusal shape is open: scenario selection (`ServiceReady`'s ruled shape)
 or a `ReversePathRefused` event pair (`RcptTo`'s shape); the rejection walk decides.
 
-### `TransactionState` — V *(step 9's view; name open)*
+### `TransactionState` — V *(the `RecipientAccepted`-occasioned view; name open)*
 
 ```
 Sources   RecipientAccepted
@@ -319,7 +321,8 @@ The *command* is sound — it makes a real decision. The *event* is used: the wa
 consumers — `DataPrompt` folds it to render the `354`, and `SubmitContent` declares it as
 `Given`. What H1 still holds open is the event's name — see *Hotspots*. The event-existence form
 of this `Pre` is safe under the `TransactionState` collapse (commit cd06274); how a `Pre` may
-cite a *view* at all is the open consulted-view question, not exercised here.
+cite a *view* at all resolved 2026-08-09 — it may not; a consulted view is the handler's fold —
+so the event-existence form here is the correct one, not merely the safe one.
 
 ### `SubmitContent` — C
 
@@ -676,7 +679,7 @@ the operator — after `521` the server **MAY** keep replying `521` or **MAY** j
 connection. A normative frame with an operator choice inside it.
 
 **H8 — Does `SessionClosed` earn its place?** Registered from `model-altitude.md` Q6, where it
-was proposed. The event is consumed — step 16 folds its existence for the `221` — but the
+was proposed. The event is consumed — `SessionClosing` folds its existence for the `221` — but the
 cascade ruling of 2026-08-09 removed `cause` from `SessionClosing`'s dataset, so the field is
 now flagged unconsumed on the direct walk. Its consumers-in-waiting are the closure branches no
 walk has taken: the `421` shutdown and the timeout close, where `cause` selects which closure
