@@ -236,6 +236,11 @@ Pre    SessionState.identified = true
 Post   ReversePathDeclared{reverse_path}
        OR  reply 503 (no HELO) / 550 (sender rejected)
 ```
+⚠️ *The 550 arm is reply-without-event — the shape the `AcceptConnection` correction removed.
+Whether refusal here is scenario selection (`ServiceReady`'s ruled shape) or a
+`ReversePathRefused` decision event with its own responding view (`RcptTo`'s shape, and the
+expanded-model reading recorded 2026-08-09) is open; the rejection walk decides with real data.*
+
 The event names the client's declaration, not our state change — candidates screened in
 [`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-status.md), which stays
 the citation for what that exploration still leaves open.
@@ -273,21 +278,34 @@ Walked once per recipient. The same slice, not N slices.
 `is_local` **removed** from `RecipientAccepted`. In this scope an accepted recipient is necessarily
 local — relay is deferred — so the field is constant-true. A constant is a rule, not a fact.
 
-### `TransactionState` — V
+### `ReversePathAllowed` — V
 
 ```
-Sources   ReversePathDeclared, RecipientAccepted, TransactionAborted
-Answers   Did the occasioning event happen?
+Sources   ReversePathDeclared
+Answers   was the declaration allowed to proceed?
+Post      renders the 250 from the occasioning event's existence; no dataset
+```
+Named 2026-08-09 by the response-to-occasion principle — a view names the server's response to
+its occasioning event, the pattern every other rendered view already followed — and *allowed*
+claims permission to proceed, not final judgment, keeping §3.3's report-problems-later door
+open. The dataset is empty by ruling, not by omission (commits cd06274 and the cascade ruling);
+empty here is not empty forever — §3.3's 550/553 branch seats whatever selects the reply code
+at the slice layer. The refusal shape is open: scenario selection (`ServiceReady`'s ruled shape)
+or a `ReversePathRefused` event pair (`RcptTo`'s shape); the rejection walk decides.
+
+### `TransactionState` — V *(step 9's view; name open)*
+
+```
+Sources   RecipientAccepted
+Answers   did the occasioning event happen?
 Post      renders the 250 from the cited event's existence; no dataset
 ```
-The dataset is empty by ruling, not by omission: `open` and `reverse_path` restated the `Given`,
-and `recipient_count` encoded position as data (commit cd06274). Empty here is not empty forever
-— §3.3 gives both occasions a 550/553 branch, and the rejection walk seats whatever selects the
-reply code at the slice layer.
-
-⚠️ **The view's own name is open**: `TransactionState` describes state it no longer carries
-([`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-status.md), *Open, and
-deliberately not decided here*). Flagged, not renamed.
+The 2026-08-09 naming split what was one view traversed twice: the `MailFrom`-step half became
+`ReversePathAllowed`, and this half — the response to `RecipientAccepted` — keeps the incumbent
+name only until its own is chosen, riding the step 8 symmetry (`ForwardPathAllowed`, if the
+mirror lands). `TransactionAborted`, formerly among the sources, is unassigned post-split — it
+belongs with the `Reset` walk (D.2) when that runs
+([`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-status.md)).
 
 ### `BeginData` — C 🔴 **H1**
 

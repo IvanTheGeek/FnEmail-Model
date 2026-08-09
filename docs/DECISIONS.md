@@ -56,6 +56,7 @@ is in the ruling commits, one per repo, titled so that
 | **Golden path deliberately unassigned** — *happy* is descriptive, *golden* is a designation | `paths/helo-multi-recipient.md` |
 | **One event per command** is a design target, stronger than the corpus's "keep an eye on it" | `diagrams/README.md` §1 |
 | **ReversePathDeclared names the step 5 event** — the declaration reading replaced `MailTransactionStarted`'s status-log reading; the companion ruling *Position replaces state at steps 6 and 9* emptied `TransactionState`'s dataset (commits d19f91d, cd06274) | `paths/EXPLORE-declaration-vs-status.md` |
+| **ReversePathAllowed names the step 6 view** — a view names the server's response to its occasioning event, the pattern the other rendered views already followed; the naming split the slice, leaving the step 9 view's name open on the step 8 symmetry (2026-08-09) | `paths/EXPLORE-declaration-vs-status.md` |
 
 ## Method decisions
 

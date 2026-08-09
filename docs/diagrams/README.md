@@ -4,8 +4,9 @@ Renderings of `../event-model.md` v0.3, as **markdown tables**. They render on G
 and in the Android app. Sections 4–6 were reconciled 2026-08-08 to the walked timeline of
 [`WORKING-helo-direct-single-recipient-v2.md`](../paths/WORKING-helo-direct-single-recipient-v2.md),
 on the owner's waiver of the rule-13 hold. What stays open is flagged where it sits: the
-consulted-view reading at `RecipientDirectory` and the open names (`DataPhaseEntered`,
-`TransactionState`). The dataset cascade closed 2026-08-09; §6 reflects the emptied views.
+consulted-view reading at `RecipientDirectory` and the open names (`DataPhaseEntered`, and the
+step 9 view — step 6 was named `ReversePathAllowed` 2026-08-09). The dataset cascade closed
+2026-08-09; §6 reflects the emptied views.
 
 **Colors** — 🟧 Event · 🟦 Command · 🟩 Read Model · ⬜ rendered UI (Screen) · ⬛ wire ·
 🟨 external / required-first · 🟥 hotspot · 🟤 nothing, only ever in a `Given`.
@@ -192,21 +193,22 @@ greeting, and the walk exercises neither; no arm is picked here.
 (H3 resolved), so its source is outside this model — shown 🟨 **yellow**: the seeded
 `RecipientResolved`.
 
-| | **MailFrom** | **TransactionState** | **RecipientDirectory** | **RcptTo** |
+| | **MailFrom** | **ReversePathAllowed** | **RecipientDirectory** | **RcptTo** |
 |:--|:--|:--|:--|:--|
 | ⬜ **Actor** | `MAIL FROM` | ⬛ `250` OK | *consulted — no top row on the walk; form pending* | `RCPT TO` |
-| **Cmd / View** | 🟦 **MailFrom** | 🟩 **TransactionState** | 🟩 **RecipientDirectory**&#10;<br>`is_local` | 🟦 **RcptTo** |
+| **Cmd / View** | 🟦 **MailFrom** | 🟩 **ReversePathAllowed** | 🟩 **RecipientDirectory**&#10;<br>`is_local` | 🟦 **RcptTo** |
 | **Event** | 🟧 **ReversePathDeclared**&#10;<br>`reverse_path` | — | 🟨 **RecipientResolved**&#10;<br>translated — external | 🟧 **RecipientAccepted**&#10;<br>🟧 **RecipientRejected** `550` |
 
 The 🟨 **yellow** cell is what distinguishes Translation from Automation — the source event belongs
 to another context.
 
-`TransactionState` renders each `250` OK from event existence alone: its dataset was emptied on
-the walked path (commit cd06274), and the walk traverses it a second time after `RcptTo`, the two
-traversals distinguished by which event occasioned them. The second traversal is not drawn as a
-second column — slice-layer aggregation across walks is model work still to land. The view's
-future name and any replacement dataset are open in
-[`EXPLORE-declaration-vs-status.md`](../paths/EXPLORE-declaration-vs-status.md).
+`ReversePathAllowed` renders its `250` OK from event existence alone: the dataset was emptied on
+the walked path (commit cd06274), and the 2026-08-09 naming — a view names the server's response
+to its occasioning event — split what was one view traversed twice. The walk's second
+acknowledgment, after `RcptTo`, is now its own view (occasioned by `RecipientAccepted`), its
+name still open and riding the step 8 symmetry
+([`EXPLORE-declaration-vs-status.md`](../paths/EXPLORE-declaration-vs-status.md)); it is not
+drawn as a second column here until named.
 
 `RecipientDirectory` is *consulted*: on the walk nothing is drawn to any actor, and `RcptTo`
 declares the dependency in its own `Given`. How a consulted view is read on a path is an open

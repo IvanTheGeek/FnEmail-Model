@@ -3,9 +3,10 @@
 **Open, with the step 5 package adopted.** On 2026-08-08 Ivan adopted the rename and the
 steps 6/9 collapse; the walk carries both. The adopting commits are titled
 *ReversePathDeclared names the step 5 event* and
-*Position replaces state at steps 6 and 9*. Still open: `DataPhaseEntered`'s name (H1), the
-acknowledgment view's name, the step 8 symmetry, the third-category question, the
-command-naming rule. The dataset cascade the collapse spawned closed 2026-08-09 — ruled: "Don't
+*Position replaces state at steps 6 and 9*. On 2026-08-09 the step 6 view was named
+`ReversePathAllowed`, splitting the slice (see *Second pass* under the view-name screen). Still
+open: `DataPhaseEntered`'s name (H1), the step 9 view's name, the step 8 symmetry, the
+refusal-shape fork, the third-category question, the command-naming rule. The dataset cascade the collapse spawned closed 2026-08-09 — ruled: "Don't
 invent a new test — the view's own definition already decides it"; the walk's steps 11, 14 and
 16 notes carry the grounds. Started 2026-08-08 on branch
 `explore/declaration-vs-status`, during the step-by-step walk-through of
@@ -278,8 +279,58 @@ branch, so precedented. **`EnvelopeAcknowledged`** discriminates by what is ackn
 two occasions are exactly the two envelope-building commands, §2.3.1's own vocabulary — at the
 cost of breaking the Ready progression and minting a register no other element uses.
 
-Ivan deferred the choice 2026-08-09: candidates recorded, none adopted, the incumbent stands.
-The header's open list keeps the item.
+Ivan deferred the choice 2026-08-09: candidates recorded, none adopted, the incumbent stands —
+until the second pass, below, the same day.
+
+#### Second pass — the view responds to its occasion, and the pick
+
+Ivan's argument, quoted from the working conversation:
+
+> i would argue that THIS View is a required response to the "ReversePathDeclared" so while the
+> rendered wireline reply is fixed, the View name should be something that is in response to the
+> event trigger of "ReversePathDeclared"
+
+and, on the expanded model:
+
+> later when building out our server there could be any number of processing slices that takes
+> ReversePathDeclared and the value of reverse_path: \<Smith@bar.com> could be processed and
+> decided that this server is NOT going to accept the mail from that path (address) and hence
+> might NOT be based on ReversePathDeclared event but rather MailFromReversePathRefused
+
+Checked against the walk, the principle turned out to be the unwritten rule six of the seven
+rendered views already follow — each names the server's response to its occasioning event:
+`ServiceReady` ← `ConnectionAccepted`, `SessionReady` ← `ClientIdentified` (step 4's note calls
+it "the occasion"), `DataPrompt` ← `DataPhaseEntered`, `MessageQueued` ← `MessageAccepted`,
+`SessionClosing` ← `SessionClosed`. `TransactionState` was the odd one out, named for state
+instead of response.
+
+The name itself was trimmed from `MailFromReversePathAllowed`: the command prefix is redundant —
+the reverse path arrives by exactly one command, and verbs name commands. *Allowed* beats the
+earlier screen's *Accepted* on the wrinkle that killed *Accepted* twice: §3.3's `250` is
+provisional, and *allowed to proceed* claims permission, not final judgment — the
+report-problems-later door stays open in the name. **Adopted for step 6: `ReversePathAllowed`.**
+
+The consequence, accepted with it: **the slice splits.** Step 9's view responds to
+`RecipientAccepted` and needs its own name — open, riding the step 8 symmetry
+(`ForwardPathAllowed`, if the mirror lands). The walk's accounting becomes 16 steps over 16;
+"traversed twice" dissolved with the split.
+
+Recorded open, not settled, from the same pass:
+
+- **The refusal-shape fork.** The model is mixed on how refusals live: `ServiceReady` handles
+  its `554` as scenario selection — one view, two codes, the step 2 ruling — while `RcptTo` has
+  an event pair (`RecipientAccepted` / `RecipientRejected{forward_path, reply_code, reason}`).
+  Ivan's expanded model puts MAIL on the RCPT side: `ReversePathRefused` as a decision event
+  with its own responding view. The consumer test decides per slice, with real data, on the
+  rejection walk. Pressure toward the event side already exists: the `MailFrom` contract's
+  refusal arm is reply-without-event — the shape the `AcceptConnection` correction removed.
+- **Two kinds of view, and SMTP's fusion.** Ivan's second observation: one kind feeds the actor
+  in the same slice (the rendered replies), one feeds the actor in the *next* command slice.
+  Kind two is the method's canonical read-model position — event → read model → next command.
+  In SMTP, §4.3.1's lockstep fuses the kinds: the reply *is* the remote actor's screen for the
+  next command, which is what the model's old command-screen drawings drew. The unfused case —
+  kind two with an internal actor — is `RecipientDirectory`, the open consulted-view question
+  at step 7, arrived at from a new direction.
 
 ---
 

@@ -139,8 +139,9 @@ Charter per §2.1. Consumers available in this model: the `Received:` header (§
 the `MessageTrace` view, the rendered reply views, and the queue handoff at `MessageAccepted`.
 ⚠️ Two former entries are flagged rather than restated: no `Given` on the v2 walk consults
 `SessionState` (its rendering role became `SessionReady{server_domain}`, commit cf3227d), and
-`TransactionState`'s dataset was emptied on the walked path (commit cd06274) — its future name,
-and the dataset cascade generally, stay open in `docs/paths/EXPLORE-declaration-vs-status.md`.
+`TransactionState`'s dataset was emptied on the walked path (commit cd06274), and the 2026-08-09
+naming split it: `ReversePathAllowed` at the `MailFrom` step, with the `RecipientAccepted`-
+occasioned view's name still open — tracked in `docs/paths/EXPLORE-declaration-vs-status.md`.
 
 | Event | Tier | Decided by | Survives implementation swap? |
 |---|---|---|---|

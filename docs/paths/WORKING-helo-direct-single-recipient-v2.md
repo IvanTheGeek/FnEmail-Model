@@ -38,8 +38,10 @@ Hotspots appear only where open — see *Hotspots* at the end.
 **The layering — ruled by Ivan, 2026-08-08.** A **step** is an instance of a slice, carrying
 example data. The example shown is one *selected* for display — where Dymitruk and Dilger
 typically show a single set of example data on a model, the true slice here composes **many**:
-every walk that traverses it contributes its scenarios, and a step that revisits a slice —
-`TransactionState`, steps 6 and 9 — extends the composed slice's GWT set rather than repeating it.
+every walk that traverses it contributes its scenarios, and a step that revisits a slice extends
+the composed slice's GWT set rather than repeating it — steps 6 and 9 were this walk's example
+until the response-to-occasion naming split them into two views (2026-08-09); the multi-recipient
+walk's repeated `RcptTo` remains the standing case.
 A **path** is an instance of a composed timeline part with specific data: a specific timeline. A
 **workflow** is that composed, generic part of the model; a path of a workflow is the workflow
 with the data filled in. Three layers, three concerns: the **path** speaks protocol with real
@@ -204,10 +206,10 @@ candidates were screened in [`EXPLORE-declaration-vs-status.md`](EXPLORE-declara
 holds (rule 13). The old name's register, `MailTransactionStarted`, is §3.3's own; where that
 altitude belongs is part of what the exploration leaves open.*
 
-| 🟩 V · Step 6 | `TransactionState` |
+| 🟩 V · Step 6 | `ReversePathAllowed` |
 |:--|:--|
 | MTA Client | ⬛ `250` OK |
-| | 🟩 **TransactionState** |
+| | 🟩 **ReversePathAllowed** |
 | Given | |
 | | 🟧 **ReversePathDeclared** |
 
@@ -220,7 +222,12 @@ The method repo parked exactly this question here — "whose dataset is empty, a
 with the walk's step 6" —
 [`state-view-todo-list-decision-model.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/state-view-todo-list-decision-model.md),
 this repo's first citation of it, discharged by this note. The view's own name is still open in
-the exploration: `TransactionState` describes state it no longer carries.*
+the exploration until 2026-08-09, when Ivan named it: `ReversePathAllowed` — a view names the
+server's response to its occasioning event, the pattern the walk's other rendered views already
+follow, and *allowed* claims permission to proceed, not final judgment, keeping §3.3's
+report-problems-later door open in the name itself. The naming split the slice: step 9's view
+responds to `RecipientAccepted` and its own name stays open, riding the step 8 symmetry
+([`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md)).*
 
 | 🟩 V · Step 7 | `RecipientDirectory` &nbsp;*(consulted)* |
 |:--|:--|
@@ -241,7 +248,7 @@ own `Given`.*
 
 Traversed **once**. No `RecipientRejected` anywhere in this walk.
 
-| 🟩 V · Step 9 | `TransactionState` &nbsp;*(second traversal)* |
+| 🟩 V · Step 9 | `TransactionState` &nbsp;*(name open)* |
 |:--|:--|
 | MTA Client | ⬛ `250` OK |
 | | 🟩 **TransactionState** |
@@ -251,7 +258,10 @@ Traversed **once**. No `RecipientRejected` anywhere in this walk.
 *Collapsed with step 6, same adoption: the traversals are distinguished by which event occasioned
 them, not by field values. `ReversePathDeclared` leaves this `Given` entirely, its citation having
 existed only to feed the dataset
-([`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md)).*
+([`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md)). The 2026-08-09 naming
+then split the slice — step 6 is `ReversePathAllowed`; this view, the response to
+`RecipientAccepted`, keeps the incumbent name only until its own is chosen, the candidates riding
+the step 8 symmetry (`ForwardPathAllowed`, if the mirror lands).*
 
 | 🟦 C · Step 10 | `BeginData` |
 |:--|:--|
@@ -370,8 +380,9 @@ Every reply is 2xx or 3xx. No error branch is taken anywhere.
 
 ## Accounting
 
-**16 steps over 15 distinct slices** — `TransactionState` is traversed twice. Two seeded events,
-never walked.
+**16 steps over 16 distinct views and commands** — none traversed twice since the steps 6/9
+split: they were one view (`TransactionState`) until the response-to-occasion naming made them
+two. Two seeded events, never walked.
 
 | | Original walk | This walk |
 |:--|:--|:--|
@@ -394,7 +405,7 @@ never walked.
 |:--|:--|:--|
 | `220` foo.com Simple Mail Transfer Service Ready | `ServiceReady` (step 2) | `ServiceConfigured.server_domain`, `.greeting_text` — both carried by the view; the `220` code itself is this scenario's rendering |
 | `250` foo.com | `SessionReady` (step 4) | `ServiceConfigured.server_domain`, carried by the view; the `250` code is this scenario's rendering |
-| `250` OK | `TransactionState` (step 6) | `ReversePathDeclared`'s existence |
+| `250` OK | `ReversePathAllowed` (step 6) | `ReversePathDeclared`'s existence |
 | `250` OK | `TransactionState` (step 9) | `RecipientAccepted`'s existence |
 | `354` prompt | `DataPrompt` (step 11) | `DataPhaseEntered`'s existence |
 | `Received:` trace line | `MessageTrace` (step 13) | four walked events and the seeded `server_domain` — see the step |
@@ -549,7 +560,7 @@ pages. What the walk hands the ruling:
    from `ConnectionAccepted` to `SessionClosed`), and the message (`queue_id`, payload born at
    `MessageAccepted` — the only identity that outlives the session).
 2. **No transaction identifier exists anywhere in the model.** At most one transaction is open
-   per session, so position suffices even across two traversals of `TransactionState`;
+   per session, so position suffices even across steps 6 and 9, one view until the naming split;
    per-transaction streams would mint an id no step consumes.
 3. **§4.3.1 serializes each session.** *"Unless other arrangements are negotiated through
    service extensions, the sender MUST wait for this response before sending further commands"*
