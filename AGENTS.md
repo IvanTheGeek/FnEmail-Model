@@ -409,4 +409,29 @@ over. A wrong accepted ruling is replaced by a superseding commit (rule 14), not
 the commit that made it. If a platform ever forces a squash, the squash commit's message must
 carry, complete, every ruling record that would otherwise be lost — but the standing preference
 is `--no-ff` and the individual commits, kept.
+## 16. Positions name their corpus and their stance
 
+Adam Dymitruk developed Event Modeling and Martin Dilger practices and teaches it; this project's
+method is **based on and informed by** theirs. So a reader must be able to tell whose a position
+is. The method repo's rule of the same title carries the full form and is not restated here; what
+follows is the part that bites in a model repo.
+
+A registered position answers two questions. **What does the corpus do with it** — prescribe,
+**divided** (say who and how), or **silent**, and if silent whether it is silent *in words* while
+enacting the thing in practice. Then **what do we do** — one word: **adopt**, **adapt**,
+**decline**, **invent**.
+
+The failure runs both ways: an adopted position with no citation reads as ours, an invented one
+sitting among cited material reads as theirs. Rule 9 of the method repo states the warning — *"an
+unlabeled one is an error waiting to be cited as canon"* — and it applies to a registered ruling or
+anything cited elsewhere as method, not to every sentence.
+
+**Declining carries a burden: name the job, point at the fact.** The job is what the prescription
+is *for*, not what it says. The fact is what in our model does that job differently or makes it
+unnecessary. If you cannot state the job, you do not have a decline — you have an open question,
+and it gets a 🟥 at the point where it bites (rule 12).
+
+**The model repo's own hazard is the tier vocabulary.** *Domain*, *Product*, *Protocol* and
+*Infrastructure* are this project's invention, defined in `docs/model-altitude.md`, and they are
+used throughout `docs/event-model.md` and the walks as if they were method words. They are not in
+the corpus. A reader arriving at a walk meets them unlabeled.
