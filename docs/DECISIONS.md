@@ -16,7 +16,7 @@ and the repo README carries the operational map with clone instructions.
 | Repo | Layer | Holds |
 |---|---|---|
 | [`EventModeling`](https://github.com/IvanTheGeek/EventModeling) (public) | method | generic modeling material; the modeling tool's own model and code will live in repos of their own. Modeled systems appear there only as examples |
-| **`FnEmail-Model`** (this repo, public-bound) | model | the SMTP model, walks, RFCs, SMTP-specific references. Cites the method repo |
+| `FnEmail-Model` — **this repo** (public-bound) | model | the SMTP model, walks, RFCs, SMTP-specific references. Cites the method repo |
 | `FnEmail` (future — the bare name is reserved for it) | code | what the model generates; not yet created |
 | `ModelingTool-Model` (public, created 2026-08-09) | the tool's model | ideas for the modeling tool now, its model later. Pre-model: it holds no model and nothing in it is a decision |
 | (future) | the tool's code | not created, not named |
@@ -75,7 +75,7 @@ flowed there and are cited rather than restated:
 
 | Decision | Canonical home |
 |---|---|
-| **Paths are the source; slices are derived** — and a path is a workflow with the data filled in. ⚠️ Demoted 2026-08-08 to working hypothesis — `layering.md`'s status banner records the retraction (method commit fe0891e); held and tested, not settled | `EventModeling/docs/layering.md` |
+| **Paths are the source; slices are derived** — and a path is a workflow with the data filled in. Demoted 2026-08-08 to working hypothesis — a standing change, not a correction: the position was not wrong, it is held provisionally — `layering.md`'s status banner records the retraction (method commit fe0891e); held and tested, not settled | `EventModeling/docs/layering.md` |
 | **One fold, three consumers** — state view, todo list, or decision model, decided by who consumes the fold | `EventModeling/docs/state-view-todo-list-decision-model.md` |
 | **The rendering conventions** — measured against all three renderers | `EventModeling/docs/rendering.md`; the evidence experiments live here, in `docs/diagrams/` |
 | **The `Given` is a labeled block, not a row** — label row with empty right cell, contents beneath (commits 3fb8160 here, 18093f2 there) | `EventModeling/docs/path-and-step-form.md` |
