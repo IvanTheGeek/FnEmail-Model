@@ -4,8 +4,8 @@ Renderings of `../event-model.md` v0.3, as **markdown tables**. They render on G
 and in the Android app. Sections 4–6 were reconciled 2026-08-08 to the walked timeline of
 [`WORKING-helo-direct-single-recipient-v2.md`](../paths/WORKING-helo-direct-single-recipient-v2.md),
 on the owner's waiver of the rule-13 hold. What stays open is flagged where it sits: the
-open names (`DataPhaseEntered`, and the `RecipientAccepted`-occasioned view — its sibling was
-named `ReversePathAllowed` 2026-08-09). The dataset cascade closed and the consulted box at
+open name (`DataPhaseEntered` — the acknowledgment views were named `ReversePathAllowed` and
+`RecipientConfirmed` 2026-08-09). The dataset cascade closed and the consulted box at
 `RecipientDirectory` dissolved, both 2026-08-09; §§5–6 reflect the emptied views and the
 dissolution.
 
@@ -194,11 +194,11 @@ greeting, and the walk exercises neither; no arm is picked here.
 as the seeded, 🟨 **yellow** `RecipientResolved` — a source outside this model, folded directly
 by `RcptTo`'s handler.
 
-| | **MailFrom** | **ReversePathAllowed** | **RcptTo** |
-|:--|:--|:--|:--|
-| ⬜ **Actor** | `MAIL FROM` | ⬛ `250` OK | `RCPT TO` |
-| **Cmd / View** | 🟦 **MailFrom** | 🟩 **ReversePathAllowed** | 🟦 **RcptTo** |
-| **Event** | 🟧 **ReversePathDeclared**&#10;<br>`reverse_path` | — | 🟨 **RecipientResolved**&#10;<br>translated — external, folded by the handler&#10;<br>🟧 **RecipientAccepted**&#10;<br>🟧 **RecipientRejected** `550` |
+| | **MailFrom** | **ReversePathAllowed** | **RcptTo** | **RecipientConfirmed** |
+|:--|:--|:--|:--|:--|
+| ⬜ **Actor** | `MAIL FROM` | ⬛ `250` OK | `RCPT TO` | ⬛ `250` OK |
+| **Cmd / View** | 🟦 **MailFrom** | 🟩 **ReversePathAllowed** | 🟦 **RcptTo** | 🟩 **RecipientConfirmed** |
+| **Event** | 🟧 **ReversePathDeclared**&#10;<br>`reverse_path` | — | 🟨 **RecipientResolved**&#10;<br>translated — external, folded by the handler&#10;<br>🟧 **RecipientAccepted**&#10;<br>🟧 **RecipientRejected** `550` | — |
 
 The 🟨 **yellow** cell is what distinguishes Translation from Automation — the source event belongs
 to another context.
@@ -206,10 +206,9 @@ to another context.
 `ReversePathAllowed` renders its `250` OK from event existence alone: the dataset was emptied on
 the walked path (commit cd06274), and the 2026-08-09 naming — a view names the server's response
 to its occasioning event — split what was one view traversed twice. The walk's second
-acknowledgment, after `RcptTo`, is now its own view (occasioned by `RecipientAccepted`), its
-name still open and riding the `RcptTo` symmetry
-([`EXPLORE-declaration-vs-status.md`](../paths/EXPLORE-declaration-vs-status.md)); it is not
-drawn as a second column here until named.
+acknowledgment, after `RcptTo`, is `RecipientConfirmed` (named later the same day): it confirms
+the adjudication `RecipientAccepted` already made, and renders its `250` OK from that event's
+existence ([`EXPLORE-declaration-vs-status.md`](../paths/EXPLORE-declaration-vs-status.md)).
 
 The consulted `RecipientDirectory` box that stood between `ReversePathAllowed` and `RcptTo`
 **dissolved 2026-08-09**: no `Given` can cite a view, the box performed no fold, and the

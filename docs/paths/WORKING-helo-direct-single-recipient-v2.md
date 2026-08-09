@@ -226,8 +226,8 @@ this repo's first citation of it, discharged by this note. The view's own name i
 the exploration until 2026-08-09, when Ivan named it: `ReversePathAllowed` — a view names the
 server's response to its occasioning event, the pattern the walk's other rendered views already
 follow, and *allowed* claims permission to proceed, not final judgment, keeping §3.3's
-report-problems-later door open in the name itself. The naming split the slice: the
-`RecipientAccepted`-occasioned view's own name stays open, riding the `RcptTo` symmetry
+report-problems-later door open in the name itself. The naming split the slice; the
+`RecipientAccepted`-occasioned half was named `RecipientConfirmed` later the same day
 ([`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md)).*
 
 | 🟦 C · Step 7 | `RcptTo` |
@@ -248,10 +248,10 @@ in the seeded `RecipientResolved` this `Given` cites. In the expanded model the 
 returns as a processing slice
 ([`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md)).*
 
-| 🟩 V · Step 8 | `TransactionState` &nbsp;*(name open)* |
+| 🟩 V · Step 8 | `RecipientConfirmed` |
 |:--|:--|
 | MTA Client | ⬛ `250` OK |
-| | 🟩 **TransactionState** |
+| | 🟩 **RecipientConfirmed** |
 | Given | |
 | | 🟧 **RecipientAccepted** |
 
@@ -259,9 +259,11 @@ returns as a processing slice
 them, not by field values. `ReversePathDeclared` leaves this `Given` entirely, its citation having
 existed only to feed the dataset
 ([`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md)). The 2026-08-09 naming
-then split the slice — step 6 is `ReversePathAllowed`; this view, the response to
-`RecipientAccepted`, keeps the incumbent name only until its own is chosen, the candidates riding
-the `RcptTo` symmetry (`ForwardPathAllowed`, if the mirror lands).*
+then split the slice — step 6 is `ReversePathAllowed` — and this half was named later the same
+day: `RecipientConfirmed`, the reply's job being to confirm the adjudication `RecipientAccepted`
+already made. The name responds to that occasion, so it rides along if the `RcptTo` symmetry
+question (still open) ever moves the event. `TransactionState` retires as a page name; the
+model's slice census settles at the prefix drop.*
 
 | 🟦 C · Step 9 | `BeginData` |
 |:--|:--|
@@ -407,7 +409,7 @@ consultation is the handler's fold. Two seeded events, never walked.
 | `220` foo.com Simple Mail Transfer Service Ready | `ServiceReady` (step 2) | `ServiceConfigured.server_domain`, `.greeting_text` — both carried by the view; the `220` code itself is this scenario's rendering |
 | `250` foo.com | `SessionReady` (step 4) | `ServiceConfigured.server_domain`, carried by the view; the `250` code is this scenario's rendering |
 | `250` OK | `ReversePathAllowed` (step 6) | `ReversePathDeclared`'s existence |
-| `250` OK | `TransactionState` (step 8) | `RecipientAccepted`'s existence |
+| `250` OK | `RecipientConfirmed` (step 8) | `RecipientAccepted`'s existence |
 | `354` prompt | `DataPrompt` (step 10) | `DataPhaseEntered`'s existence |
 | `Received:` trace line | `MessageTrace` (step 12) | four walked events and the seeded `server_domain` — see the step |
 | `250` OK | `MessageQueued` (step 13) | `MessageAccepted`'s existence |

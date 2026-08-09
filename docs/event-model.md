@@ -295,18 +295,18 @@ empty here is not empty forever — §3.3's 550/553 branch seats whatever select
 at the slice layer. The refusal shape is open: scenario selection (`ServiceReady`'s ruled shape)
 or a `ReversePathRefused` event pair (`RcptTo`'s shape); the rejection walk decides.
 
-### `TransactionState` — V *(the `RecipientAccepted`-occasioned view; name open)*
+### `RecipientConfirmed` — V
 
 ```
 Sources   RecipientAccepted
-Answers   did the occasioning event happen?
-Post      renders the 250 from the cited event's existence; no dataset
+Answers   was the recipient confirmed to the client?
+Post      renders the 250 from the occasioning event's existence; no dataset
 ```
-The 2026-08-09 naming split what was one view traversed twice: the `MailFrom`-step half became
-`ReversePathAllowed`, and this half — the response to `RecipientAccepted` — keeps the incumbent
-name only until its own is chosen, riding the step 8 symmetry (`ForwardPathAllowed`, if the
-mirror lands). `TransactionAborted`, formerly among the sources, is unassigned post-split — it
-belongs with the `Reset` walk (D.2) when that runs
+Named 2026-08-09, the same day the split made it: the `MailFrom`-step half became
+`ReversePathAllowed`, and this half confirms the adjudication `RecipientAccepted` already made —
+the reply reports a decision, so *confirmed*, not a second *accepted*. `TransactionState`
+retires as a name. `TransactionAborted`, formerly among the sources, is unassigned post-split —
+it belongs with the `Reset` walk (D.2) when that runs
 ([`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-status.md)).
 
 ### `BeginData` — C 🔴 **H1**

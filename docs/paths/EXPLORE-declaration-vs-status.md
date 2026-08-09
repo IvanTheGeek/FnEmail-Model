@@ -6,9 +6,9 @@ steps 6/9 collapse; the walk carries both. The adopting commits are titled
 *Position replaces state at steps 6 and 9*. On 2026-08-09 the step 6 view was named
 `ReversePathAllowed`, splitting the slice, and the consulted box at `RecipientDirectory`
 dissolved, renumbering the walk (see *Second pass* and *The consulted box dissolves*). Still
-open: `DataPhaseEntered`'s name (H1), the `RecipientAccepted`-occasioned view's name, the
-`RcptTo` symmetry, the refusal-shape fork, the third-category question, the command-naming
-rule. The dataset cascade the collapse spawned closed 2026-08-09 — ruled: "Don't invent a new
+open: `DataPhaseEntered`'s name (H1), the `RcptTo` symmetry, the refusal-shape fork, the
+third-category question, the command-naming rule. (The `RecipientAccepted`-occasioned view was
+named `RecipientConfirmed` later on 2026-08-09.) The dataset cascade the collapse spawned closed 2026-08-09 — ruled: "Don't invent a new
 test — the view's own definition already decides it"; the walk's steps 10, 13 and 15 notes
 carry the grounds. Started 2026-08-08 on branch
 `explore/declaration-vs-status`, during the step-by-step walk-through of
@@ -366,6 +366,16 @@ hide between a command and its reply" was the argument that put the box on the p
 refines that ruling's cadence half: alternation is the carrier idea, the wave is FM or square
 rather than sine, and VV+ and CC+ runs are legal. Flows to the method repo with the cadence
 verdict when that flow-candidate ripens (`FOLLOW-UPS.md`).
+
+#### The second acknowledgment named — 2026-08-09
+
+`RecipientConfirmed`, Ivan's pick from the step 7 evaluation: the reply's job is confirming the
+adjudication `RecipientAccepted` already made — a report of a decision, so *confirmed*, not a
+second *accepted*, and recipient vocabulary rather than path vocabulary because RCPT's object is
+the adjudicated mailbox where MAIL's is the declared route (the path-vs-mailbox distinction
+doing naming work). `ForwardPathAllowed` died with the vocabulary argument; whether the *event*
+ever moves remains the open `RcptTo` symmetry, and this name rides its occasion either way.
+`TransactionState` retires as a page name.
 
 ---
 
