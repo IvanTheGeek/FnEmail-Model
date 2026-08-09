@@ -1,14 +1,20 @@
 # Re-walk — the direct path under command/view cadence
 
-**Open. Nothing here is adopted.** A parallel walk of
+**Concluded in the main — kept as the reasoning record.** Adopted, instantiated in the v2 walk
+(7d41034): a reply as a rendered view and a step per reply, the required-first preamble (🟨 only
+there; steps cite 🟧), consulted views with no top row, no `Consumed by` anywhere, 🟤's
+`Given`-only placement, and the `MessageTrace` step. Still genuinely open: the path-defined views'
+names and possible collapse, H4, H6, H7, and the `AcceptConnection` *reply 554, no event*
+contradiction, pending as a rule 4 correction in the model. A parallel walk of
 [`helo-direct-single-recipient.md`](helo-direct-single-recipient.md) with everything settled on
 2026-08-07 applied at once, so the two can be read side by side.
 
 > ⚠️ **2026-08-07, end of day: partially superseded as a walk, kept as the reasoning record.** The
-> final semantics this document arrived at are instantiated cleanly in
-> [`WORKING-helo-direct-single-recipient-v2.md`](WORKING-helo-direct-single-recipient-v2.md) —
-> read that file for the path; read this one for how each decision was reached, corrected and
-> ruled. The WORKING- prefix stays while Ivan walks through it.
+> final semantics this document arrived at were instantiated in
+> [`WORKING-helo-direct-single-recipient-v2.md`](WORKING-helo-direct-single-recipient-v2.md),
+> which has since moved further under the 2026-08-08 rulings — read that file for the path; read
+> this one for how each decision was reached, corrected and ruled. The WORKING- prefix stays while
+> Ivan walks through it.
 
 What changed, and why a re-walk rather than an edit: **a server reply is a rendered read model, not
 part of the command that provoked it.** Splitting each reply out of its command's wire row turns
@@ -246,6 +252,15 @@ this step and nowhere else:
 **The responsibility boundary is here.** Left of it, abandoning costs nothing; at `MessageAccepted`
 we have accepted responsibility for delivering or reporting failure — RFC 5321 §2.1. **The `250` is
 the moment the client learns that**, which the original walk did not make a step of its own.
+
+⚠️ **The handoff placement above is wrong, caught 2026-08-08.** The claim was that
+responsibility attaches at `MessageAccepted` and the `250` merely announces it. §2.1 puts the
+handoff at the reply's issuance — *"once the server has issued a success response at the end of
+the mail data, a formal handoff of responsibility for the message occurs"* — and §6.1 agrees:
+the receiver accepts responsibility *"by sending a "250 OK" message in response to DATA"*.
+Verified against [`../rfc/rfc5321.txt`](../rfc/rfc5321.txt). The `250` is constitutive, not
+notification. The live correction lands on the v2 walk, which inherited this sentence verbatim —
+tracked in [`../FOLLOW-UPS.md`](../FOLLOW-UPS.md).
 
 | 🟦 C · Step 15 | `Quit` |
 |:--|:--|

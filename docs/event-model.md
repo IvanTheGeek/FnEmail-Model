@@ -1,42 +1,37 @@
 # FnEmail — Event Model (RFC 5321, inbound, HELO)
 
-Status: **draft v0.3 — scoped down to the HELO path**
+Status: **draft v0.4 — reconciled to the v2 walk, 2026-08-08**
 Scope: **inbound SMTP, `HELO` only.** No ESMTP, no relay, no outbound.
 
-Method reference: `event-modeling-research:research/METHOD-REFERENCE.md`. Corrections from v0.1: `event-modeling-research:research/CORRECTIONS-v0.1.md`.
+Method reference: the method repo's
+[`EventModeling/docs/`](https://github.com/IvanTheGeek/EventModeling/tree/main/docs); the research
+repo's `event-modeling-research:research/METHOD-REFERENCE.md` remains as source material.
+Corrections from v0.1: `event-modeling-research:research/CORRECTIONS-v0.1.md`.
 Altitude rules — what belongs in this model at all: `model-altitude.md`.
 Diagrams (markdown tables, render on GitHub and the Claude apps): `diagrams/`.
 Extensions are parked in the method repo — `EventModeling/docs/extensions.md`, moved there
 2026-08-08 from this repo — and **not** applied here — this document is orthodox Dymitruk/Dilger
 by intent, so extensions can be measured against it.
 
-> ⚠️ **This document is derived, and it lags the active walk — deliberately.** Paths are the
-> source and slices are derived ([`DECISIONS.md`](DECISIONS.md); canonical statement in the method
-> repo's `layering.md`), so this file is the union of what the walked paths have contributed,
-> reconciled in passes. The active working stance is
-> [`paths/WORKING-helo-direct-single-recipient-v2.md`](paths/WORKING-helo-direct-single-recipient-v2.md),
-> and nothing is reconciled to it until the `WORKING-` prefix drops (AGENTS.md rule 13). Known
-> pending against this text, listed so it is not lost to commit messages:
+> ⚠️ **This document is derived.** Paths are the source and slices are derived — a working
+> hypothesis, not settled: the method repo's `layering.md` carries the status
+> ([`DECISIONS.md`](DECISIONS.md)) — and this file is the union of what the walked paths have
+> contributed, reconciled in passes. Reconciled 2026-08-08 to
+> [`paths/WORKING-helo-direct-single-recipient-v2.md`](paths/WORKING-helo-direct-single-recipient-v2.md)
+> on the owner's waiver of the rule-13 hold, the `WORKING-` prefix not yet dropped. Still open
+> after that pass, flagged where each bites below:
 >
-> - `AcceptConnection`'s contract *reply 554, no event* is contradicted by RFC 5321 §3.1 — a
->   refused greeting still has a session and MUST wait for `QUIT`. Rule 4 correction pending.
-> - `ClientIdentified.protocol` fell to the constant test (commit 2673b1b); `WITH`'s value joined
->   the renderer's constants in a `HELO`-only charter.
-> - No `Given` in the v2 walk ever consults `SessionState`; its rendering role became
->   `SessionReady{server_domain}` (commit cf3227d).
-> - The metadata table carries three correlation schemes against its own one-mechanism warning;
->   `session_id` and `correlation_id` died on the path (commit 0e31109 and the walk's *The
->   layering* block).
-> - The `WHEN Query(session)` scenario below ships a form only three podcast episodes support,
->   and it names no key — flagged in [`paths/EXPLORE-view-slice.md`](paths/EXPLORE-view-slice.md)
->   before the v2 walk existed.
-> - H1 is answered on the walk's page — `DataPhaseEntered` has two consumers there; formal closure
->   here is pending. H8 (`SessionClosed` — `model-altitude.md` Q6) is proposed but never
->   registered in the hotspot list below.
-> - The walk defines six views and two seeded events this document does not yet carry.
-> - The entry mechanism for `ServiceConfigured` is undecided — two candidate shapes recorded,
->   neither chosen (`paths/EXPLORE-rewalk-cadence.md`, *two shapes, neither chosen*;
->   commit 6ed62cf).
+> - The six path-defined views are absorbed by name only; full contracts wait on the open
+>   dataset-cascade and step-8 symmetry rulings
+>   ([`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-status.md)).
+> - The entry mechanism for `ServiceConfigured` — two candidate shapes recorded, neither chosen
+>   (`paths/EXPLORE-rewalk-cadence.md`, *two shapes, neither chosen*; commit 6ed62cf).
+> - The metadata ruling — the walk passed the correlation-scheme question upward; see the ⚠️
+>   under *Metadata*.
+> - `SessionState`'s fate — pending the consulted-view question; see the slice's ⚠️.
+> - The scenario-form questions — the view-`When` form and its missing key
+>   ([`paths/EXPLORE-view-slice.md`](paths/EXPLORE-view-slice.md)).
+> - H8's resolution — registered under *Hotspots*, blocked on the dataset cascade.
 
 ---
 
@@ -52,8 +47,9 @@ by intent, so extensions can be measured against it.
 | `BODY=8BITMIME` | RFC 6152 extension |
 | Relay, outbound, DNS, bounce | deferred by scope |
 
-Twelve slices remain. Every reply is 3-digit only — no enhanced status codes (RFC 3463 is also an
-extension).
+Twelve slices survived the scoping pass, and the v2 walk adds six path-defined View Slices —
+eighteen slices in all. Every reply is 3-digit only — no enhanced status codes (RFC 3463 is also
+an extension).
 
 ## Normative base
 
@@ -71,21 +67,6 @@ without any change to our model.
 | 5321 | base specification (obsoletes 2821; updates 1123) |
 | 7504 | adds reply codes 521 and 556 |
 
-## Changes from v0.2
-
-- Dropped the `StartTls` slice; `Ehlo` → `Helo`, `protocol` fixed at `SMTP`.
-- `MailTransactionStarted` loses `declared_size` and `body_type`; the declared-size error scenario
-  goes with them. Size enforcement now only happens on `actual_octets`.
-- **Added step contracts** to every slice. These are not new work — a contract is a GWT with the
-  example data removed, so `GIVEN` is the precondition and `THEN` the postcondition.
-- **H3 reframed.** An unsourced read model is the method working, not a defect: the hole becomes
-  known and names a slice that must exist upstream. It is now marked as a *typed* hole so that a
-  path crossing it fails loudly.
-- **Terminology.** Command Slice / View Slice replace write column / read column throughout.
-- **Metadata section added**, and two payload defects fixed — both found by walking the path with
-  real data rather than by reading the model. `MessageAccepted` gained `received_at`;
-  `ConnectionAccepted` lost `occurred_at`; `local_address` is flagged as an orphan (H6).
-
 ---
 
 ## Conventions
@@ -93,7 +74,8 @@ without any change to our model.
 **Slice types.** Every slice is a **Command Slice** (one command) or a **View Slice** (one read
 model). Never both — a feature needing each is two slices.
 
-Event **orange** · Command **blue** · Read Model **green** · Screen **white** · hotspot **red**.
+Event **orange** · Command **blue** · Read Model **green** · Screen **white** · hotspot **red** ·
+external **yellow** (Translation) · wire **black**.
 Command is blue and Read Model is green in every source; Event is orange here (see
 `event-modeling-research:research/UPSTREAM-DEFECTS.md` for the one file that disagrees).
 
@@ -159,18 +141,24 @@ model.
 | Swimlane | Owns |
 |---|---|
 | **Edge** | `ConnectionAccepted`, `ClientIdentified`, `SessionReset`, `SessionClosed` |
-| **Transaction** | `MailTransactionStarted`, `RecipientAccepted`, `RecipientRejected`, `DataPhaseEntered`, `MessageAccepted`, `MessageRejected`, `TransactionAborted` |
+| **Transaction** | `ReversePathDeclared`, `RecipientAccepted`, `RecipientRejected`, `DataPhaseEntered`, `MessageAccepted`, `MessageRejected`, `TransactionAborted` |
 | **Directory** | ✅ **A separate context**, not a swimlane here — see *H3 resolved* |
 
 ---
 
 ## The responsibility boundary
 
-RFC 5321 §2.1: *"when an SMTP server accepts a message, it is accepting responsibility for
-delivering or reporting the failure to do so."*
+RFC 5321 §2.1: *"once the server has issued a success response at the end of the mail data, a
+formal handoff of responsibility for the message occurs: the protocol requires that a server MUST
+accept responsibility for either delivering the message or properly reporting the failure to do
+so"*. §6.1 fixes the moment: the receiver-SMTP accepts *"by sending a "250 OK" message in
+response to DATA"*.
 
-`MessageAccepted` is where obligation begins. Left of it, abandoning costs nothing. Right of it is
-delivery — out of scope.
+`MessageAccepted` records the acceptance decision; obligation transfers when the success reply is
+issued. Left of that reply, abandoning costs nothing. Right of it is delivery — out of scope.
+Whether the `250` is thereby constitutive — the `MessageQueued` view's `queue_id` copy — is part
+of the open dataset cascade the walk leaves standing for a ruling (its notes, and
+`FOLLOW-UPS.md`); flagged here, not settled.
 
 A domain observation about SMTP, **not** Event Modeling vocabulary.
 
@@ -189,8 +177,18 @@ Slice, not column — Adam's own word. Corpus synonyms: a Command Slice is *stat
 ```
 Pre    none
 Post   ConnectionAccepted{peer_address, local_address}
-       OR  reply 554, no event
+       OR  reply 554 (the refused session still runs to QUIT; see the correction below)
 ```
+
+⚠️ **Corrected 2026-08-08.** This contract read *reply 554, no event*, and that is contradicted
+by RFC 5321 §3.1: *"A server taking this approach MUST still wait for the client to send a QUIT
+(see Section 4.1.1.10) before closing the connection and SHOULD respond to any intervening
+commands with "503 bad sequence of commands"."* A refused greeting still has a session, the
+session runs to `QUIT`, so `ConnectionAccepted` must exist on the refused path too — found by the
+v2 walk's backward pass (its *Hotspots*, *the refused greeting still has a session*). How the
+refusal decision itself is recorded is undecided design awaiting the rejection-path walk; that
+shape is flagged, not invented here.
+
 Exists to carry `peer_address`, which the `Received:` header requires and nothing else supplies.
 That one sentence is the whole justification for the slice, and it is worth spelling out, because
 the shape of the argument is not the shape of the answer — see **H5** below.
@@ -205,9 +203,11 @@ case where `521` would apply.
 
 ```
 Pre    ConnectionAccepted exists
-Post   ClientIdentified{claimed_domain, protocol:"SMTP"}
+Post   ClientIdentified{claimed_domain}
        OR  reply 501 (bad syntax) / 500 (unrecognized)
 ```
+`protocol` **removed.** In a `HELO`-only charter it cannot vary — a constant is a rule, not a
+fact — and the `WITH` clause's value joined the renderer's constants (commit 2673b1b).
 
 ### `SessionState` — V
 
@@ -216,27 +216,39 @@ Sources   ConnectionAccepted, ClientIdentified, SessionReset
 Answers   Has the client identified itself? Is a transaction open?
 Post      SessionState{identified: bool, transaction_open: bool}
 ```
-Placed here because `MailFrom`, `RcptTo` and `BeginData` consume it — not next to its sources.
+Placed here because `MailFrom`'s `Pre` consumes it (`Reset`'s does too, below) — not next to its
+sources.
+
+⚠️ **Survival flagged, not ruled.** No `Given` in the v2 walk ever consults this view, and its
+rendering role went to the path-defined `SessionReady{server_domain}` (commit cf3227d) — which
+weakens even the consumers named above. Whether the slice survives, and how any command `Pre`
+consults a view at all, is the open consulted-view question; nothing here is deleted until it
+rules.
 
 ### `MailFrom` — C
 
 ```
 Pre    SessionState.identified = true
-Post   MailTransactionStarted{reverse_path}
+Post   ReversePathDeclared{reverse_path}
        OR  reply 503 (no HELO) / 550 (sender rejected)
 ```
+The event names the client's declaration, not our state change — candidates screened in
+[`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-status.md), which stays
+the citation for what that exploration still leaves open.
 
 ### `RecipientDirectory` — V  *(translation boundary — H3 resolved)*
 
 ```
-Sources   translated events from the Directory context (deferred)
+Sources   RecipientResolved, translated from the Directory context (deferred)
 Answers   Is this address a local mailbox?
 Post      RecipientDirectory{is_local: bool}
 ```
 **No longer a hole.** H3 asked whether Directory has its own charter. It does — see *H3 resolved*
 below — so this is an ordinary **Translation** boundary: the Directory context's events arrive as
 external (yellow), are translated into our vocabulary, and this read model projects from the
-translated events rather than from foreign ones directly.
+translated event — the walk seeds it as `RecipientResolved{is_local, forward_path}` — rather than
+from foreign ones directly. The event's name is walked fact; how a consulted view is read by a
+command's `Pre` stays open (the consulted-view question).
 
 The translation slice itself is deferred with the Directory model. What is *not* deferred is that
 the boundary is now typed and orthodox rather than unexplained.
@@ -247,7 +259,7 @@ Under G1 nothing varies and nothing consumes the variation.
 ### `RcptTo` — C
 
 ```
-Pre    MailTransactionStarted exists for this session
+Pre    ReversePathDeclared exists for this session
        RecipientDirectory available
 Post   RecipientAccepted{forward_path}
        OR  RecipientRejected{forward_path, reply_code, reason}
@@ -260,21 +272,32 @@ local — relay is deferred — so the field is constant-true. A constant is a r
 ### `TransactionState` — V
 
 ```
-Sources   MailTransactionStarted, RecipientAccepted, TransactionAborted
-Answers   Open? Reverse path? How many recipients?
-Post      TransactionState{open: bool, reverse_path, recipient_count}
+Sources   ReversePathDeclared, RecipientAccepted, TransactionAborted
+Answers   Did the occasioning event happen?
+Post      renders the 250 from the cited event's existence; no dataset
 ```
+The dataset is empty by ruling, not by omission: `open` and `reverse_path` restated the `Given`,
+and `recipient_count` encoded position as data (commit cd06274). Empty here is not empty forever
+— §3.3 gives both occasions a 550/553 branch, and the rejection walk seats whatever selects the
+reply code at the slice layer.
+
+⚠️ **The view's own name is open**: `TransactionState` describes state it no longer carries
+([`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-status.md), *Open, and
+deliberately not decided here*). Flagged, not renamed.
 
 ### `BeginData` — C 🔴 **H1**
 
 ```
-Pre    TransactionState.open = true
-       TransactionState.recipient_count >= 1
+Pre    ReversePathDeclared exists
+       at least one RecipientAccepted exists for this transaction
 Post   DataPhaseEntered
        OR  reply 503 (no recipients)
 ```
-The *command* is sound — it makes a real decision. The *event* is on trial: its only candidate
-consumer is the transcript rendering `354`.
+The *command* is sound — it makes a real decision. The *event* is used: the walk gives it two
+consumers — `DataPrompt` folds it to render the `354`, and `SubmitContent` declares it as
+`Given`. What H1 still holds open is the event's name — see *Hotspots*. The event-existence form
+of this `Pre` is safe under the `TransactionState` collapse (commit cd06274); how a `Pre` may
+cite a *view* at all is the open consulted-view question, not exercised here.
 
 ### `SubmitContent` — C
 
@@ -312,6 +335,39 @@ Post      an ordered rendering of the wire exchange
 ```
 Structurally the **"right chair"** — one read model, many events. Expected; worth watching.
 
+### Path-defined views — absorbed by name; contracts pending
+
+The v2 walk defines six View Slices the scoping pass predates. They are carried here by name,
+occasioning event, and rendered output only; full contracts wait on the open dataset-cascade and
+step-8 symmetry rulings
+([`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-status.md)).
+
+| View | Occasioned by | Renders |
+|:--|:--|:--|
+| `ServiceReady` | `ConnectionAccepted` | the `220` greeting |
+| `SessionReady` | `ClientIdentified` | the `250` after `HELO` |
+| `DataPrompt` | `DataPhaseEntered` | the `354` prompt |
+| `MessageTrace` | `MessageAccepted` | the `Received:` line, into the stored message |
+| `MessageQueued` | `MessageAccepted` | the `250` after the final dot |
+| `SessionClosing` | `SessionClosed` | the `221` closing line |
+
+⚠️ **The open dataset cascade bites four values, flagged rather than settled**:
+`DataPrompt.awaiting_content` and `MessageQueued.accepted` — each a boolean nothing renders, over
+which the constant test hangs — `MessageQueued`'s `queue_id` copy, and `SessionClosing.cause`,
+the deciding case because it is the one non-constant among them. The cascade is tracked in the
+walk's notes and `FOLLOW-UPS.md`.
+
+**Two seeded events.** The walk's preamble declares `ServiceConfigured{server_domain,
+greeting_text}` and `RecipientResolved{is_local, forward_path}` — path-local placeholders whose
+provenance the path rules out of scope. `RecipientResolved` is the Directory boundary's
+translated event (see `RecipientDirectory` above).
+
+⚠️ **The entry mechanism for `ServiceConfigured` is undecided** — *two shapes, neither chosen*
+(`paths/EXPLORE-rewalk-cadence.md`; commit 6ed62cf): Shape A, configuration is ours — an
+operator-lane Command Slice and the model's true origin; Shape B, configuration is someone
+else's — a translation from a Configuration context, the `RecipientDirectory` precedent. Neither
+is adopted here.
+
 ---
 
 ## Events
@@ -319,10 +375,10 @@ Structurally the **"right chair"** — one read model, many events. Expected; wo
 | Event | Fields |
 |---|---|
 | `ConnectionAccepted` | `peer_address`, `local_address` ⚠️ |
-| `ClientIdentified` | `claimed_domain`, `protocol` (always `SMTP`) |
+| `ClientIdentified` | `claimed_domain` |
 | `SessionReset` | — |
 | `SessionClosed` | `cause` (quit \| timeout \| abort \| shutdown) |
-| `MailTransactionStarted` | `reverse_path` |
+| `ReversePathDeclared` | `reverse_path` |
 | `RecipientAccepted` | `forward_path` |
 | `RecipientRejected` | `forward_path`, `reply_code`, `reason` |
 | `DataPhaseEntered` 🔴 | — |
@@ -357,6 +413,13 @@ them here**, because the words alone will not tell a reader which convention is 
 For this model the RFC settles it: `Received:`'s **`ID` clause** is the trace identifier that
 propagates onto the message, and `queue_id` is what goes in it. Name the propagating one after the
 RFC rather than after any framework.
+
+⚠️ **The walk contradicts this table, and the ruling is passed upward, not made here.** On the v2
+path `session_id` and `correlation_id` both died (commit 0e31109; the walk's *The layering*
+block): `correlation_id` duplicates `session_id` in scope, `queue_id` supersedes it beyond, and
+no key survives on a path. That leaves three correlation schemes standing here against this
+section's own one-mechanism warning. The model-level metadata ruling is open — entangled with
+H4's stream/envelope sub-rulings — and the rows stay until it lands.
 
 ### Why `received_at` is payload, not metadata
 
@@ -433,10 +496,16 @@ local-parts impedes interoperability and is **discouraged**."* So the rule is *p
 Found by walking the path with data. It has an origin and **no destination**: `Received:`'s `BY`
 clause is `derived:` from configuration, so nothing reads it.
 
-Either give it a consumer or delete it. The defensible consumer: on a multi-homed server listening
-on several addresses with different hostnames, `BY` depends on *which* address was connected to —
-in which case `BY` sources from `local_address`, not config, and the field earns its place. That
-case is not yet decided, so the field stays flagged rather than removed.
+Either give it a consumer or delete it. Two candidate consumers are on record (the walk's
+*Hotspots*, H6), and neither is decided:
+
+- **The multi-homed `BY` arm.** On a server listening on several addresses with different
+  hostnames, `Received:`'s `BY` clause depends on *which* address was connected to — `BY` would
+  source from `local_address` rather than configuration, at the `MessageTrace` view.
+- **The nameless-server greeting.** The `220` identity slot admits an address literal (§4.2), so
+  a server with no name would render its greeting from `local_address`.
+
+Which arm wins, if either, stays open — the field stays flagged rather than removed.
 
 ### No `ServiceGreetingSent`
 
@@ -451,7 +520,7 @@ check doing real work rather than ratifying what was drawn.
 
 **Sequencing — `RCPT` before `MAIL`** (§4.1.1)
 ```
-Slice   RcptTo                                            [error]
+Slice   RcptTo                            [Command Slice / error]
 GIVEN   ConnectionAccepted, ClientIdentified
 WHEN    RcptTo(<bob@example.org>)
 THEN    error 503 Bad sequence of commands
@@ -459,24 +528,29 @@ THEN    error 503 Bad sequence of commands
 
 **`RSET` clears the transaction, keeps the session** (§4.1.1.5)
 ```
-Slice   Reset                                      [state change]
+Slice   Reset                                     [Command Slice]
 GIVEN   ClientIdentified(mail.acme.com),
-        MailTransactionStarted(<alice@acme.com>),
+        ReversePathDeclared(<alice@acme.com>),
         RecipientAccepted(<bob@fn.email>)
 WHEN    Reset
 THEN    TransactionAborted(cause=rset)                   → 250 OK
 ```
 ```
-Slice   SessionState                                 [state view]
+Slice   SessionState                                 [View Slice]
 GIVEN   ClientIdentified(mail.acme.com), SessionReset
 WHEN    Query(session)
 THEN    SessionState{identified: true, transaction_open: false}
 ```
+⚠️ **This scenario is flagged, not normalized.** Its `WHEN Query(session)` form is supported by
+only three podcast episodes, it names no key, and the view it queries is the weakened
+`SessionState` — flagged in [`paths/EXPLORE-view-slice.md`](paths/EXPLORE-view-slice.md) before
+the v2 walk existed. It stands as written until the view-`When` form and consumer-or-key
+questions settle.
 
 **Responsibility transfer**
 ```
-Slice   SubmitContent                              [state change]
-GIVEN   MailTransactionStarted(<alice@acme.com>),
+Slice   SubmitContent                             [Command Slice]
+GIVEN   ReversePathDeclared(<alice@acme.com>),
         RecipientAccepted(<bob@fn.email>),
         RecipientAccepted(<carol@fn.email>),
         DataPhaseEntered
@@ -487,10 +561,10 @@ THEN    MessageAccepted(queue_id, content_ref, actual_octets)
 
 **Relay refused**
 ```
-Slice   RcptTo                                     [state change]
+Slice   RcptTo                                    [Command Slice]
 GIVEN   ClientIdentified(unknown.example),
-        MailTransactionStarted(<x@elsewhere>),
-        RecipientDirectory{is_local: false, relay_permitted: false}
+        ReversePathDeclared(<x@elsewhere>),
+        RecipientDirectory{is_local: false}
 WHEN    RcptTo(<victim@third-party.org>)
 THEN    RecipientRejected(reply_code=550, reason="relay not permitted")
 ```
@@ -501,19 +575,25 @@ Contrast the sequencing slip above, which produces none. **That line is H2.**
 
 ## Completeness check
 
-Bidirectional: every field needs an origin **and** a destination.
+Completeness closes in **three checks**: backward, payload, forward.
 
-**Backward — `Received:` (§4.4)**
+**Backward — `Received:` (§4.4).** Every rendered value needs an origin.
 
 | Clause | Origin |
 |---|---|
 | `FROM` domain | `ClientIdentified.claimed_domain` |
 | `FROM` address literal | `ConnectionAccepted.peer_address` |
 | `BY` | config (`derived:`) |
-| `WITH SMTP` | `ClientIdentified.protocol` — always `SMTP` in this scope |
+| `WITH SMTP` | renderer constant — cannot vary in a `HELO`-only charter |
 | `ID` | `MessageAccepted.queue_id` |
 | `FOR` | `RecipientAccepted.forward_path` *(only when exactly one)* |
-| timestamp | `MessageAccepted.received_at` — **payload, not metadata** (see below) |
+| timestamp | `MessageAccepted.received_at` — **payload, not metadata** (see *Why `received_at` is payload, not metadata* above) |
+
+**Payload — every emitted event value needs an origin.** The check the other two cannot make:
+backward stops at rendered outputs and forward counts consumers, so neither asks where an
+*emitted* event's payload values come from. An origin is a command field, a `Given` fold, a
+derivation from either, a mint at the emitting step, or a named boundary fact. The v2 walk's
+instantiated tables (*Payloads — every emitted value to its origin*) are the worked example.
 
 **Forward — the transcript**
 
@@ -521,15 +601,20 @@ Bidirectional: every field needs an origin **and** a destination.
 > incomplete.
 
 Covers the whole session rather than one field set, and exercises the direction that exposes
-events nothing consumes. `DataPhaseEntered` lives or dies by it.
+events nothing consumes. `DataPhaseEntered` lived by exactly this direction — see H1.
 
 ---
 
 ## Hotspots
 
-**H1 — Does `DataPhaseEntered` earn its place?** Its only candidate consumer is the transcript
-rendering `354`. A question about what the operator needs to see. See `model-altitude.md` §3, which
-resolves this through the destination gate rather than by argument about protocol purity.
+**H1 — ✅ answered on existence; open on the name.** The earning question is closed by the v2
+walk (its *✅ H1 — verified answered by this walk* block): the event has two consumers on that
+page — `DataPrompt` folds it to render the `354`, and `SubmitContent` declares it as `Given`.
+The destination gate of `model-altitude.md` §3 decided it, with consumers rather than argument.
+What remains open is the event's **name**: `DATA` declares nothing, so the declaration-naming
+rule has no purchase, and no candidate has been generated
+([`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-status.md), *Open, and
+deliberately not decided here*). The name is not chosen here.
 
 **H2 — Are protocol errors events?** `RecipientRejected` is; a `503` is not. The line drawn is
 "policy decisions are facts, protocol slips are not" — defensible, unverified. The corpus answer
@@ -550,7 +635,10 @@ its *Hotspots* section, and D.2 (the aborted-transaction scenario) is the design
 transaction question.
 
 **H6 — Is `BY` config or `local_address`?** Decides whether `local_address` is an orphan field or
-load-bearing. Turns on whether FnEmail will ever be multi-homed with per-address hostnames.
+load-bearing. Two candidate arms carry it (the walk's *Hotspots*): the multi-homed `BY` clause at
+the `MessageTrace` view, and the nameless-server greeting — the `220` identity slot admits an
+address literal (§4.2). The v2 walk renders the config arm and exercises neither candidate;
+which arm wins, if either, stays open.
 
 **H7 — Does FnEmail ever refuse mail entirely?** RFC 7504 `521` applies only to a host that never
 accepts mail — a null-MX sentinel or a domain configured to accept none. If FnEmail supports that
@@ -560,6 +648,12 @@ If not, `521` never appears and this can be closed. A product question.
 Note the shape of the rule: RFC 7504 hard-lines *when* `521` is used, then leaves the aftermath to
 the operator — after `521` the server **MAY** keep replying `521` or **MAY** just close the
 connection. A normative frame with an operator choice inside it.
+
+**H8 — Does `SessionClosed` earn its place?** Registered from `model-altitude.md` Q6, where it
+was proposed. The walk gives `SessionClosed.cause` a consumer — `SessionClosing` folds it to
+render the `221` — but `SessionClosing.cause` is the deciding case of the open dataset cascade:
+if it dies there, `cause` becomes a second flagged-unconsumed value. Resolution is blocked on
+that cascade; decide jointly with `Quit`'s postcondition.
 
 **H5 — `AcceptConnection` altitude.** *Domain fact or infrastructure noise?* The question is
 malformed, and answering it properly reclassifies the event.
@@ -638,8 +732,9 @@ and independent existence. **Separate context.**
 ### Three consequences
 
 **1. The interface is orthodox Translation.** Directory's events are external to this model. They
-arrive yellow, get translated into our vocabulary, and `RecipientDirectory` projects from the
-translated events. This is exactly what the Translation pattern is for.
+arrive yellow, get translated into our vocabulary — the walk seeds the translated event as
+`RecipientResolved{is_local, forward_path}` — and `RecipientDirectory` projects from it. This is
+exactly what the Translation pattern is for.
 
 **2. It does not motivate the multiple-models extension.** An earlier note called H3 *"the
 strongest pull toward the multiple-models idea"* in `event-model-extensions.md` §1 (now

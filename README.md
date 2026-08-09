@@ -18,9 +18,11 @@ disappears when a tool emits it; and where a relationship cannot be represented 
 basics working first and refine placement later.
 
 **Paths are the source; slices are derived.** The model document looks like the definition and the
-walked paths look like instances of it; the flow of authority is the opposite. The ruling is
-registered in [`docs/DECISIONS.md`](docs/DECISIONS.md); the canonical statement is the method
-repo's [`layering.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/layering.md).
+walked paths look like instances of it; the flow of authority is the opposite. Held as a working
+hypothesis, not a settled ruling — the statement is the method repo's
+[`layering.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/layering.md), whose
+status banner records the demotion from "ruled"; the register row in
+[`docs/DECISIONS.md`](docs/DECISIONS.md) carries the correction.
 
 ## Four repositories
 
@@ -29,7 +31,7 @@ The repos mirror the modeling layers. Canonical ruling record:
 
 | Repo | Layer | Holds |
 |---|---|---|
-| [`EventModeling`](https://github.com/IvanTheGeek/EventModeling) (public) | method | generic modeling material — layering, path/step form, the three-fates split, rendering, altitude, the parked extensions; the modeling tool it works toward will live in repos of its own |
+| [`EventModeling`](https://github.com/IvanTheGeek/EventModeling) (public) | method | generic modeling material — the canon primer, layering, path/step form, the three-fates split, rendering, altitude, the parked extensions; the modeling tool it works toward will live in repos of its own |
 | **`FnEmail-Model`** (this repo — renamed from `FnEmail` 2026-08-08, old URLs redirect) | model | the SMTP model, walks, RFCs, SMTP-specific references. Cites the method repo |
 | `FnEmail` (future) | code | what the model generates — not yet created |
 | `event-modeling-research` (private) | sources | the mirrored corpus — cite, never reproduce |
@@ -42,7 +44,8 @@ stay here ([`AGENTS.md`](AGENTS.md) rule 11).
 Clone all three repos. *(Verified working 2026-08-08.)*
 
 ```bash
-# 1. The model — this repo. Work is on main.
+# 1. The model — this repo. Work is on main; an explore/ branch may be
+#    checked out while an exploration runs (AGENTS.md rules 13 and 15).
 git clone git@github.com:IvanTheGeek/FnEmail-Model.git /home/ivan/FnEmail-Model
 
 # 2. The method repo — PUBLIC
@@ -59,8 +62,8 @@ exist* — it is the confusing failure mode. Generate a key with `ssh-keygen -t 
 Verify:
 
 ```bash
-git -C /home/ivan/FnEmail-Model branch --show-current   # → main
-ls /home/ivan/FnEmail-Model/docs                        # → event-model.md, paths/, diagrams/, rfc/
+git -C /home/ivan/FnEmail-Model branch --show-current   # → main, or an explore/ branch
+ls /home/ivan/FnEmail-Model/docs                        # → DECISIONS.md, event-model.md, paths/, …
 ls /home/ivan/EventModeling/docs                        # → layering.md, path-and-step-form.md, …
 ls ~/event-modeling-research                            # → research/, extracted/, 6 root files
 ```
@@ -75,10 +78,10 @@ Start with the method layer, then this repo, then the research repo as needed.
 
 | File | Repo | Why |
 |---|---|---|
-| `README.md`, then `docs/` (six files) | EventModeling | **The method layer.** Layering, path/step form, the three-fates split, rendering, altitude, the parked extensions — the canonical statements this repo cites |
-| [`AGENTS.md`](AGENTS.md) | this repo | The working rules — thirteen, each learned the hard way |
+| `README.md`, then `docs/` | EventModeling | **The method layer.** The canon primer, layering, path/step form, the three-fates split, rendering, altitude, the parked extensions — the canonical statements this repo cites |
+| [`AGENTS.md`](AGENTS.md) | this repo | The working rules — fifteen, each learned the hard way |
 | [`docs/DECISIONS.md`](docs/DECISIONS.md) | this repo | What is settled, and must not be re-litigated (AGENTS.md rule 9) |
-| [`docs/event-model.md`](docs/event-model.md) | this repo | The model — v0.3, 12 slices. **Lags the active walk deliberately**; its banner lists the pending reconciliations |
+| [`docs/event-model.md`](docs/event-model.md) | this repo | The model — v0.3, 12 slices, **derived**: reconciled 2026-08-08 to the active walk on the owner's waiver of the rule-13 hold; its banner lists what stays open |
 | [`docs/model-altitude.md`](docs/model-altitude.md) | this repo | What belongs in this model — charter, gate sequence, four tiers, the classified events |
 | [`docs/smtp-path-vs-mailbox.md`](docs/smtp-path-vs-mailbox.md) | this repo | Path versus mailbox — the SMTP reference distinction the walks lean on |
 | [`docs/paths/`](docs/paths/) | this repo | The walked paths. `STEP-FORM.md` carries what SMTP adds to the step form; the generic form is the method repo's |
@@ -88,8 +91,11 @@ Start with the method layer, then this repo, then the research repo as needed.
 
 **The working stance** (AGENTS.md rule 13): the active `WORKING-` file is
 [`docs/paths/WORKING-helo-direct-single-recipient-v2.md`](docs/paths/WORKING-helo-direct-single-recipient-v2.md)
-— under walk-through review; nothing is reconciled to it until the prefix drops. The three
-`EXPLORE-` files are reasoning records whose headers state what each settled and what stays open.
+— under walk-through review; nothing is reconciled to it until the prefix drops. The four
+`EXPLORE-` files are reasoning records whose headers state what each settled and what stays open;
+the active exploration is
+[`docs/paths/EXPLORE-declaration-vs-status.md`](docs/paths/EXPLORE-declaration-vs-status.md) —
+cite it, not `event-model.md`, for anything it governs (AGENTS.md rule 13).
 
 ## Where status lives
 
@@ -98,7 +104,7 @@ Status is tracked at its sources, deliberately — a parallel ledger drifts (thi
 
 - **Working rules** — [`AGENTS.md`](AGENTS.md). **Settled decisions** —
   [`docs/DECISIONS.md`](docs/DECISIONS.md).
-- **What the model owes the active walk** — the ⚠️ banner atop
+- **What stays open after the model's reconciliation** — the ⚠️ banner atop
   [`docs/event-model.md`](docs/event-model.md).
 - **Hotspots** — [`docs/event-model.md`](docs/event-model.md) → *Hotspots*; the active walk's own
   *Hotspots* section is the live ledger for the ones it touches.

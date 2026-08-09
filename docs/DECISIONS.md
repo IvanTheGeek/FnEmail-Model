@@ -55,23 +55,28 @@ is in the ruling commits, one per repo, titled so that
 | **H3 resolved** — Directory is a separate context, joined by orthodox Translation | `event-model.md` → *H3 resolved* |
 | **Golden path deliberately unassigned** — *happy* is descriptive, *golden* is a designation | `paths/helo-multi-recipient.md` |
 | **One event per command** is a design target, stronger than the corpus's "keep an eye on it" | `diagrams/README.md` §1 |
+| **ReversePathDeclared names the step 5 event** — the declaration reading replaced `MailTransactionStarted`'s status-log reading; the companion ruling *Position replaces state at steps 6 and 9* emptied `TransactionState`'s dataset (commits d19f91d, cd06274) | `paths/EXPLORE-declaration-vs-status.md` |
 
 ## Method decisions
 
-The canonical home for method-generic decisions is the `EventModeling` repo. Three of these have
-already flowed there and are cited rather than restated:
+The canonical home for method-generic decisions is the `EventModeling` repo. These have already
+flowed there and are cited rather than restated:
 
 | Decision | Canonical home |
 |---|---|
-| **Paths are the source; slices are derived** — and a path is a workflow with the data filled in | `EventModeling/docs/layering.md` |
+| **Paths are the source; slices are derived** — and a path is a workflow with the data filled in. ⚠️ Demoted 2026-08-08 to working hypothesis — `layering.md`'s status banner records the retraction (method commit fe0891e); held and tested, not settled | `EventModeling/docs/layering.md` |
 | **One fold, three consumers** — state view, todo list, or decision model, decided by who consumes the fold | `EventModeling/docs/state-view-todo-list-decision-model.md` |
 | **The rendering conventions** — measured against all three renderers | `EventModeling/docs/rendering.md`; the evidence experiments live here, in `docs/diagrams/` |
+| **The `Given` is a labeled block, not a row** — label row with empty right cell, contents beneath (commits 3fb8160 here, 18093f2 there) | `EventModeling/docs/path-and-step-form.md` |
+| **Completeness closes in three checks** — backward (output value to origin), payload, forward (every event a consumer); none subsumes another (commits 27627f9 here, 7ac81fb there) | `EventModeling/docs/path-and-step-form.md` → *Completeness closes in three checks* |
+| **STEP-FORM reduces to the SMTP layer** — the generic step form lives in the method repo; `docs/paths/STEP-FORM.md` keeps only what SMTP adds (commits 0f6630d here, 1d04fc3 there) | `EventModeling/docs/path-and-step-form.md` |
 
 > ⚠️ The walk-vs-workflow relation was long held as *probably* distinct, flagged untested (in
-> `HANDOFF.md` until it dissolved 2026-08-08). The layering ruling answered it: **a path is a
-> workflow with the data filled in** — the same shape at two layers, not two concepts. A single
-> walk still crosses several workflows — the direct walk's steps would sit across roughly four —
-> and a workflow contains slices a given walk never touches.
+> `HANDOFF.md` until it dissolved 2026-08-08). The layering hypothesis answers it: **a path is a
+> workflow with the data filled in** — the same shape at two layers, not two concepts. The answer
+> shares the hypothesis's working status (see the demoted row above): whether it holds stays open
+> with the layering itself. A single walk still crosses several workflows — the direct walk's
+> steps would sit across roughly four — and a workflow contains slices a given walk never touches.
 
 The rest were settled here before that repo existed and its documents do not yet carry them. They
 stay recorded in full until they flow (AGENTS.md rule 11):
@@ -112,8 +117,9 @@ stay recorded in full until they flow (AGENTS.md rule 11):
 > AGENTS.md rule 12 carries this caveat for exactly that reason — the practice is method-legitimate
 > but not method-neutral. *(The caveat originally counted "seven hotspots" and criticized a
 > HANDOFF conventions item that stated the practice without the caveat; on the 2026-08-08 move the
-> count was dropped as volatile — H1 is answered, H8 only proposed, and the walk added an
-> unnumbered one — and the criticized item became rule 12, which states the caveat itself.)*
+> count was dropped as volatile — H1's earn-its-place question is answered (its name stays open —
+> `paths/EXPLORE-declaration-vs-status.md`), H8 only proposed, and the walk added an unnumbered
+> one — and the criticized item became rule 12, which states the caveat itself.)*
 > `event-modeling-research:research/TALKS-FINDINGS-CORPUS.md` §2.
 
 ### Aggregates and DCB are out of scope

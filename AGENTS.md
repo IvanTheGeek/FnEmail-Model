@@ -25,17 +25,21 @@ Check both:
 
 ```bash
 # files
-grep -rniE '\b(colour|behaviour|honour|centre|modelling|labell|maths|whilst|artefact)\w*|\b(organis|sanitis|recognis|generalis|prioritis|summaris|apologis|authoris|standardis)(e|es|ed|ing|ation|er)\b|\b(analyse|analysed|analysing)\b' --include='*.md' .
+grep -rniE '\b(re)?(colour|behaviour|honour|centre|modelling|labell|maths|whilst|artefact)\w*|\b(organis|sanitis|recognis|generalis|prioritis|summaris|apologis|authoris|standardis)(e|es|ed|ing|ation|er)\b|\b(analyse|analysed|analysing)\b' --include='*.md' .
 
 # commit messages, before you write the next one
-git log -n 20 --format='%B' | grep -niE '\b(colour|behaviour|honour|centre|modelling|labell|maths|whilst|artefact)\w*|\b(organis|sanitis|recognis|generalis|prioritis|summaris|apologis|authoris|standardis)(e|es|ed|ing|ation|er)\b|\b(analyse|analysed|analysing)\b'
+git log -n 20 --format='%B' | grep -niE '\b(re)?(colour|behaviour|honour|centre|modelling|labell|maths|whilst|artefact)\w*|\b(organis|sanitis|recognis|generalis|prioritis|summaris|apologis|authoris|standardis)(e|es|ed|ing|ation|er)\b|\b(analyse|analysed|analysing)\b'
 ```
 
 *(The `artefact`, `authoris` and `standardis` stems were added 2026-08-08, after three live hits —
 two *artefact*s and a *relay-authorisation* in `model-altitude.md`, plus a *standardise* in
 `HANDOFF.md` — escaped every earlier sweep because the stems were missing. Tested both directions
 on addition: the pattern catches *artefact*, *authorisation*, *standardise* and does not fire on
-*artifact*, *authorization*, *standardize*.)*
+*artifact*, *authorization*, *standardize*. The `(re)?` prefix was added later the same day, after
+a *recolour* in `docs/diagrams/EXPERIMENT-text-color.md` escaped — `\b` before a stem cannot match
+mid-word, so every `re-` compound was invisible. Tested both directions on addition: catches
+*recolour*, *remodelling*, *relabelling*, *recentre*; does not fire on *recolor*, *remodeling*,
+*relabeling*, *recenter*.)*
 
 ⚠️ **The pattern is tested by running it, not by reading it.** Three earlier versions were wrong,
 each in a different way, and the third was invisible: a script wrote `\b` through a non-raw Python
@@ -84,9 +88,10 @@ see rule 7 — but the discipline did not. Method conventions now also trace to 
 documents (`EventModeling/docs/` — see rule 11); a claim about what this project settled traces to
 [`docs/DECISIONS.md`](docs/DECISIONS.md).
 
-**When citing an RFC, open the RFC.** This session produced two citation failures that were caught
-only by reading the text: a claim attributed to §3.6 that is not there, and a "MUST" that is a
-"SHOULD" and changed a tier classification when corrected. Both were plausible and both were wrong.
+**When citing an RFC, open the RFC.** The 2026-08-06 session produced two citation failures that
+were caught only by reading the text: a claim attributed to §3.6 that is not there, and a "MUST"
+that is a "SHOULD" and changed a tier classification when corrected. Both were plausible and both
+were wrong.
 
 The archived specs are in [`docs/rfc/`](docs/rfc/).
 

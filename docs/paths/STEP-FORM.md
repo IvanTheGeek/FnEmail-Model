@@ -29,7 +29,8 @@ stored message rather than the socket, which is why its top row carries no wire 
 
 ## Uppercase verbs are the RFC's example convention, not a requirement
 
-Every path here writes `HELO`, `MAIL FROM`, `RCPT TO` in caps because RFC 5321 Appendix D does, and
+Every path here writes `HELO`, `MAIL FROM`, `RCPT TO` in caps because RFC 5321's own dialogues and
+grammar do — Appendix D's scenarios (which use `EHLO`) and §4.1.1.1's `"HELO"` literal — and
 rule 2 keeps a quoted dialogue in its own form. But §2.4 says a verb *"MAY be encoded in upper
 case, lower case, or any mixture … with no impact on its meaning"*. Do not read the caps in these
 paths as normative, and never use case to carry meaning — see
@@ -59,7 +60,7 @@ values do not:
 | 🟦 C · Step 12 | `SubmitContent` |
 |:--|:--|
 | MTA Client | ⬛ `Date:` Tue, 19 May 1998 09:14:02 -0700&#10;<br>`From:` Smith \<Smith@bar.com>&#10;<br>`To:` Jones@foo.com&#10;<br>`Subject:` Tuesday&#10;<br>(blank)&#10;<br>Blah blah blah...&#10;<br>`.` |
-| | 🟦 **SubmitContent**&#10;<br>&nbsp;&nbsp;`content`: 194 octets, dot-unstuffed |
+| | 🟦 **SubmitContent**&#10;<br>&nbsp;&nbsp;`content`: 126 octets, dot-unstuffed |
 
 The terminating lone `.` is protocol and stays monospace. The step number is this walk's position,
 not a handle — slices are referred to by name (rule 5).

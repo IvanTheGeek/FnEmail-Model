@@ -7,6 +7,16 @@ Derived from **RFC 5321 Appendix D.3 step 2** — *Relayed Mail Scenario, relay 
 host* — with `HELO` substituted for `EHLO`. Verified against
 [`../rfc/rfc5321.txt`](../rfc/rfc5321.txt).
 
+> **Superseded form — findings stand, steps are trail.** Steps follow the step form as it stood
+> before the 2026-08-07/08 rework — the reply inside the command's wire row, a `protocol` field,
+> a consulted `SessionState` — and keep pre-rename event names as trail (rule 14 —
+> [`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md) rules that the
+> superseded walked paths keep the old names). The current generic form is the method repo's
+> [`path-and-step-form.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/path-and-step-form.md);
+> [`STEP-FORM.md`](STEP-FORM.md) carries only what SMTP adds. ⚠️ The walked `actual_octets` was
+> later recomputed and is wrong — 287 here, recomputed 281 — kept as trail per
+> [`../FOLLOW-UPS.md`](../FOLLOW-UPS.md).
+
 This is the **cleanest inbound scenario the RFC contains.** It is a candidate for the golden
 designation, but **golden is not assigned** — see *Happy is not golden* in
 [`helo-multi-recipient.md`](helo-multi-recipient.md).
