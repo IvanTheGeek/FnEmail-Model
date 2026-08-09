@@ -367,6 +367,127 @@ refines that ruling's cadence half: alternation is the carrier idea, the wave is
 rather than sine, and VV+ and CC+ runs are legal. Flows to the method repo with the cadence
 verdict when that flow-candidate ripens (`FOLLOW-UPS.md`).
 
+#### The two kinds of events — Ivan's observation, 2026-08-09
+
+Working the step 7 evaluation surfaced a classification the walk's own names had been obeying
+unnamed: events split into **captures** of the peer's act (`ReversePathDeclared`,
+`ClientIdentified` — the peer's vocabulary: *Declared, Identified, Requested*) and **decisions**
+of ours (`ConnectionAccepted`, `RecipientAccepted`, `MessageAccepted` — adjudication vocabulary:
+*Accepted, Rejected, Resolved*), with the killed status register (`MailTransactionStarted`) as
+the third kind that names neither. Ivan, quoted:
+
+> i think it also is the signal that we have missing slices - we gather the data and record that
+> gathered it and THEN that data would be processed in some way and produce a decision event.
+> Adam's reservation and assignment for a concert seat that needs 2 or more slices and 2 events
+
+and, on what "hidden" means:
+
+> it is hidden as I have never heard Adam nor Martin bring out how an event might be classified
+> like this, just that its an event which is a fact or something that happened. so that its a
+> capture or a decision has not really been made explicit that I know of. might be interesting
+> to see if the status kind event comes up but again, that will not be obvious in the material -
+> it would need to come from analysis i am sure
+
+The pipeline reading: every command-shaped interaction latently contains
+capture → process → decide → confirm. The walk's envelope steps are that pipeline **losslessly
+compressed from opposite ends** — MAIL keeps the capture (the decision, consumed by nothing,
+lives in the view), RCPT keeps the decision (the capture rides inside its payload) — each step
+keeping exactly the half that has consumers. Slices decompress when a consumer arrives, which
+in the expanded model is the processor: policy at MAIL, directory at RCPT, scanning at DATA.
+Dymitruk's reservation/assignment is the corpus's own fully decompressed case — capture event,
+todo-list processor, decision event, both persisted because both are consumed.
+
+Falsifiable predictions, sent to a corpus review (results below): the corpus defines an event
+only as "a fact / something that happened," never classifying; capture and decision kinds appear
+implicitly in its examples; the status kind appears in no example as a concept and is findable
+only by analysis. Descriptive, not doctrine — a lens the tell and the consumer test already
+enforce, same footing as the FM-wave cadence refinement. Method-generic; flows to
+`EventModeling` if the review supports it.
+
+#### The corpus review — 2026-08-09, five sweeps, rule 7 citations only
+
+**The hypothesis holds in its precise form: the axis is real, enacted everywhere, named
+nowhere.** Per prediction:
+
+- **P1 — never made explicit: supported, with one sharpening.** Both authors define events only
+  as fact-that-happened (Dilger, book 0033: *"events are simple facts and not technical"*;
+  Dymitruk, machine transcript: *"an event is a really good way of saying fact"*), and the
+  absence of taxonomy is by stated design — Dymitruk: *"use regular English and common sense and
+  not really add any specific terms"* (machine transcript, OYtEwBunk2A). But the corpus DOES
+  classify events explicitly on three *other* axes — internal vs external (ownership), delta vs
+  domain events (payload granularity; nebulit iTuw-FXnsyY), and summary events (stream
+  lifecycle) — all orthogonal to capture/decision. Ivan's axis is the hidden one, exactly as
+  claimed.
+- **P2 — both kinds implicit in the examples: strongly supported.** The jewel is Dilger's
+  bank-account video (nebulit NcRQdlQMkgE, machine transcript): its whole thesis is that a
+  single *money transferred* event is *"too simplistic"* because it merges the request with the
+  settlement — *money transfer requested* (capture) → open-transfers todo → processor →
+  settlement (decision). The capture/decision split demanded outright, never named. Dymitruk's
+  side: *"the only way you mark success is by storing an event"* (RoomBooked — adjudication
+  semantics in his own words), and his Open Spaces model runs UniqueIDRequested → todo →
+  ConfIDProvided. Sharpest of all: the kit's own naming corrections rewrite the status name
+  *PaymentPending* into exactly one capture (*PaymentInitiated*) plus one decision
+  (*PaymentAuthorized*) — the taxonomy operating underground in their own tooling, unremarked
+  (`event-modeling-research:research/METHOD-REFERENCE-DETAIL.md:780`).
+- **P3 — status events absent from models: supported in the strong form, with an altitude
+  refinement.** Zero free-floating state-transition events in any worked model (corpus-wide
+  grep). But the status shape is deliberately *sanctioned* at two other altitudes: integration
+  (Dilger recommends a full-state *updated* event for cross-service publication) and stream
+  management (*summary events* like Register Closed, "closing the books" — H4's own territory).
+  So the status kind is not a disease but an **altitude marker** — which is precisely what this
+  file concluded about `MailTransactionStarted` and §3.3's buffer register before the taxonomy
+  existed.
+- **Bonus, unpredicted: the taxonomy resolves a recorded corpus contradiction.** The project's
+  own research files carry *store-first vs validate-first* as "genuinely unresolved"
+  (`event-modeling-research:research/TALKS-FINDINGS-CORPUS.md` §3) — Dymitruk saying both
+  *"just store the damn thing as fast as you can"* and validate-before-store. Under the
+  taxonomy it is not a contradiction: store-first is capture discipline, validate-first is
+  decision discipline. A hidden distinction that dissolves a known contradiction is carving at
+  a real joint.
+- **A candidate third kind surfaced.** The examples contain events that are neither peer-acts
+  nor adjudications: *NotificationSent*, *CartPublished*, the todo-closers — faithful records
+  of a side effect the system itself performed. They read as **captures where the actor is the
+  system** — the pipeline's execution stage recorded. FnEmail will meet these at delivery
+  (right of the responsibility boundary). Noted, not taxonomized.
+- Prior art check: the project's earlier corpus analysis reached decision-kind reasoning twice
+  (rejection events; one field) and never generalized it. The distinction is new.
+
+Method-generic and now corpus-supported — ripe to flow to `EventModeling` on Ivan's review,
+alongside the cadence verdict.
+
+#### The lens applied to H1 — test run, 2026-08-09
+
+`DataPhaseEntered` is the lens's first live test, and the screen closes cleanly. The RFC's own
+structure decides the kind question: §4.3.2 lists DATA's reply as `I: 354` — the core protocol's
+**only intermediate reply** — so nothing is adjudicated at DATA-time; the decision arrives at
+the `250` closing the content (`MessageAccepted`). A decision-named event here would misread the
+wire. The peer's act is plain: the client requested to transmit content.
+
+| Candidate | Killed by |
+|:--|:--|
+| `DataPhaseEntered` (incumbent) | the status register — names the receiver's phase transition; the exploration's own tell table flagged it ("a phase transition; there is no payload at all") |
+| `TransferInitiated` · `MailDataInitiated` | §3.3's verb ("initiates transfer") but the machine's process state — the status register wearing an RFC word |
+| `DataAccepted` and all decision names | `I:` — nothing is decided; the adjudication is `MessageAccepted`'s |
+| `ContentOffered` · `TransmissionRequested` | manufactured verbs with no RFC grounding |
+
+The survivor: **`DataRequested`.** Provenance is the protocol's own reply vocabulary — §4.2.2's
+success text reads *"Requested mail action okay, completed"*, framing every command as a
+**request** — and the capture register (*Declared, Identified, Requested*) is exactly where a
+bare-verb command's event belongs: the request has no argument, the wire row corroborates the
+empty payload, and the tell passes where the incumbent failed it. Both consumers survive
+untouched (`DataPrompt` folds the request's existence to render the `354`; `SubmitContent`
+declares it), and `DataPrompt` becomes a clean response-to-occasion pair: request captured,
+prompt issued.
+
+The DATA pipeline is also the lens's best exhibit on the page — the walk's most decompressed
+sequence: capture (`BeginData` → the request), prompt (`DataPrompt`), capture (`SubmitContent` →
+the content), decide (`MessageAccepted`), confirm (`MessageQueued`). Five slices where the
+envelope steps compress to two.
+
+Screened and recommended, not adopted — H1's name half is a ruling; if `DataRequested` lands,
+H1 closes entirely (the earn-its-place half closed on the walk's consumers), with knock-ons at
+the model's 🔴 marker and the method repo's two H1 citations.
+
 #### The second acknowledgment named — 2026-08-09
 
 `RecipientConfirmed`, Ivan's pick from the step 7 evaluation: the reply's job is confirming the
