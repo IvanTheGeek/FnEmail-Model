@@ -271,10 +271,12 @@ moved there 2026-08-08 from this repo's `docs/event-model-extensions.md` (histor
 deliberately not applied, so the orthodox model stays measurable against them — learn the method
 before extending it. Do not fold extension ideas into the model without being asked.
 
-## 11. Four repositories, one direction of flow
+## 11. Five repositories, one direction of flow
 
 The repos mirror the modeling layers — method (`EventModeling`, public), model (this repo), code
-(`FnEmail`, future), sources (`event-modeling-research`, private). **Method-generic insight flows
+(`FnEmail`, future), sources (`event-modeling-research`, private), and the modeling tool's own
+model (`ModelingTool-Model`, public, created 2026-08-09 and pre-model: it holds ideas for the tool,
+not a model of one). **Method-generic insight flows
 to `EventModeling`, with FnEmail demoted to worked example; SMTP specifics stay here and cite the
 method repo rather than restating it.** Research material is cited, never reproduced, into either
 public repo. The ruling and the full map are in [`docs/DECISIONS.md`](docs/DECISIONS.md).

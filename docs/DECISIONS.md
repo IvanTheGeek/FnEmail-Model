@@ -18,7 +18,18 @@ and the repo README carries the operational map with clone instructions.
 | [`EventModeling`](https://github.com/IvanTheGeek/EventModeling) (public) | method | generic modeling material; the modeling tool's own model and code will live in repos of their own. Modeled systems appear there only as examples |
 | **`FnEmail-Model`** (this repo, public-bound) | model | the SMTP model, walks, RFCs, SMTP-specific references. Cites the method repo |
 | `FnEmail` (future — the bare name is reserved for it) | code | what the model generates; not yet created |
+| `ModelingTool-Model` (public, created 2026-08-09) | the tool's model | ideas for the modeling tool now, its model later. Pre-model: it holds no model and nothing in it is a decision |
+| (future) | the tool's code | not created, not named |
 | `event-modeling-research` (private) | sources | the third-party corpus — cite, never reproduce (rule 7) |
+
+**The fifth repo was added 2026-08-09 and this ruling had already reserved it** — "the modeling
+tool's own model and code will live in repos of their own". `ModelingTool-Model` is the model of a
+tool that *implements* the method, so the tool is a consumer of `EventModeling`, not a second copy
+of it: method-generic insight discovered while modeling the tool still flows to the method repo,
+with the tool demoted to the example that provoked it. Rendering is the boundary case and it goes
+up — `EventModeling`'s `docs/rendering.md` says of its own findings that "For the future tool these
+are output requirements", so a new renderer measurement is method material even though only a tool
+will act on it.
 
 **Method-generic insight flows to `EventModeling` with FnEmail demoted to worked example; SMTP
 specifics stay here and cite the method repo.** The repo was renamed from `FnEmail` to
