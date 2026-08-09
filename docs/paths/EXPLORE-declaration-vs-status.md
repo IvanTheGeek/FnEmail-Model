@@ -253,6 +253,34 @@ differing field values carry a distinction the `Given` already carried.
 failure branch (550, 553), so once the rejection walk runs, whatever selects the reply code seats a
 field at the slice layer. Empty here; not empty forever.
 
+### The view's name — screened 2026-08-09, left open
+
+`TransactionState` describes state the view no longer carries. The candidates were screened by
+the same discipline as the step 5 event's, with one new device the pass added: **the
+discrimination test** — three views in this walk render `250`s (`SessionReady`, this one,
+`MessageQueued`), so a name that just describes "the 250" names none of them.
+
+| Candidate | Killed by |
+|:--|:--|
+| `TransactionStatus` · `TransactionProgress` · `TransactionOpen` | the incumbent's own defect — a status register describing a dataset that is gone |
+| `ActionCompleted` · `ActionOkay` | §4.2.2's own words, the strongest provenance — and the discrimination test: every `250` is "action okay, completed" |
+| `CommandAccepted` · `CommandAcknowledged` | discrimination again (every reply acknowledges a command), and *accepted* overstates step 6's provisional `250` |
+| `EnvelopeAccepted` | overstates twice — step 6 is provisional, and the envelope is incomplete until the last `RCPT` |
+
+Two survive. **`TransactionReady`** completes the ruled sibling progression — *service ready,
+then session ready* (step 4's note), then transaction ready — discriminates correctly (the only
+`250`s that leave the transaction open for more envelope-building), reads naturally on the second
+traversal, and is coherent with the empty dataset. Two honest costs: *Ready* is state vocabulary
+— but the status-log rule above is about **events**, and `ServiceReady`/`SessionReady` already
+settled *Ready* as the view register for what the reply tells the actor; and the rejection branch
+would have `TransactionReady` render a `550` — a property `ServiceReady` already has on the `554`
+branch, so precedented. **`EnvelopeAcknowledged`** discriminates by what is acknowledged — the
+two occasions are exactly the two envelope-building commands, §2.3.1's own vocabulary — at the
+cost of breaking the Ready progression and minting a register no other element uses.
+
+Ivan deferred the choice 2026-08-09: candidates recorded, none adopted, the incumbent stands.
+The header's open list keeps the item.
+
 ---
 
 ## Blast radius
