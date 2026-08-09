@@ -144,7 +144,7 @@ model.
 | Swimlane | Owns |
 |---|---|
 | **Edge** | `ConnectionAccepted`, `ClientIdentified`, `SessionReset`, `SessionClosed` |
-| **Transaction** | `ReversePathDeclared`, `RecipientAccepted`, `RecipientRejected`, `DataPhaseEntered`, `MessageAccepted`, `MessageRejected`, `TransactionAborted` |
+| **Transaction** | `ReversePathDeclared`, `RecipientAccepted`, `RecipientRejected`, `DataRequested`, `MessageAccepted`, `MessageRejected`, `TransactionAborted` |
 | **Directory** | ✅ **A separate context**, not a swimlane here — see *H3 resolved* |
 
 ---
@@ -309,17 +309,18 @@ retires as a name. `TransactionAborted`, formerly among the sources, is unassign
 it belongs with the `Reset` walk (D.2) when that runs
 ([`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-status.md)).
 
-### `BeginData` — C 🔴 **H1**
+### `BeginData` — C
 
 ```
 Pre    ReversePathDeclared exists
        at least one RecipientAccepted exists for this transaction
-Post   DataPhaseEntered
+Post   DataRequested
        OR  reply 503 (no recipients)
 ```
 The *command* is sound — it makes a real decision. The *event* is used: the walk gives it two
 consumers — `DataPrompt` folds it to render the `354`, and `SubmitContent` declares it as
-`Given`. What H1 still holds open is the event's name — see *Hotspots*. The event-existence form
+`Given`. H1 closed 2026-08-09 with the rename to `DataRequested` — see *Hotspots*. The
+event-existence form
 of this `Pre` is safe under the `TransactionState` collapse (commit cd06274); how a `Pre` may
 cite a *view* at all resolved 2026-08-09 — it may not; a consulted view is the handler's fold —
 so the event-existence form here is the correct one, not merely the safe one.
@@ -327,7 +328,7 @@ so the event-existence form here is the correct one, not merely the safe one.
 ### `SubmitContent` — C
 
 ```
-Pre    DataPhaseEntered for the current transaction
+Pre    DataRequested for the current transaction
 Post   MessageAccepted{queue_id, reverse_path, recipients[], content_ref,
                       actual_octets, received_at}
        OR  MessageRejected{reply_code, reason}
@@ -370,7 +371,7 @@ ruling ([`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-
 |:--|:--|:--|
 | `ServiceReady` | `ConnectionAccepted` | the `220` greeting |
 | `SessionReady` | `ClientIdentified` | the `250` after `HELO` |
-| `DataPrompt` | `DataPhaseEntered` | the `354` prompt |
+| `DataPrompt` | `DataRequested` | the `354` prompt |
 | `MessageTrace` | `MessageAccepted` | the `Received:` line, into the stored message |
 | `MessageQueued` | `MessageAccepted` | the `250` after the final dot |
 | `SessionClosing` | `SessionClosed` | the `221` closing line |
@@ -410,7 +411,7 @@ is adopted here.
 | `ReversePathDeclared` | `reverse_path` |
 | `RecipientAccepted` | `forward_path` |
 | `RecipientRejected` | `forward_path`, `reply_code`, `reason` |
-| `DataPhaseEntered` 🔴 | — |
+| `DataRequested` | — |
 | `MessageAccepted` | `queue_id`, `reverse_path`, `recipients[]`, `content_ref`, `actual_octets`, `received_at` |
 | `MessageRejected` | `reply_code`, `reason` |
 | `TransactionAborted` | `cause` (rset \| quit \| disconnect) |
@@ -582,7 +583,7 @@ Slice   SubmitContent                             [Command Slice]
 GIVEN   ReversePathDeclared(<alice@acme.com>),
         RecipientAccepted(<bob@fn.email>),
         RecipientAccepted(<carol@fn.email>),
-        DataPhaseEntered
+        DataRequested
 WHEN    SubmitContent(octets, dot-unstuffed)
 THEN    MessageAccepted(queue_id, content_ref, actual_octets)
                                        → 250 OK queued as <queue_id>
@@ -630,20 +631,21 @@ instantiated tables (*Payloads — every emitted value to its origin*) are the w
 > incomplete.
 
 Covers the whole session rather than one field set, and exercises the direction that exposes
-events nothing consumes. `DataPhaseEntered` lived by exactly this direction — see H1.
+events nothing consumes. `DataRequested` lived by exactly this direction — see H1.
 
 ---
 
 ## Hotspots
 
-**H1 — ✅ answered on existence; open on the name.** The earning question is closed by the v2
-walk (its *✅ H1 — verified answered by this walk* block): the event has two consumers on that
-page — `DataPrompt` folds it to render the `354`, and `SubmitContent` declares it as `Given`.
-The destination gate of `model-altitude.md` §3 decided it, with consumers rather than argument.
-What remains open is the event's **name**: `DATA` declares nothing, so the declaration-naming
-rule has no purchase, and no candidate has been generated
-([`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-status.md), *Open, and
-deliberately not decided here*). The name is not chosen here.
+**H1 — ✅ closed 2026-08-09.** Both halves. The earning question closed on the v2 walk: two
+consumers — `DataPrompt` folds it to render the `354`, and `SubmitContent` declares it as
+`Given` — the destination gate of `model-altitude.md` §3 deciding it with consumers rather than
+argument. The name question closed by the two-kinds lens: `DATA` declares nothing, so the
+declaration reading had no purchase — but the client *requests*, and §4.3.2's `I:` for the `354`
+(the core protocol's only intermediate reply) rules out every decision name. `DataRequested`
+replaced the status-register incumbent `DataPhaseEntered`; the verb is the protocol's own
+(§4.2.2: *"Requested mail action okay, completed"*). Ruling and screen in
+[`paths/EXPLORE-declaration-vs-status.md`](paths/EXPLORE-declaration-vs-status.md).
 
 **H2 — Are protocol errors events?** `RecipientRejected` is; a `503` is not. The line drawn is
 "policy decisions are facts, protocol slips are not" — defensible, unverified. The corpus answer

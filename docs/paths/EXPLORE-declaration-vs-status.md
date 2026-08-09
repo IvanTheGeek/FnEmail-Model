@@ -6,9 +6,10 @@ steps 6/9 collapse; the walk carries both. The adopting commits are titled
 *Position replaces state at steps 6 and 9*. On 2026-08-09 the step 6 view was named
 `ReversePathAllowed`, splitting the slice, and the consulted box at `RecipientDirectory`
 dissolved, renumbering the walk (see *Second pass* and *The consulted box dissolves*). Still
-open: `DataPhaseEntered`'s name (H1), the `RcptTo` symmetry, the refusal-shape fork, the
-third-category question, the command-naming rule. (The `RecipientAccepted`-occasioned view was
-named `RecipientConfirmed` later on 2026-08-09.) The dataset cascade the collapse spawned closed 2026-08-09 — ruled: "Don't invent a new
+open: the `RcptTo` symmetry, the refusal-shape fork, the third-category question, the
+command-naming rule. (Closed later on 2026-08-09: the `RecipientAccepted`-occasioned view became
+`RecipientConfirmed`, and H1 closed entirely with `DataRequested` — see *The lens applied to
+H1*.) The dataset cascade the collapse spawned closed 2026-08-09 — ruled: "Don't invent a new
 test — the view's own definition already decides it"; the walk's steps 10, 13 and 15 notes
 carry the grounds. Started 2026-08-08 on branch
 `explore/declaration-vs-status`, during the step-by-step walk-through of
@@ -484,9 +485,10 @@ sequence: capture (`BeginData` → the request), prompt (`DataPrompt`), capture 
 the content), decide (`MessageAccepted`), confirm (`MessageQueued`). Five slices where the
 envelope steps compress to two.
 
-Screened and recommended, not adopted — H1's name half is a ruling; if `DataRequested` lands,
-H1 closes entirely (the earn-its-place half closed on the walk's consumers), with knock-ons at
-the model's 🔴 marker and the method repo's two H1 citations.
+Screened and recommended — then adopted the same day ("land it"): `DataRequested` is the event,
+H1 is closed entirely (the earn-its-place half had closed on the walk's consumers), the model's
+🔴 marker is cleared, and the method repo's H1 citations updated. The lens's first live test
+succeeded on its first application.
 
 #### The second acknowledgment named — 2026-08-09
 

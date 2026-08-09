@@ -269,19 +269,28 @@ model's slice census settles at the prefix drop.*
 |:--|:--|
 | MTA Client | ⬛ `DATA` |
 | | 🟦 **BeginData** |
-| Event | 🟧 **DataPhaseEntered**&#10;<br>&nbsp;&nbsp;*no payload* |
+| Event | 🟧 **DataRequested**&#10;<br>&nbsp;&nbsp;*no payload* |
 | Given | |
 | | 🟧 **ReversePathDeclared**&#10;<br>🟧 **RecipientAccepted** |
+
+*Renamed 2026-08-09, closing H1's name half by the two-kinds lens: `DataRequested` captures the
+client's request, in the capture register (*Declared, Identified, Requested*). §4.3.2 lists this
+command's reply as `I:` — the `354` is the core protocol's only intermediate reply — so nothing
+is adjudicated here and a decision name would misread the wire; the incumbent
+`DataPhaseEntered` named the receiver's phase transition, the register that fell at step 5. The
+verb is the protocol's own: §4.2.2's success text reads "Requested mail action okay, completed".
+The empty payload agrees — the request has no argument, corroborated by the bare verb on the
+wire. Screened in [`EXPLORE-declaration-vs-status.md`](EXPLORE-declaration-vs-status.md).*
 
 | 🟩 V · Step 10 | `DataPrompt` |
 |:--|:--|
 | MTA Client | ⬛ `354` Start mail input; end with `<CRLF>.<CRLF>` |
 | | 🟩 **DataPrompt** |
 | Given | |
-| | 🟧 **DataPhaseEntered** |
+| | 🟧 **DataRequested** |
 
 *Emptied under the step 15 ruling — `awaiting_content` was a constant-true boolean on
-`accepting`'s footing; the `354` renders from `DataPhaseEntered`'s existence, as the backward
+`accepting`'s footing; the `354` renders from `DataRequested`'s existence, as the backward
 table has said since the collapse.*
 
 | 🟦 C · Step 11 | `SubmitContent` |
@@ -290,7 +299,7 @@ table has said since the collapse.*
 | | 🟦 **SubmitContent**&#10;<br>&nbsp;&nbsp;`content`: 126 octets, dot-unstuffed |
 | Event | 🟧 **MessageAccepted**&#10;<br>&nbsp;&nbsp;`queue_id`: f2C8D14&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>&nbsp;&nbsp;`recipients`: [\<Jones@foo.com>]&#10;<br>&nbsp;&nbsp;`content_ref`: blob:sha256:9c1e…&#10;<br>&nbsp;&nbsp;`actual_octets`: 126&#10;<br>&nbsp;&nbsp;`received_at`: 1998-05-19T09:14:07-07:00 |
 | Given | |
-| | 🟧 **DataPhaseEntered**&#10;<br>🟧 **ReversePathDeclared**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
+| | 🟧 **DataRequested**&#10;<br>🟧 **ReversePathDeclared**&#10;<br>&nbsp;&nbsp;`reverse_path`: \<Smith@bar.com>&#10;<br>🟧 **RecipientAccepted**&#10;<br>&nbsp;&nbsp;`forward_path`: \<Jones@foo.com> |
 
 *The `Given` grew 2026-08-08, seated by the payload check — completeness's third. `reverse_path`
 and `recipients` fold in from the two events now cited; `queue_id` is minted here, the walk's
@@ -410,7 +419,7 @@ consultation is the handler's fold. Two seeded events, never walked.
 | `250` foo.com | `SessionReady` (step 4) | `ServiceConfigured.server_domain`, carried by the view; the `250` code is this scenario's rendering |
 | `250` OK | `ReversePathAllowed` (step 6) | `ReversePathDeclared`'s existence |
 | `250` OK | `RecipientConfirmed` (step 8) | `RecipientAccepted`'s existence |
-| `354` prompt | `DataPrompt` (step 10) | `DataPhaseEntered`'s existence |
+| `354` prompt | `DataPrompt` (step 10) | `DataRequested`'s existence |
 | `Received:` trace line | `MessageTrace` (step 12) | four walked events and the seeded `server_domain` — see the step |
 | `250` OK | `MessageQueued` (step 13) | `MessageAccepted`'s existence |
 | `221` foo.com Service closing transmission channel | `SessionClosing` (step 15) | `ServiceConfigured.server_domain`, carried by the view; `SessionClosed`'s existence |
@@ -441,7 +450,7 @@ scope.
 | `ClientIdentified` | `claimed_domain` | `Helo.claimed_domain` |
 | `ReversePathDeclared` | `reverse_path` | `MailFrom.reverse_path` |
 | `RecipientAccepted` | `forward_path` | `RcptTo.forward_path` |
-| `DataPhaseEntered` | *no payload* | — |
+| `DataRequested` | *no payload* | — |
 | `MessageAccepted` | `reverse_path` · `recipients` | `Given` folds — `ReversePathDeclared.reverse_path`, `RecipientAccepted.forward_path` |
 | | `content_ref` · `actual_octets` | derived from `SubmitContent.content` |
 | | `queue_id` | minted at this step — the walk's only mint |
@@ -450,7 +459,7 @@ scope.
 
 Every emitted value has an origin on the page. The check's first run is what seated step 11's
 `Given`: before it, `reverse_path` and `recipients` materialized from a `Given` citing only the
-payload-free `DataPhaseEntered`.
+payload-free `DataRequested`.
 
 ### Forward — every event to its consumers
 
@@ -462,7 +471,7 @@ payload-free `DataPhaseEntered`.
 | `ClientIdentified` | steps 4, 5 (existence); step 12 (`claimed_domain`) |
 | `ReversePathDeclared` | steps 6, 7, 9 (existence); step 11 (`reverse_path`) |
 | `RecipientAccepted` | steps 8, 9 (existence); steps 11, 12 (`forward_path`) |
-| `DataPhaseEntered` | steps 10, 11 |
+| `DataRequested` | steps 10, 11 |
 | `MessageAccepted` | step 12 (`queue_id`, `received_at`); step 13 (existence) — `reverse_path`, `recipients`, `content_ref`, `actual_octets` are consumed by delivery, right of the responsibility boundary, out of scope |
 | `SessionClosed` | step 15 (existence) — `cause` has **no consumer on this walk**, 🟥 H8 |
 
@@ -623,7 +632,8 @@ must exist on that path. That contradicts the model's recorded contract for `Acc
 *reply 554, no event*. A rule 4 correction is pending in the model; unnumbered here because
 hotspot numbering belongs to the model.
 
-**✅ H1 — verified answered by this walk.** *Does `DataPhaseEntered` earn its place?* On this page
-it has two consumers: `DataPrompt` folds it to render the `354`, and `SubmitContent` declares it
-as `Given`. The event is used. Formal closure is model work under rule 9 — this path supplies the
-evidence, not the edit.
+**✅ H1 — closed 2026-08-09.** Both halves answered. *Does the event earn its place?* — by this
+walk: two consumers, `DataPrompt` folding it to render the `354` and `SubmitContent` declaring it
+as `Given`. *Is the name right?* — by the two-kinds lens: `DataRequested`, the capture of the
+client's request, replacing the status-register incumbent (the step 9 note carries the grounds).
+The model's marker is cleared.

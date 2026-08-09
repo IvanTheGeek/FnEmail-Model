@@ -150,7 +150,7 @@ naming split it: `ReversePathAllowed` at the `MailFrom` step, `RecipientConfirme
 | `ReversePathDeclared` | **Domain** | G2, G4 | Yes |
 | `RecipientAccepted` | **Domain** | G2, G4 | Yes |
 | `RecipientRejected` | **Domain** + product field + protocol field | G2, G4; §2.4 on `reply_code` | Yes |
-| `DataPhaseEntered` | **Product**, not protocol | G1 — two consumers on the v2 walk | No, as drawn |
+| `DataRequested` | **Product**, not protocol | G1 — two consumers on the v2 walk | No, as drawn |
 | `MessageAccepted` | **Domain** — the domain fact | all gates | Yes |
 | `TransactionAborted` | **Domain**, protocol-named values | G2, G4 | Yes |
 | `SessionClosed` | **Product**, weakest in the model | G1 marginal, G4 fails | No |
@@ -254,7 +254,7 @@ But the payload mixes tiers, and §2.4 exposes something the model has not yet s
 keep `reply_code` as the emitted-output exception. Then G5 also becomes satisfiable — an outside
 consumer can read the disposition without knowing SMTP.
 
-### DataPhaseEntered — H1, answered by the walk
+### DataRequested — H1, closed
 
 G4's second form fails — a phase transition is an artifact of SMTP's line-oriented
 command/response encoding, not of the conversation — so the event is **product**, not protocol.
@@ -265,10 +265,12 @@ to render the `354`, and `SubmitContent` declares it as `Given`."*
 `event-model.md` is pending model work — and whether a `Given` citation counts as a consumer, the
 consumer-or-key question, is genuinely open, so the count is the walk's, on the walk's terms.
 
-What H1 leaves open is the event's **name**. `DataPhaseEntered` is this document's own
-wire-named-event case, and `DATA` declares nothing, so the declaration reading that produced
-`ReversePathDeclared` has no purchase here. Tracked in
-`docs/paths/EXPLORE-declaration-vs-status.md`; no name is proposed here.
+The name half closed 2026-08-09: `DATA` declares nothing, so the declaration reading that
+produced `ReversePathDeclared` had no purchase — but the client *requests*, and the `354`'s
+intermediate status (§4.3.2's only `I:`) rules out every decision name. `DataRequested` replaced
+the status-register incumbent `DataPhaseEntered`, the capture register's verb with the
+protocol's own provenance (§4.2.2: *"Requested mail action"*). Ruling in
+`docs/paths/EXPLORE-declaration-vs-status.md`.
 
 ### MessageAccepted — Domain, and the model's integration event
 
@@ -300,7 +302,7 @@ operational telemetry, not domain; whether `cause` survives at all sits inside t
 dataset-cascade question — the render-failure test for a non-constant field — flagged in the v2
 walk and not settled here.
 
-It survives as **product**, on the same footing as `DataPhaseEntered`: the operator wants sessions
+It survives as **product**, on the same footing as `DataRequested`: the operator wants sessions
 to be countable and terminable in the transcript. But it has not been subjected to the forward
 check — of the three-check completeness pass, *Completeness closes in three checks* (commit
 27627f9) — that deleted `ServiceGreetingSent`, and by symmetry it should be.
@@ -314,7 +316,7 @@ not yet registered there.)
 
 Every event that passes G4 is **named for the conversation, not the wire** — `ClientIdentified`,
 not `HeloReceived`; `ReversePathDeclared`, not `MailFromAccepted`. Every event on trial
-(`DataPhaseEntered`) or weak (`SessionClosed`) is named for the wire. **Naming predicts tier**, and
+(`DataRequested`) or weak (`SessionClosed`) is named for the wire. **Naming predicts tier**, and
 this is a cheap review heuristic: an event named after a verb or a phase is a protocol event until
 it proves otherwise.
 
@@ -375,7 +377,7 @@ of shared events measures the boundary's quality, and one is healthy.
   Ours ends at an RFC. G3 (MUST vs MAY) and G4 (substitution) are our substitutes, and **neither
   has any corpus support**. If they are wrong, most of §3 is wrong. Unverified.
 - **Q2. Is "product" a real tier?** It may just be "domain we chose rather than inherited." It
-  earns its keep here because it decides `DataPhaseEntered` and `SessionClosed`, but it has no
+  earns its keep here because it decides `DataRequested` and `SessionClosed`, but it has no
   corpus basis whatsoever, and a simpler three-tier scheme might do the same work.
 - **Q3. G4's substitution set is stipulated, not derived.** We declared that "different socket
   library" is a substitution and "different protocol" is not. That declaration comes from the
@@ -389,7 +391,7 @@ of shared events measures the boundary's quality, and one is healthy.
 **Model-level, arising from §3**
 
 - **Q5. H1 restated:** does the operator need to distinguish abandonment-before-body from
-  abandonment-during-body? Answer decides `DataPhaseEntered` outright.
+  abandonment-during-body? Answer decides `DataRequested` outright.
   ✅ **Answered by the v2 walk** — two consumers on the page; formal closure in `event-model.md`
   pending; the event's name remains open (H1 residue, tracked in
   `docs/paths/EXPLORE-declaration-vs-status.md`).

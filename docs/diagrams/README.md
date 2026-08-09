@@ -3,11 +3,10 @@
 Renderings of `../event-model.md` v0.3, as **markdown tables**. They render on GitHub, on desktop,
 and in the Android app. Sections 4–6 were reconciled 2026-08-08 to the walked timeline of
 [`WORKING-helo-direct-single-recipient-v2.md`](../paths/WORKING-helo-direct-single-recipient-v2.md),
-on the owner's waiver of the rule-13 hold. What stays open is flagged where it sits: the
-open name (`DataPhaseEntered` — the acknowledgment views were named `ReversePathAllowed` and
-`RecipientConfirmed` 2026-08-09). The dataset cascade closed and the consulted box at
-`RecipientDirectory` dissolved, both 2026-08-09; §§5–6 reflect the emptied views and the
-dissolution.
+on the owner's waiver of the rule-13 hold. The 2026-08-09 rulings are reflected throughout: the
+acknowledgment views named (`ReversePathAllowed`, `RecipientConfirmed`), the event renamed
+`DataRequested` (H1 closed), the dataset cascade closed, and the consulted box at
+`RecipientDirectory` dissolved; §§5–6 carry the emptied views and the dissolution.
 
 **Colors** — 🟧 Event · 🟦 Command · 🟩 Read Model · ⬜ rendered UI (Screen) · ⬛ wire ·
 🟨 external / required-first · 🟥 hotspot · 🟤 nothing, only ever in a `Given`.
@@ -219,17 +218,16 @@ seeded event above; in the expanded model the consultation returns as a processi
 
 ## 6. Inbound timeline — content and close
 
-`BeginData` → `SessionClosing`. `DataPhaseEntered` keeps its 🟥 chip: H1's earn-its-place question
-was answered on the v2 walk — `DataPrompt` folds it to render the `354`, and `SubmitContent`
-declares it as `Given`; the transcript is untouched — but formal closure in `../event-model.md` is
-pending, and the event's *name* is the open question
-([`EXPLORE-declaration-vs-status.md`](../paths/EXPLORE-declaration-vs-status.md)).
+`BeginData` → `SessionClosing`. `DataRequested`'s 🟥 chip is cleared: H1 closed 2026-08-09 —
+the earn-its-place half on the v2 walk's two consumers, the name half by the two-kinds lens
+(capture of the client's request, replacing the status-register `DataPhaseEntered`;
+[`EXPLORE-declaration-vs-status.md`](../paths/EXPLORE-declaration-vs-status.md)).
 
 | | **BeginData** | **DataPrompt** | **SubmitContent** | **MessageTrace** | **MessageQueued** | **Quit** | **SessionClosing** |
 |:--|:--|:--|:--|:--|:--|:--|:--|
 | ⬜ **Actor** | `DATA` | ⬛ `354` Start mail input; end with `<CRLF>.<CRLF>` | content · then dot | **Stored message**&#10;<br>the `Received:` header | ⬛ `250` OK | `QUIT` | ⬛ `221` foo.com Service closing transmission channel |
 | **Cmd / View** | 🟦 **BeginData** | 🟩 **DataPrompt**&#10;<br>*(existence-fold, no dataset)* | 🟦 **SubmitContent** | 🟩 **MessageTrace** 🟥 H6&#10;<br>`from_domain` · `address_literal` · `by` · `id` · `for` · `at` | 🟩 **MessageQueued**&#10;<br>*(existence-fold, no dataset)* | 🟦 **Quit** | 🟩 **SessionClosing** 🟥 H8&#10;<br>`server_domain` |
-| **Event** | 🟥 **DataPhaseEntered**&#10;<br>H1 — consumers verified on the v2 walk; *name* open | — | 🟧 **MessageAccepted**&#10;<br>`queue_id` · `reverse_path` · `recipients` · `content_ref` · `actual_octets` · `received_at` | — | — | 🟧 **SessionClosed**&#10;<br>`cause` 🟥 H8 | — |
+| **Event** | 🟧 **DataRequested** | — | 🟧 **MessageAccepted**&#10;<br>`queue_id` · `reverse_path` · `recipients` · `content_ref` · `actual_octets` · `received_at` | — | — | 🟧 **SessionClosed**&#10;<br>`cause` 🟥 H8 | — |
 
 **The dataset cascade closed 2026-08-09** — ruled: "Don't invent a new test — the view's own
 definition already decides it." `awaiting_content`, `accepted` and the `queue_id` copy left
