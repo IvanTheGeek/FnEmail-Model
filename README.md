@@ -24,7 +24,7 @@ hypothesis, not a settled ruling — the statement is the method repo's
 status banner records the demotion from "ruled"; the register row in
 [`docs/DECISIONS.md`](docs/DECISIONS.md) carries the correction.
 
-## Four repositories
+## Five repositories
 
 The repos mirror the modeling layers. Canonical ruling record:
 [`docs/DECISIONS.md`](docs/DECISIONS.md).
@@ -34,14 +34,17 @@ The repos mirror the modeling layers. Canonical ruling record:
 | [`EventModeling`](https://github.com/IvanTheGeek/EventModeling) (public) | method | generic modeling material — the canon primer, layering, path/step form, the three-fates split, rendering, altitude, the parked extensions; the modeling tool it works toward will live in repos of its own |
 | **`FnEmail-Model`** (this repo — renamed from `FnEmail` 2026-08-08, old URLs redirect) | model | the SMTP model, walks, RFCs, SMTP-specific references. Cites the method repo |
 | `FnEmail` (future) | code | what the model generates — not yet created |
+| [`ModelingTool-Model`](https://github.com/IvanTheGeek/ModelingTool-Model) (public) | the tool's model | ideas for the modeling tool now, its model later — pre-model, and nothing in it is a decision |
 | `event-modeling-research` (private) | sources | the mirrored corpus — cite, never reproduce |
 
 Method-generic insight flows to `EventModeling` with FnEmail demoted to example; SMTP specifics
-stay here ([`AGENTS.md`](AGENTS.md) rule 11).
+stay here ([`AGENTS.md`](AGENTS.md) rule 11). `ModelingTool-Model` models a tool that *implements*
+the method, so it is a consumer of `EventModeling` rather than a second copy — insight found while
+modeling the tool still flows up.
 
 ## Get set up
 
-Clone all three repos. *(Verified working 2026-08-08.)*
+Clone the repos you need. *(Verified working 2026-08-08.)*
 
 ```bash
 # 1. The model — this repo. Work is on main; an explore/ branch may be
