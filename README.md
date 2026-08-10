@@ -26,6 +26,22 @@ status banner records the demotion from "ruled"; the register row in
 not a correction — the position was accepted and is now held provisionally, which is a different
 thing from having been wrong (AGENTS.md rule 14).
 
+## What FnEmail is
+
+*Not normative.* This section is orientation for a newcomer. It is not an input to any test,
+nothing in the model reads it, and the owner changes it without a ruling. It lives in the README
+because the README already answers *what is this repository*, and *what is the thing being
+modeled* is that same question one step out. What the model claims conformance **against** is a
+separate and checkable thing — [`docs/event-model.md`](docs/event-model.md) →
+*The normative set*. A sentence of prose is not a conformance claim, which is why this one is not
+asked to be.
+
+FnEmail is an open source, AGPL email server that will be RFC compliant. That includes SMTP for
+sending and receiving; local users, across multiple domains and multiple accounts; relays,
+retries and bounces; and IMAP. It will **probably** end up having its own web-based email client,
+and spam filtering and prevention will **probably** work their way in as well. Stated by the
+owner, 2026-08-09 — and both *probably*s are his: those two are likely, not committed.
+
 ## Five repositories
 
 The repos mirror the modeling layers. Canonical ruling record:
@@ -87,7 +103,7 @@ Start with the method layer, then this repo, then the research repo as needed.
 | [`AGENTS.md`](AGENTS.md) | this repo | The working rules — fifteen, each learned the hard way |
 | [`docs/DECISIONS.md`](docs/DECISIONS.md) | this repo | What is settled, and must not be re-litigated (AGENTS.md rule 9) |
 | [`docs/event-model.md`](docs/event-model.md) | this repo | The model — v0.3, 12 slices, **derived**: reconciled 2026-08-08 to the active walk on the owner's waiver of the rule-13 hold; its banner lists what stays open |
-| [`docs/model-altitude.md`](docs/model-altitude.md) | this repo | What belongs in this model — the charter, the payload rule, the register ruling, the boundaries. Its gate sequence and four tiers are unadopted (2026-08-10) and parked in the method repo; the nine classified events are in git |
+| [`docs/model-altitude.md`](docs/model-altitude.md) | this repo | **A signpost, not a ruleset** — read it to resolve a reference you met somewhere else. Dated notices say where the altitude material went: the gate sequence and the four tiers unadopted 2026-08-10 and parked in the method repo, the nine classified events retired to git, and **there is no charter** — the normative set in `event-model.md` and the product statement above are what replaced it. Old filename and section numbers kept, so the references in the walks still land |
 | [`docs/smtp-path-vs-mailbox.md`](docs/smtp-path-vs-mailbox.md) | this repo | Path versus mailbox — the SMTP reference distinction the walks lean on |
 | [`docs/paths/`](docs/paths/) | this repo | The walked paths. `STEP-FORM.md` carries what SMTP adds to the step form; the generic form is the method repo's |
 | [`docs/diagrams/README.md`](docs/diagrams/README.md) | this repo | The model as tables — renders on GitHub *and* the Claude apps |

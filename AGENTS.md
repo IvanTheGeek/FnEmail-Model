@@ -302,8 +302,14 @@ The two repos share the convention, and a cited ruling title means the same thin
 
 A **normative document** says only what is currently accepted. Normative means the reader applies
 it, whatever its lag or confidence status: this file, the README, `docs/event-model.md`,
-`docs/model-altitude.md`, `docs/smtp-path-vs-mailbox.md`, `docs/diagrams/README.md`, and
-`docs/paths/STEP-FORM.md`. **Exploration and walk material** is read for its trail — the
+`docs/smtp-path-vs-mailbox.md`, `docs/diagrams/README.md`, and `docs/paths/STEP-FORM.md`.
+`docs/model-altitude.md` left that list on 2026-08-10, when it became a **signpost**: dated
+notices saying where each piece of its material went, kept under its old filename and with its
+section numbers unchanged so that the references pointing at it still land. A signpost is not
+applied by anyone, so it is not normative, and its content is precisely the moved-notices this
+rule forbids a normative document to accumulate; it is not trail either, and not a discovery
+index. None of the three classes claims it, and none needs to — a redirect has nothing to govern.
+**Exploration and walk material** is read for its trail — the
 `EXPLORE-` records, the walked paths (`WORKING-` included), and the `EXPERIMENT-` files; rule 4
 governs those, not this rule. **Discovery indexes** — `docs/DECISIONS.md` and
 `docs/FOLLOW-UPS.md` — are exempt in the other direction: their rows are pointers to commits and
@@ -432,8 +438,9 @@ unnecessary. If you cannot state the job, you do not have a decline — you have
 and it gets a 🟥 at the point where it bites (rule 12).
 
 **The model repo's own hazard is the tier vocabulary.** *Domain*, *Product*, *Protocol* and
-*Infrastructure* are this project's invention. They were defined in `docs/model-altitude.md` and
-are **unadopted as of 2026-08-10** — a standing change, not a correction — parked with the
+*Infrastructure* are this project's invention. They were defined in `docs/model-altitude.md` §2.3,
+now a signpost stub naming where they went, and they are **unadopted as of 2026-08-10** — a
+standing change, not a correction — parked with the
 unapplied inventions in the method repo's `extensions.md`, so nothing in this repo defines them
 now. They are still used throughout `docs/event-model.md` and the walks as if they were method
 words. They are not in the corpus. A reader arriving at a walk meets them unlabeled, and now

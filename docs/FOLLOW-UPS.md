@@ -21,6 +21,14 @@ Absorbed from `HANDOFF.md`'s open items when that file dissolved, 2026-08-08.
   one-event-per-command, no-arrows, the sequence-diagram rejection); `DECISIONS.md`'s held method
   rows; the EXPLORE-/WORKING- prefix convention; the rendering experiments (with `rendering.md`'s
   evidence pointer updated in the same move).
+- **Q4 — does one model get one altitude?** A question owed to that repo's `altitude.md`, which
+  now holds the split test and the lane material it bears on. Arrived 2026-08-10 from
+  `model-altitude.md` §6, which routed it here rather than into the parked apparatus: unlike Q1 to
+  Q3 it is not a doubt about the invented gates, so parking them left it standing. As §6 put it,
+  this project assumed one altitude per model and pushed collapse to the boundary, following Ch. 5,
+  while Ch. 7's Fig. 7.4 shows System A translating raw records into domain events inside its own
+  boundary — arguably two altitudes in one system. It bears on the **lane axis**, which is the
+  authors' own device and adopted rather than parked, so it belongs with live work.
 
 ## event-modeling-research
 
@@ -40,6 +48,15 @@ Absorbed from `HANDOFF.md`'s open items when that file dissolved, 2026-08-08.
 - **Vocabulary residue** — the DDD-avoidance premise was refuted 2026-08-06 and *context* keeps
   its name; what remains open is only whether an EM-native name would be *clearer* on its own
   merits. `event-modeling-research:research/model-altitude-theory.md` §2.0d.
+- **Retryability in the payload** — should `RecipientRejected` gain
+  `disposition: permanent | transient`, promoting the retryability decision out of the reply code?
+  Same question for `MessageRejected`. Arrived here 2026-08-10 as `model-altitude.md` §6's Q7,
+  when that document became a signpost and its open-questions section stopped being a home; it is
+  live and unanswered, and it lands in `event-model.md` as a hotspot on those two events if it is
+  taken up rather than settled (AGENTS.md rule 12). Git holds §6 as written.
+- **Domain values for `TransactionAborted.cause`** — should it take
+  `client_reset | client_quit | connection_lost` rather than SMTP verb names, keeping verb names
+  out of payload? Same arrival, `model-altitude.md` §6's Q8, and the same two dispositions.
 
 ## Docs-review findings, 2026-08-08 — imported from transcript, verified against the tree
 

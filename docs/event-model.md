@@ -7,7 +7,8 @@ Method reference: the method repo's
 [`EventModeling/docs/`](https://github.com/IvanTheGeek/EventModeling/tree/main/docs); the research
 repo's `event-modeling-research:research/METHOD-REFERENCE.md` remains as source material.
 Corrections from v0.1: `event-modeling-research:research/CORRECTIONS-v0.1.md`.
-Altitude rules — what belongs in this model at all: `model-altitude.md`.
+What belongs in this model at all: this document. [`model-altitude.md`](model-altitude.md) is a
+signpost to where its material went.
 Diagrams (markdown tables, render on GitHub and the Claude apps): `diagrams/`.
 Extensions are parked in the method repo — `EventModeling/docs/extensions.md`, moved there
 2026-08-08 from this repo — and **not** applied here — this document is orthodox Dymitruk/Dilger
@@ -18,13 +19,22 @@ by intent, so extensions can be measured against it.
 unadopted — a standing change, not a correction: the scheme was accepted while it stood, and what
 replaces it is unruled. The taxonomy and the gate *sequence* that assigned it are parked with the
 unapplied inventions in the method repo's `extensions.md`;
-[`model-altitude.md`](model-altitude.md) keeps the charter rule and says where the rest went. Not
+[`model-altitude.md`](model-altitude.md) says where each piece went. Not
 every gate cited below goes with them: **G1** destination and **G2** state change are Dymitruk's
 and **G5** interpretation is Dilger's, so those three keep their own footing; **G3** charter and
 **G4** substitution are ours, and they are what produced the tiers. The classifications the scheme
 produced are in git — the nine-event table included — and the `ConnectionAccepted` verdict under
 *Hotspots* is left standing rather than rewritten. Read a tier word below as the reading that
 stood when the line was written, not as a term this model still defines.
+
+**There is no charter, 2026-08-10.** The one-sentence charter is replaced by two things that are
+not charters: **the normative set** below, which is what the provenance question reads, and a
+**product statement** in the [README](../README.md) → *What FnEmail is*, which is plain prose, not
+normative, and no input to any test. A prose sentence claiming *conformance* is unfalsifiable; a
+list of specifications with their read status is checkable. Also a standing change, not a
+correction. The payload rule and the model's boundaries — the two things `model-altitude.md`
+decided that the charter did not — are absorbed below. Where the word *charter* survives in the
+text that follows, read it as this model's **scope**, which the *Scope* section fixes.
 
 > ⚠️ **This document is derived.** Paths are the source and slices are derived — a working
 > hypothesis, not settled: the method repo's `layering.md` carries the status
@@ -64,21 +74,82 @@ Twelve slices survived the scoping pass, and the v2 walk adds six path-defined V
 eighteen slices in all. Every reply is 3-digit only — no enhanced status codes (RFC 3463 is also
 an extension).
 
-## Normative base
+## The normative set
 
-The hard-lined rules for this model are **RFC 5321 + RFC 7504**, and nothing else.
+The specifications this model claims conformance against, and the rule that decides membership.
 
-RFC 7504 (*SMTP 521 and 556 Reply Codes*, June 2015) is the **sole** update to RFC 5321 — the RFC
-Editor's entry for 5321 lists exactly one. Both are archived under `rfc/`.
+**Entry rule: archived, then read.** A specification joins the set when its text is **archived**
+under [`rfc/`](rfc/) and has been **read**. Nothing joins on a citation, on a title, or on a
+recollection of what it says. The consequence is the whole point of the rule — **widening scope
+creates a reading queue, not a conformance claim.** Deciding to relay does not make RFC 1035
+normative here; it puts RFC 1035 in the queue, and the set grows only once that text is archived
+and read.
 
-The normative set is therefore a small, versioned graph rather than one document, and conformance
-claims must name the set. It can grow: a future update would change what "RFC-conformant" means
-without any change to our model.
+*Read* means the text has been opened and worked from, not that every section has been mined. And
+the set records **which** specifications are claimed and read — it makes no findings about what
+any of them says. Findings live where they bite, on the slices and in the hotspots.
 
-| RFC | Role |
-|---|---|
-| 5321 | base specification (obsoletes 2821; updates 1123) |
-| 7504 | adds reply codes 521 and 556 |
+| Specification | Role | Archived | Read |
+|---|---|---|---|
+| **RFC 5321** — *Simple Mail Transfer Protocol*, October 2008 | base specification; obsoletes RFC 2821, updates RFC 1123 | ✅ [`rfc/rfc5321.txt`](rfc/rfc5321.txt) | ✅ |
+| **RFC 7504** — *SMTP 521 and 556 Reply Codes*, June 2015 | adds reply codes `521` and `556`; the sole update to RFC 5321 | ✅ [`rfc/rfc7504.txt`](rfc/rfc7504.txt) | ✅ |
+
+Two documents, and the second is small. RFC 7504 is the only update to the base: the RFC Editor's
+entry for 5321 lists exactly one, and 7504's own header reads `Updates: 1846, 5321` (line 9 of the
+archived text — RFC 1846 is not ours). So the set is a small, versioned graph rather than one
+document, which is why a conformance claim has to name the **set** rather than an RFC. It can also
+grow with nothing in this model changing: a further update to 5321 would move what
+"RFC-conformant" means on its own.
+
+### The reading queue
+
+RFC 5321 §10.1 *Normative References* (line 4499 of the archived text) lists **eleven** further
+documents. So *"RFC 5321 and nothing else"* — what this section said before — was never true of
+the specification, even where it was true of our reading. Each row below states the role **RFC
+5321 itself assigns**, cited to the line that assigns it. None of them is archived under
+[`rfc/`](rfc/), so by the entry rule none of them is in the set above.
+
+| Specification | What RFC 5321 uses it for | Bites |
+|---|---|---|
+| **RFC 5322** — *Internet Message Format* | §4.4's `Received:` grammar takes `date-time` and `msg-id` from it (lines 3313, 3337); a mail object's header section is 5322's (§2.3.1, line 635) | **now** — `MessageTrace` renders a `Received:` line |
+| **RFC 2119** / BCP 14 — *Key words for Requirement Levels* | §1.3 (line 325) defines every `MUST` and `SHOULD` in RFC 5321 by reference to it | **now** — the provenance question reads exactly those words |
+| **RFC 5234** / STD 68 — *ABNF* | §4.1.2 (line 2253) states every command argument's grammar in it | **now** — command parsing |
+| **ANSI X3.4-1968** — *US-ASCII* | §2.3.1 (line 637) and §2.4 (line 891) fix the character repertoire | **now** |
+| **RFC 1123** / STD 3 — *Requirements for Internet Hosts* | RFC 5321 consolidates its clarifications and applicability statements (§1.2, line 273) and formally updates it | **now**, diffusely — no single slice, many defaults |
+| **RFC 4291** — *IPv6 Addressing Architecture* | §4.1.3 (line 2393) defers the IPv6 address-literal form to it | when an IPv6 literal reaches `peer_address` or `Received:`'s `FROM` |
+| **RFC 3848** — *ESMTP and LMTP Transmission Types Registration* | §4.4 (line 3373) draws the `Received:` `Protocol` value from the IANA registry it establishes | weakly — `WITH SMTP` is a renderer constant here, and the check is only that the constant is a registered name |
+| **RFC 1035** / STD 13 — *Domain names* | §2.3.5 (line 700) for domain-name form; §5.1 (line 3829) makes the MX lookup a `MUST` | **on sending** — deferred by scope, unavoidable for the product |
+| **RFC 1870** / STD 10 — *SMTP Service Extension for Message Size Declaration* | §4.5.3.1.7 (line 3524): a server that must impose a message-size restriction `SHOULD` implement it | only if FnEmail imposes one — conditional, and a product question |
+| **RFC 3864** / BCP 90 — *Registration Procedures for Message Header Fields* | §8 (line 4446): a **new** trace header field, beyond `Return-path` and `Received`, must be registered there | never, unless FnEmail invents a trace field |
+| **RFC 821** / STD 10 — *Simple Mail Transfer Protocol*, August 1982 | listed as normative, but RFC 5321 obsoletes it and cites it historically (§1.2, line 268; §4.5.3.1.10, line 3573) | never |
+
+**The queue is the first eight rows.** Five of them bite on the inbound path already modeled here
+— RFC 5322, RFC 2119, RFC 5234, ANSI X3.4-1968 and RFC 1123. RFC 4291 waits on an IPv6 literal
+reaching the wire, RFC 3848 bites only weakly, and RFC 1035 becomes unavoidable the moment
+FnEmail sends — which the [README](../README.md) → *What FnEmail is* says it will. The last three
+rows are set aside rather than queued: RFC 1870 waits on a product decision, RFC 3864 binds
+nothing FnEmail does, and RFC 821 is obsoleted by the base specification itself.
+
+Nothing above is a defect in the model. It is the honest state of the reading, which is what the
+entry rule exists to keep visible: the model is walked against RFC 5321 and RFC 7504, and the
+conformance claim says exactly that and no more.
+
+### The Scope table is not a conformance claim
+
+The *Scope* table above names **RFC 3207** (`STARTTLS`), **RFC 1870** (`SIZE`) and **RFC 6152**
+(`8BITMIME`), and the prose beneath it names **RFC 3463** (enhanced status codes). Those are
+citations of *where each excluded extension is defined* — the reason a verb or parameter is out of
+scope. They are not membership claims, and they never contradicted this section. What
+*"and nothing else"* contradicted was §10.1.
+
+Two of the four are not RFC 5321's to pull in at all. **RFC 3207 appears nowhere in RFC 5321** —
+no mention of `STARTTLS`, no reference. **RFC 6152 appears nowhere either**: the base
+specification predates it and cites `8BITMIME` as RFC 1652 (lines 638 and 923), which sits in
+§10.2 *Informative References*, as does RFC 3463 (lines 759, 1264, 3053). Only **RFC 1870** is
+genuinely normative to RFC 5321, and it is already in the queue above on a conditional `SHOULD`.
+
+None of the four is archived under [`rfc/`](rfc/), so none of them is in the set — which is the
+correct outcome, reached by the entry rule rather than by the scoping decision that excluded them.
 
 ---
 
@@ -175,6 +246,31 @@ of the open dataset cascade the walk leaves standing for a ruling (its notes, an
 
 A domain observation about SMTP, **not** Event Modeling vocabulary.
 
+### The model's three boundaries
+
+Three places where this model stops. All three are genuine splits — a separate model on the far
+side, not a lane inside this one — and all three are already decided:
+
+| Boundary | Split? | Interface |
+|---|---|---|
+| **Directory / provisioning** (H3, resolved) | **Yes** — a different room (operations and provisioning) and a different language (a mailbox is not a forward path) | **Inbound.** `RecipientDirectory` is the Translation boundary onto the separate Directory context: the upstream model publishes mailbox facts, and we translate them into the read model. |
+| **Outbound delivery / relay** | **Yes** — the roles invert. *They command, we reply* becomes *we command, they reply*, and the automation lives on that side | **Outbound.** `MessageAccepted` is the integration event. |
+| **Any consuming business** (e-commerce, notifications) | **Yes**, trivially | **Outbound.** `MessageAccepted` again, collapsed to one event on their board — the worked example is the method repo's [`altitude.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/altitude.md) → *The same fact at two altitudes*. |
+
+**Both outbound interfaces land on the line the RFC draws for itself, and that is worth saying out
+loud.** Three things coincide at one point: §2.1's formal handoff of responsibility, the
+integration event that records it, and the edge of this model. The handoff moment is the
+specification's — the issuance of the `250` following `DATA` (§2.1, §6.1), which the section above
+sets out. The integration event is ours — `MessageAccepted`. The model boundary was arrived at
+independently of both, by asking where a second model would have to begin. They agree. **That is a
+good sign**: a boundary that falls on the specification's own transfer of obligation was found
+rather than imposed.
+
+The inbound boundary is the case that keeps this from being circular. Directory is a real split
+too and it lands nowhere near §2.1 — it is drawn by different actors, timescales, normative source
+and change cadence (see *H3 resolved*). Two of the three boundaries agree with the RFC and the
+third is drawn on wholly other grounds, so the agreement at §2.1 is a finding, not a definition.
+
 ---
 
 ## Slices and contracts
@@ -219,7 +315,7 @@ Pre    ConnectionAccepted exists
 Post   ClientIdentified{claimed_domain}
        OR  reply 501 (bad syntax) / 500 (unrecognized)
 ```
-`protocol` **removed.** In a `HELO`-only charter it cannot vary — a constant is a rule, not a
+`protocol` **removed.** In a `HELO`-only scope it cannot vary — a constant is a rule, not a
 fact — and the `WITH` clause's value joined the renderer's constants (commit 2673b1b).
 
 ### `SessionState` — V
@@ -434,6 +530,18 @@ no key survives on a path. That leaves three correlation schemes standing here a
 section's own one-mechanism warning. The model-level metadata ruling is open — entangled with
 H4's stream/envelope sub-rulings — and the rows stay until it lands.
 
+### Payload rule — store the decision, derive the encoding
+
+Ours, not the corpus's. **When a fact and its wire encoding are both available, the payload carries
+the decision and the encoding is derived at the edge** — *unless* the encoding is itself emitted as
+permanent output, in which case it is payload for the reason the next subsection gives for
+`received_at`.
+
+What the rule turns on is a single distinction — a decision versus its wire encoding — plus that
+one exception. Both halves are testable directly against a field: ask what was decided, then ask
+whether the encoding leaves the system permanently. `received_at` is the worked case, and it is the
+exception rather than the rule, which is why it is written out at length below.
+
 ### Why `received_at` is payload, not metadata
 
 Timestamp is absent from Dilger's metadata list, implying the event store supplies it. That is
@@ -597,7 +705,7 @@ Completeness closes in **three checks**: backward, payload, forward.
 | `FROM` domain | `ClientIdentified.claimed_domain` |
 | `FROM` address literal | `ConnectionAccepted.peer_address` |
 | `BY` | config (`derived:`) |
-| `WITH SMTP` | renderer constant — cannot vary in a `HELO`-only charter |
+| `WITH SMTP` | renderer constant — cannot vary in a `HELO`-only scope |
 | `ID` | `MessageAccepted.queue_id` |
 | `FOR` | `RecipientAccepted.forward_path` *(only when exactly one)* |
 | timestamp | `MessageAccepted.received_at` — **payload, not metadata** (see *Why `received_at` is payload, not metadata* above) |
@@ -716,7 +824,7 @@ connection level, that refusal is a product rule that needs `peer_address`, and 
 together. If it never refuses, this event survives on a SHOULD alone.
 
 **Transport itself stays unmodeled.** Not black-boxed — there is no stream standing in for it —
-simply outside the charter. One fact is lifted across the boundary because something inside
+simply outside this model's scope. One fact is lifted across the boundary because something inside
 consumes it. `local_address` is the control: same origin, no consumer, orphaned (**H6**).
 
 ---
@@ -735,7 +843,7 @@ separate contexts:
 | **Actors** | remote MTA; operator | administrator provisioning mailboxes |
 | **Lifecycle** | a session lasts seconds | a mailbox lasts years |
 | **Events** | per-connection | `MailboxProvisioned`, `AliasCreated`, `DomainAdded` |
-| **Normative base** | RFC 5321 + 7504 | RFC constrains address *syntax* (§4.1.2) only; **who may hold a mailbox is pure operator policy** |
+| **Normative set** | RFC 5321 + 7504 | RFC constrains address *syntax* (§4.1.2) only; **who may hold a mailbox is pure operator policy** |
 | **Changes when** | the RFC set changes — once since 2008 | operator policy changes |
 | **Exists independently?** | no — needs Directory | **yes** — exists whether or not mail ever arrives |
 
