@@ -87,7 +87,7 @@ Start with the method layer, then this repo, then the research repo as needed.
 | [`AGENTS.md`](AGENTS.md) | this repo | The working rules — fifteen, each learned the hard way |
 | [`docs/DECISIONS.md`](docs/DECISIONS.md) | this repo | What is settled, and must not be re-litigated (AGENTS.md rule 9) |
 | [`docs/event-model.md`](docs/event-model.md) | this repo | The model — v0.3, 12 slices, **derived**: reconciled 2026-08-08 to the active walk on the owner's waiver of the rule-13 hold; its banner lists what stays open |
-| [`docs/model-altitude.md`](docs/model-altitude.md) | this repo | What belongs in this model — charter, gate sequence, four tiers, the classified events |
+| [`docs/model-altitude.md`](docs/model-altitude.md) | this repo | What belongs in this model — the charter, the payload rule, the register ruling, the boundaries. Its gate sequence and four tiers are unadopted (2026-08-10) and parked in the method repo; the nine classified events are in git |
 | [`docs/smtp-path-vs-mailbox.md`](docs/smtp-path-vs-mailbox.md) | this repo | Path versus mailbox — the SMTP reference distinction the walks lean on |
 | [`docs/paths/`](docs/paths/) | this repo | The walked paths. `STEP-FORM.md` carries what SMTP adds to the step form; the generic form is the method repo's |
 | [`docs/diagrams/README.md`](docs/diagrams/README.md) | this repo | The model as tables — renders on GitHub *and* the Claude apps |

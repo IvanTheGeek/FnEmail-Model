@@ -1,7 +1,9 @@
 # Model altitude — FnEmail's working rules
 
-Status: **working rules, v0.1.** Companion to `event-model.md`. Resolves the framing behind H1,
-H2 and H5.
+Status: **working rules, v0.2 — the altitude apparatus is no longer applied.** Companion to
+`event-model.md`. What this document still decides: the charter (§2.1), the payload rule (§2.4),
+the register ruling behind the `ReversePathDeclared` rename (§3), the model's boundaries (§4.3),
+and the open questions (§6). The filename is unchanged so inbound links resolve.
 
 > **Split 2026-08-06.** This document's first half — §0 and §1 on what the corpus says about
 > altitude, and §2.0b–§2.0d on vocabulary and the DDD question — moved to the private
@@ -22,6 +24,33 @@ H2 and H5.
 > decides *this* model: the charter (§2.1), the gates (§2.2), the tiers (§2.3), the payload rule
 > (§2.4), the classified events (§3), the applied boundaries (§4.3), and the open questions (§6).
 > The gates and tiers are themselves flow candidates once a second modeled system tests them.
+
+> **Split again 2026-08-10 — and the apparatus unadopted.** §2.2's five-gate sequence and §2.3's
+> four tiers are **parked in the method repo's extensions register**,
+> [`EventModeling/docs/extensions.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/extensions.md),
+> where the family already keeps inventions that are deliberately not applied; §3's nine classified
+> events are **retired to git**. The scheme was an agent's invention rather than the owner's —
+> commit `d0f1913` says so in its own message — and it had begun generating exceptions rather than
+> answers. **Not all of it was ours: G1 and G2 are Dymitruk's and G5 is Dilger's**, and those tests
+> keep their corpus footing wherever they are used on their own; the invented part is the five-gate
+> *sequence*, and G3 and G4 specifically. Replacing one ranked ladder: **two axes** — a **lane**
+> axis, business up and technical or infrastructure down, hideable, which is Dymitruk's and
+> Dilger's own device; and a **provenance** axis, did the specification force this or did we choose
+> it. The tier word was a lossy summary of a citation that should simply be kept — instead of
+> *Domain*, the clause; instead of *Product*, the MAY or SHOULD; instead of a judgment call, "no
+> normative clause, stated as a bare declarative". **Section numbers are again unchanged**; stubs
+> stand in the numbered positions. This is a standing change and not a correction — the scheme was
+> accepted and is now unadopted — so it carries no ⚠️ block, and the record is in the commit.
+>
+> **§2.1's charter is now unanchored.** Its stated justification — *"altitude is not a property of
+> a fact; it is a relation between a fact and a charter"* — existed to make the altitude question
+> answerable, and that question no longer has an apparatus behind it. The charter itself stands,
+> unchanged and still load-bearing: §2.4, §3's register ruling and §4.3 all read from it. Its
+> replacement is unruled, so nothing here is rewritten to fit.
+>
+> Two things are left as they stood. §6 keeps every question as written, Q1–Q4 included, which were
+> doubts about this very scheme; and the moved-notices at §2.0 and §5 still name gates in passing,
+> because they summarize material that now lives in the method repo.
 
 ---
 
@@ -60,66 +89,24 @@ mechanics domain rather than protocol here** — not the fact that we happen to 
 
 ### 2.2 The gate sequence
 
-Apply in order. A fact that fails an earlier gate does not reach later ones.
-
-| # | Gate | Question | Corpus footing |
-|---|---|---|---|
-| **G1** | **Destination** | Does anything in this model consume it? | Dymitruk l. 167 — **direct** |
-| **G2** | **State change** | Does it change what the system will accept or produce next? | Dymitruk l. 120 — **direct** |
-| **G3** | **Charter** | Is it a fact *about* the charter, or about how we happen to satisfy it? | ours |
-| **G4** | **Substitution** | Does it survive replacing the implementation? | ours |
-| **G5** | **Interpretation** | Could an outsider read it without our rules? | Dilger Ch. 5 — **direct**, but scoped to boundary crossing |
-
-**G1 — Destination.** *All information has to have an origin and a destination.* A fact with no
-consumer is not "low altitude"; it is **not in the model**. This gate is unforgiving and it does
-most of the work. It already killed `ServiceGreetingSent`. Note the corollary: a fact can be
-promoted into the model by *adding* a consumer, which is why altitude arguments must always name
-the consumer rather than appeal to taste.
-
-**G2 — State change.** *"only state-changing events are to be specified… "guest viewed calendar for
-room availability"… they are not events."* For a protocol server, "state" includes **which commands
-are now legal**. This is what saves several SMTP facts that would otherwise look like transcript
-noise.
-
-**G3 — Charter.** Distinguishes **domain** from **product**. A fact required by the charter is
-domain. A fact arising from a choice we made, which we could have made differently while still
-satisfying the charter, is **product**. Test: find the RFC clause. **MUST** → domain.
-**MAY/SHOULD**, or no clause at all → product. Both are modeled; the difference is that product
-facts move when the product moves, and domain facts do not.
-
-**G4 — Substitution.** Distinguishes **protocol** and **infrastructure** from the two above.
-Two forms, and you must apply the right one:
-
-- *Wrong form:* "would this exist if we didn't use SMTP?" For FnEmail this is meaningless — a
-  charter naming RFC 5321 has no substitution set.
-- *Right form:* **"would this exist under a different conformant implementation of the same
-  charter?"** Different socket library, different concurrency model, different process
-  architecture, different storage — does the fact survive? If yes, it is not infrastructure. And
-  separately: **"does this fact exist only because of the wire's encoding, or does it exist in the
-  conversation the wire is encoding?"** A phase transition, a line terminator, a three-digit code
-  are encoding. An identity claim, a return path, a refusal are conversation.
-
-  Corpus adjacency, not support: *transport is "an implementation detail"* (Ch. 5, p. 92) is the
-  same shape of argument applied to Kafka-vs-CSV.
-
-**G5 — Interpretation.** Only for facts crossing a model boundary. *"A system using these events
-needs to know exactly what it means to 'add an item'."* If a consumer would need our rules to make
-sense of it, it stays inside. This is the gate that forbids exporting reply codes.
+**Parked 2026-08-10 in the method repo's extensions register,
+[`EventModeling/docs/extensions.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/extensions.md),
+and no longer applied here.** Five gates applied in order — G1 destination, G2 state change,
+G3 charter, G4 substitution, G5 interpretation — with a fact that failed an earlier gate never
+reaching the later ones. **G1 and G2 are Dymitruk's and G5 is Dilger's**, and each keeps its corpus
+footing wherever it is used on its own; what is parked is the invention, meaning the *sequence*
+and G3 and G4. Nothing is restated here — git holds the text:
+`git log -p -- docs/model-altitude.md`.
 
 ### 2.3 The four tiers, defined
 
-Ours. The corpus has no such taxonomy (§0).
-
-| Tier | Definition | In the model? |
-|---|---|---|
-| **Domain** | The charter is *about* this fact. Passes G1–G4. Survives any conformant reimplementation. | Yes — first-class event |
-| **Product** | A fact produced by a decision we made and could remake while staying conformant. Passes G1, G2, G4; fails G3. | Yes — event, flagged as ours, expected to churn |
-| **Protocol** | Exists only as an artifact of the wire encoding of the conversation. Fails G4's second form. | Only if the charter names the protocol *and* G1 passes — otherwise collapsed at translation |
-| **Infrastructure** | Exists because of how we run the software. Fails G4's first form. | Never an event. May be metadata. |
-
-**The single most important consequence:** *Protocol* is a tier only relative to a charter. For an
-e-commerce model, everything below `MessageAccepted` is protocol and disappears. For FnEmail,
-whose charter names the RFC, most of it is domain. **The facts did not move. The charter did.**
+**Parked 2026-08-10 in the same entry —
+[`EventModeling/docs/extensions.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/extensions.md)
+— and no longer applied here.** *Domain*, *Product*, *Protocol* and *Infrastructure* were ours
+entirely; the corpus has no such taxonomy. Each tier word summarized a citation lossily, and the
+citation is the part worth keeping: the clause, its MUST or its SHOULD, or the absence of any
+normative clause. Where other documents still speak in tiers, the vocabulary is flagged where it
+stands rather than silently rewritten. Git holds the text.
 
 ### 2.4 Payload rule: store the decision, derive the encoding
 
@@ -131,191 +118,28 @@ already makes for `received_at`:
 > "The `Received:` timestamp must survive replay unchanged… It is business-relevant output, which
 > by Dilger's own test makes it payload."
 
+*The derivation line above — "Corollary of G3+G4" — points at gates that are no longer applied
+(§2.2), and is left standing rather than rewritten. The rule does not rest on them: what it turns
+on is the distinction between a decision and its wire encoding, plus the exception for an encoding
+that is itself emitted as permanent output. Both are testable directly, and `received_at` is the
+worked case.*
+
 ---
 
 ## 3. FnEmail's events, classified
 
-Charter per §2.1. Consumers available in this model: the `Received:` header (§4.4), rendered by
-the `MessageTrace` view, the rendered reply views, and the queue handoff at `MessageAccepted`.
-⚠️ Two former entries are flagged rather than restated: no `Given` on the v2 walk consults
-`SessionState` (its rendering role became `SessionReady{server_domain}`, commit cf3227d), and
-`TransactionState`'s dataset was emptied on the walked path (commit cd06274) — its future name,
-and the dataset cascade generally, stay open in `docs/paths/EXPLORE-declaration-vs-status.md`.
+**Retired to git 2026-08-09.** The nine event subsections, the classification table that headed
+them, and *Pattern across the nine* were the apparatus applied: every verdict in them was a tier
+assigned by the gates of §2.2, so they go where the gates and the tiers went. Nothing is restated
+here — `git log -p -- docs/model-altitude.md` holds the text. The arguments that outlived the tiers
+were already written elsewhere: H5 and `ConnectionAccepted`'s single-field claim into
+`event-model.md` (commit 9d967e6), H1's two consumers into
+`docs/paths/WORKING-helo-direct-single-recipient-v2.md`, and H8 into `event-model.md`'s register.
+§6's model-level questions, which arose from these subsections, stay as written.
 
-| Event | Tier | Decided by | Survives implementation swap? |
-|---|---|---|---|
-| `ConnectionAccepted` | **Product** ⚠️ *was "Domain (fragile)"* | G1 via `peer_address`; **G3 → product**, §4.4's address literal is SHOULD | Yes — one field only |
-| `ClientIdentified` | **Domain** | G2, G4 | Yes |
-| `ReversePathDeclared` | **Domain** | G2, G4 | Yes |
-| `RecipientAccepted` | **Domain** | G2, G4 | Yes |
-| `RecipientRejected` | **Domain** + product field + protocol field | G2, G4; §2.4 on `reply_code` | Yes |
-| `DataPhaseEntered` | **Product**, not protocol | G1 — two consumers on the v2 walk | No, as drawn |
-| `MessageAccepted` | **Domain** — the domain fact | all gates | Yes |
-| `TransactionAborted` | **Domain**, protocol-named values | G2, G4 | Yes |
-| `SessionClosed` | **Product**, weakest in the model | G1 marginal, G4 fails | No |
-
-### ConnectionAccepted — Domain, on one field
-
-A TCP accept is infrastructure by G4: it survives no reimplementation as a *fact*, only as an
-event in the operating system's sense. It is in the model for exactly one reason, and
-`event-model.md` already states it:
-
-> "Exists to carry `peer_address`, which the `Received:` header requires and nothing else supplies."
-
-G1 passes because the `Received:` FROM clause consumes the address literal, which is permanent
-output on the message. It resolves H5's classification: not "domain fact or infrastructure noise"
-as a matter of judgment, but *infrastructure in shape, **admitted by consumer*** — the residue,
-whether FnEmail commits to emitting the address literal, folds into H7, and `event-model.md`
-keeps H5 open on exactly that. If the `Received:` requirement vanished, the event would go the
-way of `ServiceGreetingSent`.
-
-> ⚠️ **Corrected 2026-08-06 — "mandates" was wrong, and the tier moves.** This paragraph read
-> *"§4.4 mandates the FROM address literal"*, which would make `peer_address` domain by G3. The
-> clause does not say that:
->
-> > *"The FROM clause, which **MUST** be supplied in an SMTP environment, **SHOULD** contain both
-> > (1) the name of the source host as presented in the EHLO command and (2) an address literal
-> > containing the IP address of the source, determined from the TCP connection."*
->
-> **The clause is MUST; its contents are SHOULD.** A server supplying a FROM clause with only the
-> EHLO name is conformant. G3 is explicit — *MUST → domain, MAY/SHOULD → product* — so
-> `ConnectionAccepted` is **Product**, and the table above is corrected.
->
-> **This is why it read as fragile.** It was not fragile domain; it was product misfiled as domain,
-> and product facts are expected to churn. The discomfort the "(fragile)" annotation recorded was
-> the misclassification itself.
->
-> Note also where the RFC names TCP. It says *transmission channel* throughout and abstracts the
-> transport — except in this clause, *"determined from the **TCP connection**."* The one place the
-> specification names the transport is the one place this model admits a transport fact. The full
-> argument now lives in `event-model.md` under H5, which is what this paragraph asked for.
-
-The v2 walk adds an existence footing: a `554`-refused greeting still has a session — §3.1 makes
-waiting for the client's `QUIT` a MUST — so `ConnectionAccepted` must exist on the refused path
-too, contradicting the model's recorded contract *reply 554, no event* (the rule 4 correction is
-pending in `event-model.md`). `peer_address` stays the only field-level consumer, so the tier
-argument is untouched.
-
-`local_address` (H6) still fails G1 on the walked path — the v2 walk found two candidate
-consumers, the multi-homed `Received:` BY arm and the nameless-server `220` greeting, since the
-greeting's identity slot admits an address literal (§4.2) — and exercises neither. Which arm, if
-either, wins stays open. Correctly flagged rather than kept on faith.
-
-### ClientIdentified — Domain
-
-Named for the state change, not the verb. That naming is doing real work: `HELO` is protocol, but
-*"the peer has claimed an identity"* is the conversation the protocol encodes, and it survives G4 —
-any submission protocol has this moment. G2 passes hard: it gates every subsequent write — later
-commands cite `ClientIdentified` directly in their `Given`s, the fold that `SessionState.identified`
-once named having fallen with the booleans-nothing-renders ruling (commit cf3227d).
-`claimed_domain` has a permanent destination (`Received: FROM`).
-
-⚠️ **The `protocol: "SMTP"` field fell, exactly as this section predicted.** The paragraph that
-stood here kept the field solely because `Received: WITH` required it as output, and warned: *a
-constant-valued field is normally a smell; note explicitly why this one stays, or a later reader
-will delete it.* The later reader did, for exactly that reason — in a `HELO`-only charter the
-value cannot vary, so `WITH`'s value joined the renderer's constants and the field left the
-command and the event (commit 2673b1b, recorded at the walk's `Helo` step). If the charter ever
-admits `EHLO`, the field re-enters as a fact originated by the verb that actually arrived.
-
-### ReversePathDeclared — Domain
-
-`reverse_path` is where delivery failure reports go. That is a business fact in any mail system
-whatsoever and survives G4 outright. Named for the client's declaration — the thing that happened —
-rather than for the wire verb (`MAIL FROM`) or for the receiver's state transition, which was the
-old name's register: `MailTransactionStarted` spoke §3.3's own vocabulary (see *Registers* below).
-The candidate screening lives in `docs/paths/EXPLORE-declaration-vs-status.md`; the rename was
-adopted in commit d19f91d.
-
-### RecipientAccepted — Domain
-
-Accepting a recipient is a decision with a consequence: the address enters the delivery set that
-`MessageAccepted` will carry, and responsibility attaches to it. `is_local` is arguably product
-(our routing policy), but it is sourced from the Directory context (H3, resolved — a separate
-context joined by Translation; see `event-model.md`) and is a fact about the address space, so:
-domain.
-
-### RecipientRejected — Domain event carrying one product field and one protocol field
-
-The rejection is domain: it is a policy decision, and the model's H2 line ("policy decisions are
-facts, protocol slips are not") is exactly G2 plus G4 applied consistently. Corpus adjacency: the
-kit's own instruction to keep what the business acts on and drop the raw signal.
-
-But the payload mixes tiers, and §2.4 exposes something the model has not yet said:
-
-- `reason` — product. Ours, changeable, no RFC clause.
-- `reply_code` — **protocol encoding of two different things at once.** `550` vs `553` is a
-  presentation choice (product). `5xx` vs `4xx` is **permanent vs transient**, which tells the
-  sender whether to retry. Retryability is a domain fact wearing protocol clothes, and right now
-  it exists in our model **only** as a digit.
-
-**Proposal (ours, not in the model):** add `disposition: permanent | transient` as payload, and
-keep `reply_code` as the emitted-output exception. Then G5 also becomes satisfiable — an outside
-consumer can read the disposition without knowing SMTP.
-
-### DataPhaseEntered — H1, answered by the walk
-
-G4's second form fails — a phase transition is an artifact of SMTP's line-oriented
-command/response encoding, not of the conversation — so the event is **product**, not protocol.
-G2 passes narrowly (it does change which input is legal). G1, the live question this section used
-to carry, is answered by the v2 walk: *"On this page it has two consumers: `DataPrompt` folds it
-to render the `354`, and `SubmitContent` declares it as `Given`."*
-(`docs/paths/WORKING-helo-direct-single-recipient-v2.md`, its ✅ H1 block.) Formal closure in
-`event-model.md` is pending model work — and whether a `Given` citation counts as a consumer, the
-consumer-or-key question, is genuinely open, so the count is the walk's, on the walk's terms.
-
-What H1 leaves open is the event's **name**. `DataPhaseEntered` is this document's own
-wire-named-event case, and `DATA` declares nothing, so the declaration reading that produced
-`ReversePathDeclared` has no purchase here. Tracked in
-`docs/paths/EXPLORE-declaration-vs-status.md`; no name is proposed here.
-
-### MessageAccepted — Domain, and the model's integration event
-
-Every gate passes. This records the responsibility transfer — §2.1 and §6.1 place it at the
-issuance of the `250` that follows `DATA`, and `MessageAccepted` is its record — and its
-payload is already Dilger-shaped: `queue_id`, `content_ref`, `recipients[]`, `actual_octets`,
-`received_at` — **pre-calculated data sufficient for a downstream system, requiring none of our
-rules to interpret.** That is G5 satisfied, and it is `Cart Submitted` by another name:
-
-> "It's much better to provide a "Cart Submitted" event that already contains the pre-calculated
-> data necessary for an external system to process it."
-
-**`MessageAccepted` is the one event that appears in every other business's model too.** §5.
-
-### TransactionAborted — Domain, with protocol leakage in the values
-
-"The sender abandoned the transaction" survives G4. But `cause: rset | quit | disconnect` names two
-SMTP verbs in payload values. By the kit's no-leakage rule — *translate the business meaning, not
-just map fields* — these should be domain-named: `client_reset | client_quit | connection_lost`.
-Minor, real, cheap to fix, and it prevents the vocabulary from hardening.
-
-### SessionClosed — Product, and the weakest event in the model
-
-G4 fails: closing a connection is infrastructure. G1 is marginal — on the v2 walk its consumer is
-the `SessionClosing` view, rendering the `221` from `ServiceConfigured.server_domain` and
-`SessionClosed.cause`, a named view rather than a generic transcript end-marker — and
-`TransactionAborted` already carries the abandonment fact. `cause: timeout | shutdown` is
-operational telemetry, not domain; whether `cause` survives at all sits inside the open
-dataset-cascade question — the render-failure test for a non-constant field — flagged in the v2
-walk and not settled here.
-
-It survives as **product**, on the same footing as `DataPhaseEntered`: the operator wants sessions
-to be countable and terminable in the transcript. But it has not been subjected to the forward
-check — of the three-check completeness pass, *Completeness closes in three checks* (commit
-27627f9) — that deleted `ServiceGreetingSent`, and by symmetry it should be.
-
-**Proposed new hotspot, H8 — Does `SessionClosed` earn its place?** Note the coupling: deleting it
-leaves `Quit` (`Quit`) with no post-condition event, which is legal under H2's rule but odd for a
-non-error command. Decide the two together. (`event-model.md`'s banner records H8 as proposed but
-not yet registered there.)
-
-### Pattern across the nine
-
-Every event that passes G4 is **named for the conversation, not the wire** — `ClientIdentified`,
-not `HeloReceived`; `ReversePathDeclared`, not `MailFromAccepted`. Every event on trial
-(`DataPhaseEntered`) or weak (`SessionClosed`) is named for the wire. **Naming predicts tier**, and
-this is a cheap review heuristic: an event named after a verb or a phase is a protocol event until
-it proves otherwise.
+One subsection stays, below. *Registers* is a **charter** ruling rather than a tier ruling — it
+turns on which of RFC 5321's two registers this model speaks — and it never used the gates or the
+tiers.
 
 ### Registers — the altitude ruling behind the rename
 

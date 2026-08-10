@@ -432,6 +432,10 @@ unnecessary. If you cannot state the job, you do not have a decline — you have
 and it gets a 🟥 at the point where it bites (rule 12).
 
 **The model repo's own hazard is the tier vocabulary.** *Domain*, *Product*, *Protocol* and
-*Infrastructure* are this project's invention, defined in `docs/model-altitude.md`, and they are
-used throughout `docs/event-model.md` and the walks as if they were method words. They are not in
-the corpus. A reader arriving at a walk meets them unlabeled.
+*Infrastructure* are this project's invention. They were defined in `docs/model-altitude.md` and
+are **unadopted as of 2026-08-10** — a standing change, not a correction — parked with the
+unapplied inventions in the method repo's `extensions.md`, so nothing in this repo defines them
+now. They are still used throughout `docs/event-model.md` and the walks as if they were method
+words. They are not in the corpus. A reader arriving at a walk meets them unlabeled, and now
+undefined as well: `docs/event-model.md` carries the standing-change note near its head, and the
+walks keep their text as trail (rule 14).

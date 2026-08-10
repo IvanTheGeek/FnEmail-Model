@@ -20,8 +20,7 @@ Absorbed from `HANDOFF.md`'s open items when that file dissolved, 2026-08-08.
   `paths/EXPLORE-view-slice.md`); `diagrams/README.md`'s generic halves (slice anatomy, chairs,
   one-event-per-command, no-arrows, the sequence-diagram rejection); `DECISIONS.md`'s held method
   rows; the EXPLORE-/WORKING- prefix convention; the rendering experiments (with `rendering.md`'s
-  evidence pointer updated in the same move); the gate sequence and the four tiers
-  (`model-altitude.md` §2.2–§2.3), once a second modeled system tests them.
+  evidence pointer updated in the same move).
 
 ## event-modeling-research
 

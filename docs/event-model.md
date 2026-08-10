@@ -13,6 +13,19 @@ Extensions are parked in the method repo — `EventModeling/docs/extensions.md`,
 2026-08-08 from this repo — and **not** applied here — this document is orthodox Dymitruk/Dilger
 by intent, so extensions can be measured against it.
 
+**The tier vocabulary is unadopted, 2026-08-10.** *Domain*, *Product*, *Protocol* and
+*Infrastructure* were this project's own four-tier taxonomy, never the corpus's, and they are now
+unadopted — a standing change, not a correction: the scheme was accepted while it stood, and what
+replaces it is unruled. The taxonomy and the gate *sequence* that assigned it are parked with the
+unapplied inventions in the method repo's `extensions.md`;
+[`model-altitude.md`](model-altitude.md) keeps the charter rule and says where the rest went. Not
+every gate cited below goes with them: **G1** destination and **G2** state change are Dymitruk's
+and **G5** interpretation is Dilger's, so those three keep their own footing; **G3** charter and
+**G4** substitution are ours, and they are what produced the tiers. The classifications the scheme
+produced are in git — the nine-event table included — and the `ConnectionAccepted` verdict under
+*Hotspots* is left standing rather than rewritten. Read a tier word below as the reading that
+stood when the line was written, not as a term this model still defines.
+
 > ⚠️ **This document is derived.** Paths are the source and slices are derived — a working
 > hypothesis, not settled: the method repo's `layering.md` carries the status
 > ([`DECISIONS.md`](DECISIONS.md)) — and this file is the union of what the walked paths have
