@@ -12,6 +12,14 @@ it along would have prejudged a question the corpus does not settle; this docume
 starting point — every View Slice as it stood, unchanged, so the rework had something to argue
 against.
 
+⚠️ **2026-08-11 — *"recorded nowhere else"* is no longer true of the corpus survey.**
+[`../EXPLORE-view-semantics.md`](../EXPLORE-view-semantics.md) now carries the `When` contradiction
+with first-hand locators, alongside the prior question of what a 🟩 View *is*. It changes no verdict
+here: the closing questions below stay exactly as open as they were, and the two documents reach the
+same `Given` **enumerates** / `Where` **selects** distinction by different routes — this one from
+the walk, that one from the sources. The sentence above stands as written; this note is the
+correction (rule 4).
+
 Command Slices now read: wire, command **with its actor-supplied fields**, event, and a `Given`
 block carrying the minimal dependency. The generic form is the method repo's
 [`path-and-step-form.md`](https://github.com/IvanTheGeek/EventModeling/blob/main/docs/path-and-step-form.md);

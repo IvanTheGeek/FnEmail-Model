@@ -112,11 +112,16 @@ Start with the method layer, then this repo, then the research repo as needed.
 
 **The working stance** (AGENTS.md rule 13): the active `WORKING-` file is
 [`docs/paths/WORKING-helo-direct-single-recipient-v2.md`](docs/paths/WORKING-helo-direct-single-recipient-v2.md)
-— under walk-through review; nothing is reconciled to it until the prefix drops. The four
+— under walk-through review; nothing is reconciled to it until the prefix drops. The five
 `EXPLORE-` files are reasoning records whose headers state what each settled and what stays open;
 the active exploration is
 [`docs/paths/EXPLORE-declaration-vs-status.md`](docs/paths/EXPLORE-declaration-vs-status.md) —
-cite it, not `event-model.md`, for anything it governs (AGENTS.md rule 13).
+cite it, not `event-model.md`, for anything it governs (AGENTS.md rule 13). Four sit in
+`docs/paths/` because they came out of a walk; the fifth,
+[`docs/EXPLORE-view-semantics.md`](docs/EXPLORE-view-semantics.md), sits a level up because it is
+a **corpus survey** rather than a walk product — what the sources say a 🟩 View *is*. It governs
+nothing and rules nothing; it supplies the citation trail the still-open view questions were
+missing.
 
 ## Where status lives
 
