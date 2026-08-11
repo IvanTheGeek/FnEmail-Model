@@ -21,6 +21,11 @@ Absorbed from `HANDOFF.md`'s open items when that file dissolved, 2026-08-08.
   one-event-per-command, no-arrows, the sequence-diagram rejection); `DECISIONS.md`'s held method
   rows; the EXPLORE-/WORKING- prefix convention; the rendering experiments (with `rendering.md`'s
   evidence pointer updated in the same move).
+- **The payload check may be ours alone** — Cratis runs the backward and forward completeness
+  checks and has no payload equivalent ([`cratis-analysis.md`](cratis-analysis.md) §6). That makes
+  the third check of *Completeness closes in three checks* a contribution rather than a
+  restatement, and the independent convergence on the other two is evidence worth carrying with it
+  when it flows.
 - **Q4 — does one model get one altitude?** A question owed to that repo's `altitude.md`, which
   now holds the split test and the lane material it bears on. Arrived 2026-08-10 from
   `model-altitude.md` §6, which routed it here rather than into the parked apparatus: unlike Q1 to
@@ -29,6 +34,22 @@ Absorbed from `HANDOFF.md`'s open items when that file dissolved, 2026-08-08.
   while Ch. 7's Fig. 7.4 shows System A translating raw records into domain events inside its own
   boundary — arguably two altitudes in one system. It bears on the **lane axis**, which is the
   authors' own device and adopted rather than parked, so it belongs with live work.
+
+## ModelingTool-Model
+
+- **Cratis Screenplay is the closest public prior art to the tool** — a declarative modeling
+  language whose unit is the typed slice, with Given/When/Then in the language, a published EBNF
+  grammar, and the commit trail of a language being designed in the open. Read it before resolving
+  a construct twice. [`cratis-analysis.md`](cratis-analysis.md) §2.
+- **Mermaid's native `eventmodeling` diagram type is an output-format candidate** — v11.15.0+,
+  merged upstream 2026-04-07, grammar published separately, and it already carries instance data.
+  It did not exist as a considered option when that repo was created, and it is live *there* and
+  not here: rule 5's **No Mermaid** turns on the Android app's missing diagram engine, which a tool
+  emitting to other renderers does not face. `cratis-analysis.md` §5.
+- **`Stage` is the standing alternative to generation** — an interpreter over the model as the
+  deployable, so the model and the app are one artifact. Bears on what the future `FnEmail` code
+  repo is for; recorded so that choosing generation becomes a stated position rather than an
+  unexamined default. `cratis-analysis.md` §3.
 
 ## event-modeling-research
 
@@ -132,6 +153,10 @@ a ledger.
   "consulted" is a category with exactly one instance that nothing consumes. Load-bearing at
   `event-model.md` (H3), `model-altitude.md`, `diagrams/README.md`; deletion renumbers steps
   8–16. Needs a ruling on how a consulted view is read on a path, not an edit.
+  **Input for that ruling, not a ruling:** Cratis answers the same question by making the consult a
+  declaration on the *reader* — `reads <ReadModel> by <property>` on the command — and warns when a
+  read model nothing produces is read. It matches this repo's *"a consulted view has no top row —
+  its readers declare it"*, reached independently. [`cratis-analysis.md`](cratis-analysis.md) §2.2.
 - **Consumer or key?** `RecipientResolved.forward_path` in step 8's `Given` reaches no fold and
   no render — it only selects *which* record the seeded event concerns. The `session_id` shape,
   inside the `Given` grammar itself; decides whether the data degree's definition ("folded into
